@@ -499,12 +499,6 @@ const PostDetailView = ({
           <MapPin className="h-4 w-4 mr-1" />
           {post.location}
         </div>
-        {post.targetPhone && (
-          <div className="flex items-center justify-center text-sm text-gray-600">
-            <Phone className="h-4 w-4 mr-1" />
-            {post.targetPhone}
-          </div>
-        )}
       </div>
 
       {/* Content */}
