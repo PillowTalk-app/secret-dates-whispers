@@ -58,8 +58,8 @@ const AppContent = () => {
     };
   }, []);
 
-  // Show navigation when authenticated and on home state or other pages
-  const showNavigation = isAuthenticated && (location.pathname !== '/' || appState === 'home');
+  // Show navigation only on home page when authenticated and in home state
+  const showNavigation = isAuthenticated && location.pathname === '/' && appState === 'home';
   const showTopNavigation = isAuthenticated && (location.pathname !== '/' || appState === 'home');
 
   return (
