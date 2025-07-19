@@ -9,17 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-accent text-accent-foreground hover:shadow-luxury hover:scale-105 active:scale-95 font-semibold",
+        default: "bg-gradient-primary text-primary-foreground hover:shadow-luxury hover:scale-105 active:scale-95",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-lg",
         outline:
-          "border border-border bg-card/50 backdrop-blur-sm hover:bg-card hover:border-accent/50 hover:shadow-card",
+          "border border-border bg-card/50 backdrop-blur-sm hover:bg-card hover:border-primary/50 hover:shadow-card",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:shadow-md",
         ghost: "hover:bg-card/50 hover:backdrop-blur-sm hover:shadow-sm",
-        luxury: "bg-gradient-card border border-border/50 text-foreground hover:border-accent/30 hover:shadow-glow backdrop-blur-sm",
-        accent: "bg-accent text-accent-foreground hover:bg-accent/90 hover:shadow-lg font-semibold",
-        link: "text-accent underline-offset-4 hover:underline hover:text-accent/80",
+        luxury: "bg-gradient-card border border-border/50 text-foreground hover:border-primary/30 hover:shadow-glow backdrop-blur-sm",
+        accent: "bg-accent text-accent-foreground hover:bg-accent/90 hover:shadow-lg",
+        link: "text-primary underline-offset-4 hover:underline hover:text-primary-glow",
       },
       size: {
         default: "h-11 px-6 py-2",
