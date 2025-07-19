@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MessageCircle, Clock, TrendingUp, Phone, User, Send, Bookmark, Plus, Camera, X } from "lucide-react";
+import { Search, MessageCircle, Clock, TrendingUp, Phone, User, Send, Bookmark, Plus, Camera, X, MapPin } from "lucide-react";
 
 interface UserData {
   name: string;
@@ -36,10 +36,12 @@ interface Post {
   isActive: boolean;
   category: 'dating' | 'relationship' | 'hookup';
   images?: string[];
+  location: string;
 }
 
 export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('all');
   const [activeTab, setActiveTab] = useState('new');
   const [savedPosts, setSavedPosts] = useState<string[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -66,7 +68,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
         timestamp: '2 hours ago',
         responses: 5,
         isActive: true,
-        category: 'dating'
+        category: 'dating',
+        location: 'Brooklyn, NY'
       },
       {
         id: '2',
@@ -77,7 +80,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
         timestamp: '4 hours ago',
         responses: 12,
         isActive: true,
-        category: 'relationship'
+        category: 'relationship',
+        location: 'Manhattan, NY'
       },
       {
         id: '3',
@@ -90,7 +94,20 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
         responses: 3,
         isActive: false,
         category: 'hookup',
-        images: [`https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=400&fit=crop`]
+        images: [`https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=400&fit=crop`],
+        location: 'Queens, NY'
+      },
+      {
+        id: '4',
+        authorName: 'CityExplorer',
+        authorGender: userData.gender === 'male' ? 'female' : 'male',
+        targetName: 'Riley Thompson',
+        content: 'Great first date at a local café. Very engaging conversation and respectful throughout.',
+        timestamp: '6 hours ago',
+        responses: 2,
+        isActive: true,
+        category: 'dating',
+        location: 'Los Angeles, CA'
       }
     ];
     setPosts(mockPosts);
@@ -101,11 +118,17 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       post.targetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (post.targetPhone && post.targetPhone.includes(searchQuery));
     
+    const matchesLocation = selectedLocation === 'all' || 
+      post.location.toLowerCase().includes(selectedLocation.toLowerCase());
+    
     const matchesTab = activeTab === 'new' || 
       (activeTab === 'active' && post.isActive);
     
-    return matchesSearch && matchesTab;
+    return matchesSearch && matchesLocation && matchesTab;
   });
+
+  // Get unique locations for the filter dropdown
+  const availableLocations = ['all', ...Array.from(new Set(posts.map(post => post.location)))];;
 
   const handleSavePost = (postId: string) => {
     setSavedPosts(prev => 
@@ -129,7 +152,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       responses: 0,
       isActive: true,
       category: newPost.category,
-      images: newPost.images.length > 0 ? newPost.images : undefined
+      images: newPost.images.length > 0 ? newPost.images : undefined,
+      location: 'Current Location' // In a real app, this would be user's actual location
     };
 
     setPosts(prev => [post, ...prev]);
@@ -298,15 +322,35 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       </header>
 
       <div className="container mx-auto px-4 py-6 max-w-2xl">
-        {/* Search Bar */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by name or phone number..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-card/50 border-border/50 h-12"
-          />
+        {/* Search and Filter Bar */}
+        <div className="space-y-4 mb-6">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name or phone number..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-card/50 border-border/50 h-12"
+            />
+          </div>
+
+          {/* Location Filter */}
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+              <SelectTrigger className="pl-10 bg-card/50 border-border/50 h-12">
+                <SelectValue placeholder="Filter by location..." />
+              </SelectTrigger>
+              <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                {availableLocations.map((location) => (
+                  <SelectItem key={location} value={location} className="hover:bg-gray-50">
+                    {location === 'all' ? 'All Locations' : location}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -477,6 +521,10 @@ const PostDetailView = ({
           <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
             {post.category}
           </Badge>
+        </div>
+        <div className="flex items-center text-sm text-gray-600">
+          <MapPin className="h-4 w-4 mr-2" />
+          {post.location}
         </div>
         {post.targetPhone && (
           <div className="flex items-center text-sm text-gray-600">
