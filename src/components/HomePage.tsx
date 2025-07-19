@@ -180,7 +180,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
             <div className="flex items-center space-x-3">
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="luxury" size="sm" className="h-9">
+                  <Button size="sm" className="h-9 bg-teal-700 hover:bg-teal-800 text-white">
                     <Plus className="h-4 w-4 mr-2" />
                     Share Experience
                   </Button>
