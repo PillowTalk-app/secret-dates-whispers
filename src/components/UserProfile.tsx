@@ -193,7 +193,7 @@ export const UserProfile = ({ userData, onBack }: UserProfileProps) => {
               
               <Avatar className="border-2 border-primary/30">
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                  {userData.name.charAt(0).toUpperCase()}
+                  {userData.gender === 'male' ? 'M' : 'F'}
                 </AvatarFallback>
               </Avatar>
             </div>
@@ -207,7 +207,7 @@ export const UserProfile = ({ userData, onBack }: UserProfileProps) => {
           <CardHeader className="text-center">
             <Avatar className="h-20 w-20 mx-auto border-4 border-primary/30 mb-3">
               <AvatarFallback className="bg-gradient-primary text-primary-foreground text-2xl">
-                {userData.name.charAt(0).toUpperCase()}
+                {userData.name.charAt(0)}
               </AvatarFallback>
             </Avatar>
             <CardTitle className="text-2xl">{userData.name}</CardTitle>

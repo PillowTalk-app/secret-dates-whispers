@@ -317,7 +317,7 @@ export const Polls = ({ userData }: PollsProps) => {
                   <div className="flex items-center space-x-3">
                     <Avatar className="border-2 border-primary/20">
                       <AvatarFallback className="bg-gradient-primary text-primary-foreground text-sm">
-                        {poll.creatorName.charAt(0).toUpperCase()}
+                        {poll.creatorGender === 'male' ? 'M' : 'F'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
@@ -377,7 +377,7 @@ export const Polls = ({ userData }: PollsProps) => {
                   <div className="flex items-center space-x-3">
                     <Avatar className="border-2 border-primary/20">
                       <AvatarFallback className="bg-gradient-primary text-primary-foreground text-sm">
-                        {question.creatorName.charAt(0).toUpperCase()}
+                        {question.creatorGender === 'male' ? 'M' : 'F'}
                       </AvatarFallback>
                     </Avatar>
                     <div>

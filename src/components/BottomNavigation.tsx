@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, Plus, MessageCircle, BarChart3, Shield, User } from "lucide-react";
+import { Home, Plus, MessageCircle, BarChart3, Shield, Settings } from "lucide-react";
 
 export const BottomNavigation = () => {
   const navItems = [
@@ -8,7 +8,7 @@ export const BottomNavigation = () => {
     { to: "/messages", icon: MessageCircle, label: "Messages" },
     { to: "/polls", icon: BarChart3, label: "Polls" },
     { to: "/safety", icon: Shield, label: "Safety" },
-    { to: "/profile", icon: User, label: "Profile" }
+    { to: "/settings", icon: Settings, label: "Settings" }
   ];
 
   return (

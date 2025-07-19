@@ -34,6 +34,7 @@ const AppContent = () => {
   const [userData] = useState(mockUserData);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [appState, setAppState] = useState('');
+  const [showProfile, setShowProfile] = useState(false);
   const location = useLocation();
 
   // Listen for authentication state changes
@@ -58,17 +59,16 @@ const AppContent = () => {
     };
   }, []);
 
-  // Only show bottom navigation when fully authenticated and specifically in home state
-  // Hide during loading, verification, messaging, and profile states
-  const showNavigation = isAuthenticated && location.pathname === '/' && appState === 'home';
-  const showTopNavigation = (isAuthenticated && location.pathname !== '/' && appState !== 'loading' && appState !== 'verification') || location.pathname === '/about';
+  // Show navigation when authenticated and on home state or other pages
+  const showNavigation = isAuthenticated && (location.pathname !== '/' || appState === 'home');
+  const showTopNavigation = isAuthenticated && (location.pathname !== '/' || appState === 'home');
 
   return (
     <div className="min-h-screen bg-background">
       {showTopNavigation && (
         <TopNavigation 
           userData={userData} 
-          onProfile={() => {}} 
+          onProfile={() => setShowProfile(true)} 
         />
       )}
       <Routes>
@@ -79,13 +79,20 @@ const AppContent = () => {
         <Route path="/polls" element={<Polls userData={userData} />} />
         <Route path="/safety" element={<Safety userData={userData} />} />
         <Route path="/reports" element={<Reports userData={userData} />} />
-        <Route path="/profile" element={<UserProfile userData={userData} onBack={() => window.history.back()} />} />
         <Route path="/settings" element={<Settings userData={userData} />} />
         <Route path="/about" element={<About />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
       {showNavigation && <BottomNavigation />}
+      
+      {/* User Profile Modal */}
+      {showProfile && (
+        <UserProfile 
+          userData={userData} 
+          onBack={() => setShowProfile(false)} 
+        />
+      )}
     </div>
   );
 };

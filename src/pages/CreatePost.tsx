@@ -23,6 +23,7 @@ interface CreatePostProps {
 export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
   const [postData, setPostData] = useState({
     targetName: '',
+    targetPhone: '',
     content: '',
     images: [] as string[],
     location: ''
@@ -60,6 +61,7 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
     // Reset form
     setPostData({
       targetName: '',
+      targetPhone: '',
       content: '',
       images: [],
       location: ''
@@ -97,6 +99,19 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
                 onChange={(e) => setPostData(prev => ({ ...prev, targetName: e.target.value }))}
                 className="bg-card/50 border-border/50"
               />
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-2 block text-foreground">Phone Number (Optional)</label>
+              <Input
+                placeholder="+1 (555) 123-4567"
+                value={postData.targetPhone}
+                onChange={(e) => setPostData(prev => ({ ...prev, targetPhone: e.target.value }))}
+                className="bg-card/50 border-border/50"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Only share if you believe it's important for community safety
+              </p>
             </div>
 
             <div>

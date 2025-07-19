@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Send, MoreVertical } from "lucide-react";
+import { Search, Send, MoreVertical, Phone, Video } from "lucide-react";
 
 interface UserData {
   name: string;
@@ -163,7 +163,7 @@ export const Messages = ({ userData }: MessagesProps) => {
                       <div className="relative">
                         <Avatar className="border-2 border-primary/20">
                           <AvatarFallback className="bg-gradient-primary text-primary-foreground text-sm">
-                            {conversation.participantName.charAt(0).toUpperCase()}
+                            {conversation.participantGender === 'male' ? 'M' : 'F'}
                           </AvatarFallback>
                         </Avatar>
                         {conversation.isOnline && (
@@ -200,7 +200,7 @@ export const Messages = ({ userData }: MessagesProps) => {
                   <div className="flex items-center space-x-3">
                     <Avatar className="border-2 border-primary/20">
                       <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                        {selectedConv.participantName.charAt(0).toUpperCase()}
+                        {selectedConv.participantGender === 'male' ? 'M' : 'F'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
@@ -211,6 +211,12 @@ export const Messages = ({ userData }: MessagesProps) => {
                     </div>
                   </div>
                   <div className="flex space-x-2">
+                    <Button variant="ghost" size="sm">
+                      <Phone className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="sm">
+                      <Video className="h-4 w-4" />
+                    </Button>
                     <Button variant="ghost" size="sm">
                       <MoreVertical className="h-4 w-4" />
                     </Button>

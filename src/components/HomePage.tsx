@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin } from "lucide-react";
+import { Search, MessageCircle, Clock, TrendingUp, Phone, User, Send, Bookmark, Plus, Camera, X, MapPin } from "lucide-react";
 
 interface UserData {
   name: string;
@@ -52,6 +52,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [newPost, setNewPost] = useState({
     targetName: '',
+    targetPhone: '',
     content: '',
     images: [] as string[]
   });
@@ -120,7 +121,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = searchQuery === '' || 
-      post.targetName.toLowerCase().includes(searchQuery.toLowerCase());
+      post.targetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (post.targetPhone && post.targetPhone.includes(searchQuery));
     
     const matchesLocation = selectedLocation === '' || 
       post.location.toLowerCase().includes(selectedLocation.toLowerCase());
@@ -149,6 +151,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       authorGender: userData.gender,
       authorImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&crop=face',
       targetName: newPost.targetName,
+      targetPhone: newPost.targetPhone || undefined,
       content: newPost.content,
       timestamp: 'Just now',
       responses: 0,
@@ -160,6 +163,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     setPosts(prev => [post, ...prev]);
     setNewPost({
       targetName: '',
+      targetPhone: '',
       content: '',
       images: []
     });
@@ -187,28 +191,59 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header with Logo and Create Button */}
-      <div className="container mx-auto px-4 py-4 max-w-2xl">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
-            <img 
-              src="/lovable-uploads/a3ca0fb5-905f-470d-ac61-7e26940cc492.png" 
-              alt="Pillow Talk Logo" 
-              className="h-12 w-auto"
+      <div className="container mx-auto px-4 py-6 max-w-2xl">
+        {/* Search and Filter Bar */}
+        <div className="space-y-4 mb-6">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name or phone number..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-card/50 border-border/50 h-12"
             />
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-accent bg-clip-text text-transparent">
-                Pillow Talk
-              </h1>
-              <p className="text-xs text-muted-foreground">Not gossip just experience</p>
+          </div>
+
+          {/* Location Filter */}
+          <div className="space-y-3">
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+              <Input
+                placeholder="Enter your location (e.g., Brooklyn, NY)"
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                className="pl-10 bg-card/50 border-border/50 h-12"
+              />
+            </div>
+            
+            <div className="px-3">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-gray-700">Search Radius</label>
+                <span className="text-sm text-gray-500">{searchRadius} miles</span>
+              </div>
+              <Slider
+                value={[searchRadius]}
+                onValueChange={(value) => setSearchRadius(value[0])}
+                max={100}
+                min={1}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-400 mt-1">
+                <span>1 mile</span>
+                <span>100 miles</span>
+              </div>
             </div>
           </div>
-          
+        </div>
+        {/* Create Experience Button */}
+        <div className="mb-6">
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-semibold px-6 py-2 rounded-lg shadow-lg">
+              <Button size="sm" className="w-full h-12 bg-teal-700 hover:bg-teal-800 text-white">
                 <Plus className="h-4 w-4 mr-2" />
-                Create Post
+                Share Experience
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md bg-card border-border/50">
@@ -225,6 +260,16 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                     placeholder="First name or nickname"
                     value={newPost.targetName}
                     onChange={(e) => setNewPost(prev => ({ ...prev, targetName: e.target.value }))}
+                    className="bg-card/50 border-border/50"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Phone Number (Optional)</label>
+                  <Input
+                    placeholder="+1 (555) 123-4567"
+                    value={newPost.targetPhone}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, targetPhone: e.target.value }))}
                     className="bg-card/50 border-border/50"
                   />
                 </div>
@@ -288,54 +333,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
               </div>
             </DialogContent>
           </Dialog>
-        </div>
-      </div>
-      
-      <div className="container mx-auto px-4 py-6 max-w-2xl">
-        {/* Search and Filter Bar */}
-        <div className="space-y-4 mb-6">
-          {/* Search Bar */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-card/50 border-border/50 h-12"
-            />
-          </div>
-
-          {/* Location Filter */}
-          <div className="space-y-3">
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
-              <Input
-                placeholder="Enter your location (e.g., Brooklyn, NY)"
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="pl-10 bg-card/50 border-border/50 h-12"
-              />
-            </div>
-            
-            <div className="px-3">
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">Search Radius</label>
-                <span className="text-sm text-gray-500">{searchRadius} miles</span>
-              </div>
-              <Slider
-                value={[searchRadius]}
-                onValueChange={(value) => setSearchRadius(value[0])}
-                max={100}
-                min={1}
-                step={1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>1 mile</span>
-                <span>100 miles</span>
-              </div>
-            </div>
-          </div>
         </div>
         
         {/* Tabs */}
@@ -449,9 +446,17 @@ const PostDetailView = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <Avatar className="w-10 h-10 border-2 border-gray-100">
-            <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
-              {post.authorName.charAt(0).toUpperCase()}
-            </AvatarFallback>
+            {post.authorImage ? (
+              <img 
+                src={post.authorImage} 
+                alt={post.authorName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
+                {post.authorGender === 'male' ? 'M' : 'F'}
+              </AvatarFallback>
+            )}
           </Avatar>
           <div>
             <h3 className="font-semibold text-gray-900">{post.authorName}</h3>
