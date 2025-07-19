@@ -101,16 +101,16 @@ export const HomePage = ({ userGender, onMessage, onProfile }: HomePageProps) =>
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-gradient-accent bg-clip-text text-transparent">
                 Pillow Talk
               </span>
               <p className="text-xs text-muted-foreground ml-2">not gossip just experience</p>
-              <Badge variant="secondary" className="bg-primary/20 text-primary text-xs ml-1">
+              <Badge variant="secondary" className="bg-accent/20 text-accent text-xs ml-1">
                 Verified
               </Badge>
             </div>
-            <Avatar className="border-2 border-primary/30" onClick={onProfile}>
-              <AvatarFallback className="bg-gradient-primary text-primary-foreground cursor-pointer hover:shadow-glow transition-all">
+            <Avatar className="border-2 border-accent/30" onClick={onProfile}>
+              <AvatarFallback className="bg-gradient-accent text-accent-foreground cursor-pointer hover:shadow-glow transition-all">
                 {userGender === 'male' ? 'M' : 'F'}
               </AvatarFallback>
             </Avatar>
@@ -133,11 +133,11 @@ export const HomePage = ({ userGender, onMessage, onProfile }: HomePageProps) =>
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
           <TabsList className="grid w-full grid-cols-2 bg-card/50 border border-border/50">
-            <TabsTrigger value="new" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="new" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
               <TrendingUp className="h-4 w-4 mr-2" />
               New Posts
             </TabsTrigger>
-            <TabsTrigger value="active" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+            <TabsTrigger value="active" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
               <Clock className="h-4 w-4 mr-2" />
               Active
             </TabsTrigger>
@@ -228,7 +228,7 @@ const PostCard = ({ post, onMessage, onSave, isSaved }: { post: Post; onMessage:
               variant="outline" 
               size="sm"
               onClick={() => onMessage(post.id)}
-              className="border-primary/30 hover:bg-primary/10"
+              className="border-accent/30 hover:bg-accent/10"
             >
               <Send className="h-3 w-3 mr-1" />
               Message

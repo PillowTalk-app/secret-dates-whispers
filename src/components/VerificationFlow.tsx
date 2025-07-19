@@ -40,9 +40,9 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
       <Card className="w-full max-w-md bg-gradient-card shadow-luxury border-border/50">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
-            <Shield className="h-8 w-8 text-primary mr-2" />
+            <Shield className="h-8 w-8 text-accent mr-2" />
             <div className="text-center">
-              <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-gradient-accent bg-clip-text text-transparent">
                 Pillow Talk
               </span>
               <p className="text-xs text-muted-foreground">not gossip just experience</p>
@@ -119,7 +119,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
           {step === 3 && (
             <div className="space-y-4">
               <div className="text-center">
-                <User className="h-12 w-12 text-primary mx-auto mb-3" />
+                <User className="h-12 w-12 text-accent mx-auto mb-3" />
                 <h3 className="font-semibold mb-2">ID Verification</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Upload a photo of your government-issued ID
@@ -138,7 +138,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
           {step === 4 && (
             <div className="space-y-4">
               <div className="text-center">
-                <Camera className="h-12 w-12 text-primary mx-auto mb-3" />
+                <Camera className="h-12 w-12 text-accent mx-auto mb-3" />
                 <h3 className="font-semibold mb-2">Photo Verification</h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Take a selfie to verify your identity
@@ -153,7 +153,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
                 
                 {formData.idVerified && formData.photoVerified && (
                   <div className="space-y-3">
-                    <Badge variant="secondary" className="bg-primary/20 text-primary">
+                    <Badge variant="secondary" className="bg-accent/20 text-accent">
                       ✓ Verification Complete
                     </Badge>
                     <p className="text-xs text-muted-foreground">
