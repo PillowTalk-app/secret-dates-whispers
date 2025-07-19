@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import pillowLogo from "@/assets/pillow-talk-logo.png";
 
 interface LoadingScreenProps {
   onComplete: () => void;
@@ -45,23 +46,14 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
       </div>
 
       <div className="flex flex-col items-center space-y-8 z-10">
-        {/* Logo Recreation */}
+        {/* Logo */}
         <div className="relative">
           <div className="absolute inset-0 bg-accent/20 rounded-2xl blur-xl scale-110 animate-pulse"></div>
-          <div className="relative bg-background p-8 rounded-2xl shadow-luxury border border-border/20 w-64 h-40 flex flex-col items-center justify-center animate-scale-in">
-            {/* Pillow Icon */}
-            <div className="w-16 h-12 bg-foreground rounded-full relative mb-4 transform rotate-12">
-              <div className="absolute inset-2 bg-background rounded-full"></div>
-              <div className="absolute top-1 left-2 right-2 h-2 bg-foreground/20 rounded-full"></div>
-            </div>
-            
-            {/* Brand Text */}
-            <div className="text-center">
-              <h1 className="text-xl font-bold bg-gradient-accent bg-clip-text text-transparent tracking-wider">
-                PILLOW TALK
-              </h1>
-            </div>
-          </div>
+          <img 
+            src={pillowLogo} 
+            alt="Pillow Talk" 
+            className="relative w-64 h-64 object-contain animate-scale-in shadow-luxury"
+          />
         </div>
 
         {/* Loading Text */}
