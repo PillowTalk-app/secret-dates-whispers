@@ -53,99 +53,166 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
 
         <CardContent className="space-y-6">
           {step === 1 && (
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Full Name</label>
-                <Input
-                  placeholder="Enter your real name"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="bg-card/50 border-border/50"
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium mb-2 block flex items-center">
-                  <Phone className="h-4 w-4 mr-2" />
-                  Phone Number
-                </label>
-                <Input
-                  placeholder="+1 (555) 123-4567"
-                  value={formData.phone}
-                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  className="bg-card/50 border-border/50"
-                />
+            <div className="space-y-6">
+              <div className="text-center mb-6">
+                <User className="h-8 w-8 text-accent mx-auto mb-2" />
+                <h3 className="font-semibold text-lg">Personal Information</h3>
+                <p className="text-sm text-muted-foreground">Tell us a bit about yourself</p>
               </div>
 
-              <div>
-                <label className="text-sm font-medium mb-2 block">Gender</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button
-                    variant={formData.gender === 'male' ? 'default' : 'outline'}
-                    onClick={() => setFormData(prev => ({ ...prev, gender: 'male' }))}
-                    className="h-12"
-                  >
-                    Male
-                  </Button>
-                  <Button
-                    variant={formData.gender === 'female' ? 'default' : 'outline'}
-                    onClick={() => setFormData(prev => ({ ...prev, gender: 'female' }))}
-                    className="h-12"
-                  >
-                    Female
-                  </Button>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Full Name</label>
+                  <Input
+                    placeholder="Enter your real name"
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    className="bg-card/50 border-border/50 h-12"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Your real name for a safe, authentic experience
+                  </p>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium mb-2 block flex items-center">
+                    <Phone className="h-4 w-4 mr-2" />
+                    Phone Number
+                  </label>
+                  <Input
+                    placeholder="+1 (555) 123-4567"
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    className="bg-card/50 border-border/50 h-12"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    For account security and verification
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-3 block">I am...</label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button
+                      variant={formData.gender === 'male' ? 'default' : 'outline'}
+                      onClick={() => setFormData(prev => ({ ...prev, gender: 'male' }))}
+                      className="h-16 flex flex-col items-center justify-center space-y-1"
+                    >
+                      <User className="h-5 w-5" />
+                      <span>Male</span>
+                    </Button>
+                    <Button
+                      variant={formData.gender === 'female' ? 'default' : 'outline'}
+                      onClick={() => setFormData(prev => ({ ...prev, gender: 'female' }))}
+                      className="h-16 flex flex-col items-center justify-center space-y-1"
+                    >
+                      <User className="h-5 w-5" />
+                      <span>Female</span>
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    This determines who can see your profile
+                  </p>
                 </div>
               </div>
             </div>
           )}
 
           {step === 2 && (
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block flex items-center">
-                  <Mail className="h-4 w-4 mr-2" />
-                  Email Address
-                </label>
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="bg-card/50 border-border/50"
-                />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Used for account recovery and important notifications
-                </p>
+            <div className="space-y-6">
+              <div className="text-center mb-6">
+                <Mail className="h-8 w-8 text-accent mx-auto mb-2" />
+                <h3 className="font-semibold text-lg">Email Verification</h3>
+                <p className="text-sm text-muted-foreground">We'll keep your information secure</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Email Address</label>
+                  <Input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="bg-card/50 border-border/50 h-12"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Used for account recovery and important notifications
+                  </p>
+                </div>
+
+                <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
+                  <div className="flex items-start space-x-3">
+                    <Shield className="h-5 w-5 text-accent mt-0.5" />
+                    <div>
+                      <h4 className="text-sm font-medium mb-1">Privacy Promise</h4>
+                      <p className="text-xs text-muted-foreground">
+                        Your email will never be shared or used for marketing. We only send security alerts and account notifications.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {step === 3 && (
-            <div className="space-y-4">
-              <div className="text-center">
-                <Camera className="h-12 w-12 text-accent mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Face Verification</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Take a selfie to verify your gender and identity. This ensures only women see men and only men see women.
+            <div className="space-y-6">
+              <div className="text-center mb-6">
+                <Camera className="h-8 w-8 text-accent mx-auto mb-2" />
+                <h3 className="font-semibold text-lg">Face Verification</h3>
+                <p className="text-sm text-muted-foreground">
+                  Verify your identity to ensure authentic connections
                 </p>
-                <Button
-                  variant="luxury"
-                  onClick={() => setFormData(prev => ({ ...prev, faceVerified: true }))}
-                  className="w-full h-12 mb-4"
-                >
-                  {formData.faceVerified ? '✓ Face Verified' : 'Take Selfie'}
-                </Button>
-                
-                {formData.faceVerified && (
-                  <div className="space-y-3">
-                    <Badge variant="secondary" className="bg-accent/20 text-accent">
+              </div>
+
+              <div className="space-y-4">
+                {!formData.faceVerified ? (
+                  <div className="bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl p-6 border border-border/50">
+                    <div className="aspect-square bg-muted/50 rounded-lg border-2 border-dashed border-border/50 flex flex-col items-center justify-center mb-4">
+                      <Camera className="h-12 w-12 text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground text-center">
+                        Position your face in the frame
+                      </p>
+                    </div>
+                    
+                    <div className="space-y-3 text-xs text-muted-foreground">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-accent rounded-full"></div>
+                        <span>Make sure your face is clearly visible</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-accent rounded-full"></div>
+                        <span>Remove sunglasses and hats</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-accent rounded-full"></div>
+                        <span>Use good lighting</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-accent/10 border border-accent/20 rounded-xl p-6 text-center">
+                    <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Shield className="h-8 w-8 text-accent" />
+                    </div>
+                    <Badge variant="secondary" className="bg-accent/20 text-accent mb-2">
                       ✓ Verification Complete
                     </Badge>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                       Your identity has been securely verified
                     </p>
                   </div>
                 )}
+
+                <Button
+                  variant={formData.faceVerified ? "outline" : "luxury"}
+                  onClick={() => setFormData(prev => ({ ...prev, faceVerified: true }))}
+                  className="w-full h-12"
+                  disabled={formData.faceVerified}
+                >
+                  {formData.faceVerified ? '✓ Face Verified' : 'Start Camera Verification'}
+                </Button>
               </div>
             </div>
           )}
