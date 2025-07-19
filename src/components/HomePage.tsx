@@ -351,7 +351,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
         {/* Post Detail Modal */}
         <Dialog open={selectedPost !== null} onOpenChange={() => setSelectedPost(null)}>
-          <DialogContent className="sm:max-w-2xl bg-card border-border/50 max-h-[90vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-md bg-white border-none shadow-xl max-h-[90vh] overflow-hidden rounded-2xl">
             {selectedPost && (
               <PostDetailView 
                 post={selectedPost} 
@@ -440,80 +440,87 @@ const PostDetailView = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5 p-1">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center space-x-2 mb-2">
-            <h2 className="text-xl font-semibold">{post.targetName}</h2>
-            <Badge className={getCategoryColor(post.category)}>
-              {post.category}
-            </Badge>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <Avatar className="w-10 h-10 border-2 border-gray-100">
+            <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
+              {post.authorGender === 'male' ? 'M' : 'F'}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h3 className="font-semibold text-gray-900">{post.authorName}</h3>
+            <p className="text-sm text-gray-500">{post.timestamp}</p>
           </div>
-          <div className="text-sm text-muted-foreground mb-2">
-            Shared by {post.authorName} • {post.timestamp}
-          </div>
-          {post.targetPhone && (
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Phone className="h-3 w-3 mr-1" />
-              {post.targetPhone}
-            </div>
-          )}
         </div>
-        <Button variant="ghost" onClick={onClose} className="h-8 w-8 p-0">
+        <Button variant="ghost" size="sm" onClick={onClose} className="text-gray-400 hover:text-gray-600 h-8 w-8 p-0">
           <X className="h-4 w-4" />
         </Button>
       </div>
 
-      {/* Images */}
+      {/* Post Images */}
       {post.images && post.images.length > 0 && (
-        <div className="grid grid-cols-2 gap-2">
-          {post.images.map((image, index) => (
-            <div key={index} className="aspect-square">
-              <img 
-                src={image} 
-                alt={`Post image ${index + 1}`}
-                className="w-full h-full object-cover rounded-lg border border-border/50"
-              />
-            </div>
-          ))}
+        <div className="rounded-xl overflow-hidden bg-gray-50">
+          <img 
+            src={post.images[0]} 
+            alt="Post image" 
+            className="w-full aspect-square object-cover"
+          />
         </div>
       )}
 
+      {/* Target Info Card */}
+      <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <h4 className="font-semibold text-gray-900">About: {post.targetName}</h4>
+          <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+            {post.category}
+          </Badge>
+        </div>
+        {post.targetPhone && (
+          <div className="flex items-center text-sm text-gray-600">
+            <Phone className="h-4 w-4 mr-2" />
+            {post.targetPhone}
+          </div>
+        )}
+      </div>
+
       {/* Content */}
-      <div className="bg-muted/30 rounded-lg p-4 border border-border/30">
-        <p className="leading-relaxed">{post.content}</p>
+      <div className="space-y-3">
+        <p className="text-gray-800 leading-relaxed text-sm">{post.content}</p>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-border/30">
-        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-          <span className="flex items-center">
-            <MessageCircle className="h-4 w-4 mr-1" />
-            {post.responses} responses
-          </span>
+      <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center space-x-1 text-sm text-gray-500">
+          <MessageCircle className="h-4 w-4" />
+          <span>{post.responses} responses</span>
           {post.isActive && (
-            <Badge variant="secondary" className="bg-primary/20 text-primary text-xs">
-              Active
-            </Badge>
+            <>
+              <span className="mx-2">•</span>
+              <div className="flex items-center">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse" />
+                <span>Active</span>
+              </div>
+            </>
           )}
         </div>
-        
-        <div className="flex items-center space-x-2">
-          <Button 
-            variant="ghost" 
+
+        <div className="flex space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => onSave(post.id)}
-            className={`${isSaved ? 'text-accent hover:text-accent/80' : 'hover:text-accent'}`}
+            className="text-gray-400 hover:text-gray-600 h-8 w-8 p-0"
           >
-            <Bookmark className={`h-4 w-4 mr-2 ${isSaved ? 'fill-current' : ''}`} />
-            {isSaved ? 'Saved' : 'Save'}
+            <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current text-blue-500' : ''}`} />
           </Button>
-          
-          <Button 
+          <Button
             onClick={() => onMessage(post.id)}
-            className="bg-accent hover:bg-accent/90"
+            className="bg-blue-500 hover:bg-blue-600 text-white h-8 px-4 text-sm rounded-lg"
           >
-            <Send className="h-4 w-4 mr-2" />
+            <Send className="h-3 w-3 mr-1" />
             Message
           </Button>
         </div>
