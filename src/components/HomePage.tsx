@@ -187,59 +187,28 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-6 max-w-2xl">
-        {/* Search and Filter Bar */}
-        <div className="space-y-4 mb-6">
-          {/* Search Bar */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-card/50 border-border/50 h-12"
+      {/* Header with Logo and Create Button */}
+      <div className="container mx-auto px-4 py-4 max-w-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/a3ca0fb5-905f-470d-ac61-7e26940cc492.png" 
+              alt="Pillow Talk Logo" 
+              className="h-12 w-auto"
             />
-          </div>
-
-          {/* Location Filter */}
-          <div className="space-y-3">
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
-              <Input
-                placeholder="Enter your location (e.g., Brooklyn, NY)"
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
-                className="pl-10 bg-card/50 border-border/50 h-12"
-              />
-            </div>
-            
-            <div className="px-3">
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-gray-700">Search Radius</label>
-                <span className="text-sm text-gray-500">{searchRadius} miles</span>
-              </div>
-              <Slider
-                value={[searchRadius]}
-                onValueChange={(value) => setSearchRadius(value[0])}
-                max={100}
-                min={1}
-                step={1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>1 mile</span>
-                <span>100 miles</span>
-              </div>
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-accent bg-clip-text text-transparent">
+                Pillow Talk
+              </h1>
+              <p className="text-xs text-muted-foreground">Not gossip just experience</p>
             </div>
           </div>
-        </div>
-        {/* Create Experience Button */}
-        <div className="mb-6">
+          
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="w-full h-12 bg-teal-700 hover:bg-teal-800 text-white">
+              <Button className="bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-semibold px-6 py-2 rounded-lg shadow-lg">
                 <Plus className="h-4 w-4 mr-2" />
-                Share Experience
+                Create Post
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md bg-card border-border/50">
@@ -319,6 +288,54 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
               </div>
             </DialogContent>
           </Dialog>
+        </div>
+      </div>
+      
+      <div className="container mx-auto px-4 py-6 max-w-2xl">
+        {/* Search and Filter Bar */}
+        <div className="space-y-4 mb-6">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 bg-card/50 border-border/50 h-12"
+            />
+          </div>
+
+          {/* Location Filter */}
+          <div className="space-y-3">
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+              <Input
+                placeholder="Enter your location (e.g., Brooklyn, NY)"
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                className="pl-10 bg-card/50 border-border/50 h-12"
+              />
+            </div>
+            
+            <div className="px-3">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-gray-700">Search Radius</label>
+                <span className="text-sm text-gray-500">{searchRadius} miles</span>
+              </div>
+              <Slider
+                value={[searchRadius]}
+                onValueChange={(value) => setSearchRadius(value[0])}
+                max={100}
+                min={1}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-400 mt-1">
+                <span>1 mile</span>
+                <span>100 miles</span>
+              </div>
+            </div>
+          </div>
         </div>
         
         {/* Tabs */}
