@@ -163,7 +163,7 @@ export const Messages = ({ userData }: MessagesProps) => {
                       <div className="relative">
                         <Avatar className="border-2 border-primary/20">
                           <AvatarFallback className="bg-gradient-primary text-primary-foreground text-sm">
-                            {conversation.participantGender === 'male' ? 'M' : 'F'}
+                            {conversation.participantName.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         {conversation.isOnline && (
@@ -200,7 +200,7 @@ export const Messages = ({ userData }: MessagesProps) => {
                   <div className="flex items-center space-x-3">
                     <Avatar className="border-2 border-primary/20">
                       <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                        {selectedConv.participantGender === 'male' ? 'M' : 'F'}
+                        {selectedConv.participantName.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div>

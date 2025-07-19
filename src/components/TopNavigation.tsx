@@ -58,7 +58,7 @@ export const TopNavigation = ({ userData, onProfile }: TopNavigationProps) => {
             >
               <Avatar className="w-8 h-8 border-2 border-accent/30">
                 <AvatarFallback className="bg-gradient-accent text-accent-foreground text-xs">
-                  {userData.gender === 'male' ? 'M' : 'F'}
+                  {userData.screenName.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="text-left">

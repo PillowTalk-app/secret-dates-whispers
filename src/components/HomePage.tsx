@@ -446,17 +446,9 @@ const PostDetailView = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <Avatar className="w-10 h-10 border-2 border-gray-100">
-            {post.authorImage ? (
-              <img 
-                src={post.authorImage} 
-                alt={post.authorName}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
-                {post.authorGender === 'male' ? 'M' : 'F'}
-              </AvatarFallback>
-            )}
+            <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
+              {post.authorName.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
           <div>
             <h3 className="font-semibold text-gray-900">{post.authorName}</h3>
