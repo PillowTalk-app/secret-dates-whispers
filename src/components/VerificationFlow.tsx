@@ -41,9 +41,12 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
         <CardHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
             <Shield className="h-8 w-8 text-primary mr-2" />
-            <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Pillow Talk
-            </span>
+            <div className="text-center">
+              <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                Pillow Talk
+              </span>
+              <p className="text-xs text-muted-foreground">not gossip just experience</p>
+            </div>
           </div>
           <CardTitle className="text-xl">Identity Verification</CardTitle>
           <CardDescription>Step {step} of 4 - Secure & Discreet</CardDescription>

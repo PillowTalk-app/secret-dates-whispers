@@ -5,11 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, MessageCircle, Clock, TrendingUp, Phone, User, Send } from "lucide-react";
+import { Search, MessageCircle, Clock, TrendingUp, Phone, User, Send, Bookmark } from "lucide-react";
 
 interface HomePageProps {
   userGender: 'male' | 'female';
   onMessage: (postId: string) => void;
+  onProfile: () => void;
 }
 
 interface Post {
@@ -24,9 +25,10 @@ interface Post {
   category: 'dating' | 'relationship' | 'hookup';
 }
 
-export const HomePage = ({ userGender, onMessage }: HomePageProps) => {
+export const HomePage = ({ userGender, onMessage, onProfile }: HomePageProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('new');
+  const [savedPosts, setSavedPosts] = useState<string[]>([]);
 
   // Mock posts - in real app this would come from backend
   const mockPosts: Post[] = [
@@ -75,6 +77,14 @@ export const HomePage = ({ userGender, onMessage }: HomePageProps) => {
     return matchesSearch && matchesTab;
   });
 
+  const handleSavePost = (postId: string) => {
+    setSavedPosts(prev => 
+      prev.includes(postId) 
+        ? prev.filter(id => id !== postId)
+        : [...prev, postId]
+    );
+  };
+
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'dating': return 'bg-primary/20 text-primary';
@@ -94,12 +104,13 @@ export const HomePage = ({ userGender, onMessage }: HomePageProps) => {
               <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                 Pillow Talk
               </span>
-              <Badge variant="secondary" className="bg-primary/20 text-primary text-xs">
+              <p className="text-xs text-muted-foreground ml-2">not gossip just experience</p>
+              <Badge variant="secondary" className="bg-primary/20 text-primary text-xs ml-1">
                 Verified
               </Badge>
             </div>
-            <Avatar className="border-2 border-primary/30">
-              <AvatarFallback className="bg-gradient-primary text-primary-foreground">
+            <Avatar className="border-2 border-primary/30" onClick={onProfile}>
+              <AvatarFallback className="bg-gradient-primary text-primary-foreground cursor-pointer hover:shadow-glow transition-all">
                 {userGender === 'male' ? 'M' : 'F'}
               </AvatarFallback>
             </Avatar>
@@ -134,13 +145,13 @@ export const HomePage = ({ userGender, onMessage }: HomePageProps) => {
 
           <TabsContent value="new" className="space-y-4 mt-6">
             {filteredPosts.map((post) => (
-              <PostCard key={post.id} post={post} onMessage={onMessage} />
+              <PostCard key={post.id} post={post} onMessage={onMessage} onSave={handleSavePost} isSaved={savedPosts.includes(post.id)} />
             ))}
           </TabsContent>
 
           <TabsContent value="active" className="space-y-4 mt-6">
             {filteredPosts.filter(p => p.isActive).map((post) => (
-              <PostCard key={post.id} post={post} onMessage={onMessage} />
+              <PostCard key={post.id} post={post} onMessage={onMessage} onSave={handleSavePost} isSaved={savedPosts.includes(post.id)} />
             ))}
           </TabsContent>
         </Tabs>
@@ -159,7 +170,7 @@ export const HomePage = ({ userGender, onMessage }: HomePageProps) => {
   );
 };
 
-const PostCard = ({ post, onMessage }: { post: Post; onMessage: (postId: string) => void }) => {
+const PostCard = ({ post, onMessage, onSave, isSaved }: { post: Post; onMessage: (postId: string) => void; onSave: (postId: string) => void; isSaved: boolean }) => {
   return (
     <Card className="bg-gradient-card border-border/50 shadow-card hover:shadow-luxury transition-all duration-300">
       <CardHeader className="pb-3">
@@ -202,15 +213,27 @@ const PostCard = ({ post, onMessage }: { post: Post; onMessage: (postId: string)
             )}
           </div>
           
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => onMessage(post.id)}
-            className="border-primary/30 hover:bg-primary/10"
-          >
-            <Send className="h-3 w-3 mr-1" />
-            Message
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => onSave(post.id)}
+              className={`border-border/30 ${isSaved ? 'text-accent hover:text-accent/80' : 'hover:text-accent'}`}
+            >
+              <Bookmark className={`h-3 w-3 mr-1 ${isSaved ? 'fill-current' : ''}`} />
+              {isSaved ? 'Saved' : 'Save'}
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => onMessage(post.id)}
+              className="border-primary/30 hover:bg-primary/10"
+            >
+              <Send className="h-3 w-3 mr-1" />
+              Message
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

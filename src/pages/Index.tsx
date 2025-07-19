@@ -2,8 +2,9 @@ import { useState } from "react";
 import { VerificationFlow } from "@/components/VerificationFlow";
 import { HomePage } from "@/components/HomePage";
 import { MessagingInterface } from "@/components/MessagingInterface";
+import { UserProfile } from "@/components/UserProfile";
 
-type AppState = 'verification' | 'home' | 'messaging';
+type AppState = 'verification' | 'home' | 'messaging' | 'profile';
 
 interface UserData {
   name: string;
@@ -32,6 +33,14 @@ const Index = () => {
     setActivePostId('');
   };
 
+  const handleProfileView = () => {
+    setAppState('profile');
+  };
+
+  const handleBackFromProfile = () => {
+    setAppState('home');
+  };
+
   if (appState === 'verification') {
     return <VerificationFlow onComplete={handleVerificationComplete} />;
   }
@@ -45,11 +54,21 @@ const Index = () => {
     );
   }
 
+  if (appState === 'profile' && userData) {
+    return (
+      <UserProfile 
+        userData={userData} 
+        onBack={handleBackFromProfile} 
+      />
+    );
+  }
+
   if (appState === 'home' && userData) {
     return (
       <HomePage 
         userGender={userData.gender} 
-        onMessage={handleMessage} 
+        onMessage={handleMessage}
+        onProfile={handleProfileView}
       />
     );
   }
