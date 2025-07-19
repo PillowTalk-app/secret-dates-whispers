@@ -44,6 +44,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [savedPosts, setSavedPosts] = useState<string[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [newPost, setNewPost] = useState({
     targetName: '',
     targetPhone: '',
@@ -321,16 +322,20 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="new" className="space-y-4 mt-6">
-            {filteredPosts.map((post) => (
-              <PostCard key={post.id} post={post} onMessage={onMessage} onSave={handleSavePost} isSaved={savedPosts.includes(post.id)} />
-            ))}
+          <TabsContent value="new" className="mt-6">
+            <div className="grid grid-cols-3 gap-1">
+              {filteredPosts.map((post) => (
+                <PostSquare key={post.id} post={post} onClick={() => setSelectedPost(post)} />
+              ))}
+            </div>
           </TabsContent>
 
-          <TabsContent value="active" className="space-y-4 mt-6">
-            {filteredPosts.filter(p => p.isActive).map((post) => (
-              <PostCard key={post.id} post={post} onMessage={onMessage} onSave={handleSavePost} isSaved={savedPosts.includes(post.id)} />
-            ))}
+          <TabsContent value="active" className="mt-6">
+            <div className="grid grid-cols-3 gap-1">
+              {filteredPosts.filter(p => p.isActive).map((post) => (
+                <PostSquare key={post.id} post={post} onClick={() => setSelectedPost(post)} />
+              ))}
+            </div>
           </TabsContent>
         </Tabs>
 
@@ -343,12 +348,88 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
             </CardContent>
           </Card>
         )}
+
+        {/* Post Detail Modal */}
+        <Dialog open={selectedPost !== null} onOpenChange={() => setSelectedPost(null)}>
+          <DialogContent className="sm:max-w-2xl bg-card border-border/50 max-h-[90vh] overflow-y-auto">
+            {selectedPost && (
+              <PostDetailView 
+                post={selectedPost} 
+                onMessage={onMessage}
+                onSave={handleSavePost}
+                isSaved={savedPosts.includes(selectedPost.id)}
+                onClose={() => setSelectedPost(null)}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
 };
 
-const PostCard = ({ post, onMessage, onSave, isSaved }: { post: Post; onMessage: (postId: string) => void; onSave: (postId: string) => void; isSaved: boolean }) => {
+const PostSquare = ({ post, onClick }: { post: Post; onClick: () => void }) => {
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'dating': return 'bg-pink-500/20 text-pink-300';
+      case 'relationship': return 'bg-purple-500/20 text-purple-300';
+      case 'hookup': return 'bg-orange-500/20 text-orange-300';
+      default: return 'bg-muted text-muted-foreground';
+    }
+  };
+
+  const displayImage = post.images && post.images.length > 0 
+    ? post.images[0] 
+    : `https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop&auto=faces`;
+
+  return (
+    <div 
+      className="aspect-square relative cursor-pointer group overflow-hidden rounded-lg border border-border/30"
+      onClick={onClick}
+    >
+      <img 
+        src={displayImage}
+        alt={post.targetName}
+        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
+      
+      {/* Category badge */}
+      <div className="absolute top-2 left-2">
+        <Badge className={`${getCategoryColor(post.category)} text-xs`}>
+          {post.category}
+        </Badge>
+      </div>
+
+      {/* Response indicator */}
+      <div className="absolute bottom-2 right-2 bg-black/60 rounded-full px-2 py-1 text-xs text-white">
+        <MessageCircle className="h-3 w-3 inline mr-1" />
+        {post.responses}
+      </div>
+
+      {/* Active indicator */}
+      {post.isActive && (
+        <div className="absolute top-2 right-2">
+          <div className="w-3 h-3 bg-accent rounded-full animate-pulse" />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const PostDetailView = ({ 
+  post, 
+  onMessage, 
+  onSave, 
+  isSaved, 
+  onClose 
+}: { 
+  post: Post; 
+  onMessage: (postId: string) => void; 
+  onSave: (postId: string) => void; 
+  isSaved: boolean;
+  onClose: () => void;
+}) => {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'dating': return 'bg-primary/20 text-primary';
@@ -359,88 +440,84 @@ const PostCard = ({ post, onMessage, onSave, isSaved }: { post: Post; onMessage:
   };
 
   return (
-    <Card className="bg-gradient-card border-border/50 shadow-card hover:shadow-luxury transition-all duration-300">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center space-x-2 mb-2">
-              <CardTitle className="text-lg">{post.targetName}</CardTitle>
-              <Badge className={getCategoryColor(post.category)}>
-                {post.category}
-              </Badge>
-            </div>
-            <div className="text-xs text-muted-foreground mb-2">
-              Shared by {post.authorName}
-            </div>
-            {post.targetPhone && (
-              <div className="flex items-center text-sm text-muted-foreground mb-2">
-                <Phone className="h-3 w-3 mr-1" />
-                {post.targetPhone}
-              </div>
-            )}
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center space-x-2 mb-2">
+            <h2 className="text-xl font-semibold">{post.targetName}</h2>
+            <Badge className={getCategoryColor(post.category)}>
+              {post.category}
+            </Badge>
           </div>
-          <Badge variant="secondary" className="text-xs">
-            {post.timestamp}
-          </Badge>
+          <div className="text-sm text-muted-foreground mb-2">
+            Shared by {post.authorName} • {post.timestamp}
+          </div>
+          {post.targetPhone && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Phone className="h-3 w-3 mr-1" />
+              {post.targetPhone}
+            </div>
+          )}
         </div>
-      </CardHeader>
-      
-      <CardContent className="pt-0">
-        {/* Images */}
-        {post.images && post.images.length > 0 && (
-          <div className="grid grid-cols-2 gap-2 mb-4">
-            {post.images.map((image, index) => (
-              <div key={index} className="aspect-square">
-                <img 
-                  src={image} 
-                  alt={`Post image ${index + 1}`}
-                  className="w-full h-full object-cover rounded-lg border border-border/50"
-                />
-              </div>
-            ))}
-          </div>
-        )}
+        <Button variant="ghost" onClick={onClose} className="h-8 w-8 p-0">
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Images */}
+      {post.images && post.images.length > 0 && (
+        <div className="grid grid-cols-2 gap-2">
+          {post.images.map((image, index) => (
+            <div key={index} className="aspect-square">
+              <img 
+                src={image} 
+                alt={`Post image ${index + 1}`}
+                className="w-full h-full object-cover rounded-lg border border-border/50"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Content */}
+      <div className="bg-muted/30 rounded-lg p-4 border border-border/30">
+        <p className="leading-relaxed">{post.content}</p>
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center justify-between pt-4 border-t border-border/30">
+        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+          <span className="flex items-center">
+            <MessageCircle className="h-4 w-4 mr-1" />
+            {post.responses} responses
+          </span>
+          {post.isActive && (
+            <Badge variant="secondary" className="bg-primary/20 text-primary text-xs">
+              Active
+            </Badge>
+          )}
+        </div>
         
-        <CardDescription className="mb-4 leading-relaxed">
-          {post.content}
-        </CardDescription>
-        
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-            <span className="flex items-center">
-              <MessageCircle className="h-4 w-4 mr-1" />
-              {post.responses} responses
-            </span>
-            {post.isActive && (
-              <Badge variant="secondary" className="bg-primary/20 text-primary text-xs">
-                Active
-              </Badge>
-            )}
-          </div>
+        <div className="flex items-center space-x-2">
+          <Button 
+            variant="ghost" 
+            onClick={() => onSave(post.id)}
+            className={`${isSaved ? 'text-accent hover:text-accent/80' : 'hover:text-accent'}`}
+          >
+            <Bookmark className={`h-4 w-4 mr-2 ${isSaved ? 'fill-current' : ''}`} />
+            {isSaved ? 'Saved' : 'Save'}
+          </Button>
           
-          <div className="flex items-center space-x-2">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => onSave(post.id)}
-              className={`border-border/30 ${isSaved ? 'text-accent hover:text-accent/80' : 'hover:text-accent'}`}
-            >
-              <Bookmark className={`h-3 w-3 mr-1 ${isSaved ? 'fill-current' : ''}`} />
-              {isSaved ? 'Saved' : 'Save'}
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => onMessage(post.id)}
-              className="border-accent/30 hover:bg-accent/10"
-            >
-              <Send className="h-3 w-3 mr-1" />
-              Message
-            </Button>
-          </div>
+          <Button 
+            onClick={() => onMessage(post.id)}
+            className="bg-accent hover:bg-accent/90"
+          >
+            <Send className="h-4 w-4 mr-2" />
+            Message
+          </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
