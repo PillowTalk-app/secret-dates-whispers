@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, Plus, MessageCircle, BarChart3, User } from "lucide-react";
+import { Home, Plus, MessageCircle, BarChart3, Shield, Settings } from "lucide-react";
 
 export const BottomNavigation = () => {
   const navItems = [
@@ -7,25 +7,26 @@ export const BottomNavigation = () => {
     { to: "/create", icon: Plus, label: "Create" },
     { to: "/messages", icon: MessageCircle, label: "Messages" },
     { to: "/polls", icon: BarChart3, label: "Polls" },
-    { to: "/my-posts", icon: User, label: "My Posts" }
+    { to: "/safety", icon: Shield, label: "Safety" },
+    { to: "/settings", icon: Settings, label: "Settings" }
   ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border/50 z-50">
-      <div className="flex justify-around items-center py-2 px-4 max-w-lg mx-auto">
+      <div className="grid grid-cols-6 items-center py-2 px-2 max-w-6xl mx-auto">
         {navItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
-              `flex flex-col items-center justify-center py-2 px-3 rounded-lg transition-all duration-200 ${
+              `flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-200 ${
                 isActive
                   ? 'text-accent bg-accent/10'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
               }`
             }
           >
-            <item.icon className="h-5 w-5 mb-1" />
+            <item.icon className="h-4 w-4 mb-1" />
             <span className="text-xs font-medium">{item.label}</span>
           </NavLink>
         ))}

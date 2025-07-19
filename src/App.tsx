@@ -10,6 +10,9 @@ import { MyPosts } from "./pages/MyPosts";
 import { Messages } from "./pages/Messages";
 import { Polls } from "./pages/Polls";
 import { CreatePost } from "./pages/CreatePost";
+import { Safety } from "./pages/Safety";
+import { Reports } from "./pages/Reports";
+import { Settings } from "./pages/Settings";
 import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -52,16 +55,19 @@ const AppContent = () => {
   const showNavigation = isAuthenticated;
 
   return (
-    <div className="min-h-screen bg-background">
-      <Routes>
-        <Route path="/" element={<Index onAuthComplete={() => setIsAuthenticated(true)} />} />
-        <Route path="/create" element={<CreatePost userData={userData} />} />
-        <Route path="/my-posts" element={<MyPosts userData={userData} />} />
-        <Route path="/messages" element={<Messages userData={userData} />} />
-        <Route path="/polls" element={<Polls userData={userData} />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <div className="min-h-screen bg-background">
+            <Routes>
+              <Route path="/" element={<Index onAuthComplete={() => setIsAuthenticated(true)} />} />
+              <Route path="/create" element={<CreatePost userData={userData} />} />
+              <Route path="/my-posts" element={<MyPosts userData={userData} />} />
+              <Route path="/messages" element={<Messages userData={userData} />} />
+              <Route path="/polls" element={<Polls userData={userData} />} />
+              <Route path="/safety" element={<Safety userData={userData} />} />
+              <Route path="/reports" element={<Reports userData={userData} />} />
+              <Route path="/settings" element={<Settings userData={userData} />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
       {showNavigation && <BottomNavigation />}
     </div>
   );
