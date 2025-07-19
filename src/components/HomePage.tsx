@@ -29,6 +29,7 @@ interface Post {
   id: string;
   authorName: string;
   authorGender: 'male' | 'female';
+  authorImage?: string;
   targetName: string;
   targetPhone?: string;
   content: string;
@@ -62,6 +63,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           id: '1',
           authorName: 'MysticWaves',
           authorGender: userData.gender === 'male' ? 'female' : 'male',
+          authorImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
           targetName: 'Alex Johnson',
           targetPhone: '+1 (555) 123-4567',
           content: 'Went on 3 dates with this person. They seemed genuine at first but turned out to be quite manipulative. Be careful if you match with them.',
@@ -74,6 +76,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           id: '2',
           authorName: 'SunsetDreamer',
           authorGender: userData.gender === 'male' ? 'female' : 'male',
+          authorImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
           targetName: 'Sam Wilson',
           content: "Amazing partner for 6 months. Very honest, caring, and respectful. Highly recommend if you're looking for something serious.",
           timestamp: '4 hours ago',
@@ -85,6 +88,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           id: '3',
           authorName: 'NightOwl',
           authorGender: userData.gender === 'male' ? 'female' : 'male',
+          authorImage: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
           targetName: 'Jordan Smith',
           targetPhone: '+1 (555) 987-6543',
           content: 'Had a casual encounter. They were respectful and communicated well about boundaries. Safe and consensual experience.',
@@ -98,6 +102,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           id: '4',
           authorName: 'CityExplorer',
           authorGender: userData.gender === 'male' ? 'female' : 'male',
+          authorImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
           targetName: 'Riley Thompson',
           content: 'Great first date at a local café. Very engaging conversation and respectful throughout.',
           timestamp: '6 hours ago',
@@ -139,6 +144,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       id: Date.now().toString(),
       authorName: userData.screenName,
       authorGender: userData.gender,
+      authorImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&crop=face',
       targetName: newPost.targetName,
       targetPhone: newPost.targetPhone || undefined,
       content: newPost.content,
@@ -435,9 +441,17 @@ const PostDetailView = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <Avatar className="w-10 h-10 border-2 border-gray-100">
-            <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
-              {post.authorGender === 'male' ? 'M' : 'F'}
-            </AvatarFallback>
+            {post.authorImage ? (
+              <img 
+                src={post.authorImage} 
+                alt={post.authorName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
+                {post.authorGender === 'male' ? 'M' : 'F'}
+              </AvatarFallback>
+            )}
           </Avatar>
           <div>
             <h3 className="font-semibold text-gray-900">{post.authorName}</h3>
