@@ -31,6 +31,7 @@ interface Post {
   authorGender: 'male' | 'female';
   authorImage?: string;
   targetName: string;
+  targetImage?: string;
   targetPhone?: string;
   content: string;
   timestamp: string;
@@ -65,6 +66,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorGender: userData.gender === 'male' ? 'female' : 'male',
           authorImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
           targetName: 'Alex Johnson',
+          targetImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
           targetPhone: '+1 (555) 123-4567',
           content: 'Went on 3 dates with this person. They seemed genuine at first but turned out to be quite manipulative. Be careful if you match with them.',
           timestamp: '2 hours ago',
@@ -78,6 +80,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorGender: userData.gender === 'male' ? 'female' : 'male',
           authorImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
           targetName: 'Sam Wilson',
+          targetImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
           content: "Amazing partner for 6 months. Very honest, caring, and respectful. Highly recommend if you're looking for something serious.",
           timestamp: '4 hours ago',
           responses: 12,
@@ -90,6 +93,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorGender: userData.gender === 'male' ? 'female' : 'male',
           authorImage: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
           targetName: 'Jordan Smith',
+          targetImage: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face',
           targetPhone: '+1 (555) 987-6543',
           content: 'Had a casual encounter. They were respectful and communicated well about boundaries. Safe and consensual experience.',
           timestamp: '1 day ago',
@@ -104,6 +108,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorGender: userData.gender === 'male' ? 'female' : 'male',
           authorImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
           targetName: 'Riley Thompson',
+          targetImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=300&h=300&fit=crop&crop=face',
           content: 'Great first date at a local café. Very engaging conversation and respectful throughout.',
           timestamp: '6 hours ago',
           responses: 2,
@@ -474,18 +479,29 @@ const PostDetailView = ({
         </div>
       )}
 
-      {/* Target Info Card */}
-      <div className="bg-gray-50 rounded-xl p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h4 className="font-semibold text-gray-900">About: {post.targetName}</h4>
+      {/* Target Person Photo */}
+      {post.targetImage && (
+        <div className="flex justify-center">
+          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 shadow-lg">
+            <img 
+              src={post.targetImage} 
+              alt={post.targetName}
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
-        <div className="flex items-center text-sm text-gray-600">
-          <MapPin className="h-4 w-4 mr-2" />
+      )}
+
+      {/* Target Info */}
+      <div className="text-center space-y-2">
+        <h4 className="font-semibold text-gray-900 text-lg">{post.targetName}</h4>
+        <div className="flex items-center justify-center text-sm text-gray-600">
+          <MapPin className="h-4 w-4 mr-1" />
           {post.location}
         </div>
         {post.targetPhone && (
-          <div className="flex items-center text-sm text-gray-600">
-            <Phone className="h-4 w-4 mr-2" />
+          <div className="flex items-center justify-center text-sm text-gray-600">
+            <Phone className="h-4 w-4 mr-1" />
             {post.targetPhone}
           </div>
         )}
