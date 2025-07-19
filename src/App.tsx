@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -54,9 +55,9 @@ const AppContent = () => {
     };
   }, []);
 
-  // Only show navigation when authenticated AND not on the main route (which handles verification)
-  const showNavigation = isAuthenticated && location.pathname !== '/';
-  const showTopNavigation = isAuthenticated && location.pathname !== '/';
+  // Show navigation when authenticated
+  const showNavigation = isAuthenticated;
+  const showTopNavigation = isAuthenticated;
 
   return (
     <div className="min-h-screen bg-background">
