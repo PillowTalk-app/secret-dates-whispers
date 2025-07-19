@@ -34,7 +34,6 @@ const AppContent = () => {
   const [userData] = useState(mockUserData);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [appState, setAppState] = useState('');
-  const [showProfile, setShowProfile] = useState(false);
   const location = useLocation();
 
   // Listen for authentication state changes
@@ -68,7 +67,7 @@ const AppContent = () => {
       {showTopNavigation && (
         <TopNavigation 
           userData={userData} 
-          onProfile={() => setShowProfile(true)} 
+          onProfile={() => {}} 
         />
       )}
       <Routes>
@@ -79,20 +78,13 @@ const AppContent = () => {
         <Route path="/polls" element={<Polls userData={userData} />} />
         <Route path="/safety" element={<Safety userData={userData} />} />
         <Route path="/reports" element={<Reports userData={userData} />} />
+        <Route path="/profile" element={<UserProfile userData={userData} onBack={() => window.history.back()} />} />
         <Route path="/settings" element={<Settings userData={userData} />} />
         <Route path="/about" element={<About />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
       {showNavigation && <BottomNavigation />}
-      
-      {/* User Profile Modal */}
-      {showProfile && (
-        <UserProfile 
-          userData={userData} 
-          onBack={() => setShowProfile(false)} 
-        />
-      )}
     </div>
   );
 };

@@ -14,7 +14,7 @@ interface UserData {
 
 interface TopNavigationProps {
   userData: UserData;
-  onProfile: () => void;
+  onProfile?: () => void; // Made optional since we're not using it
 }
 
 export const TopNavigation = ({ userData, onProfile }: TopNavigationProps) => {
@@ -49,23 +49,6 @@ export const TopNavigation = ({ userData, onProfile }: TopNavigationProps) => {
               <Info className="h-4 w-4" />
               <span className="text-sm font-medium">About</span>
             </NavLink>
-
-            {/* User Profile */}
-            <Button
-              variant="ghost"
-              onClick={onProfile}
-              className="flex items-center space-x-2 px-3 py-2 h-auto hover:bg-muted/30"
-            >
-              <Avatar className="w-8 h-8 border-2 border-accent/30">
-                <AvatarFallback className="bg-gradient-accent text-accent-foreground text-xs">
-                  {userData.screenName.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-left">
-                <p className="text-sm font-medium text-foreground">{userData.screenName}</p>
-                <p className="text-xs text-muted-foreground">Profile</p>
-              </div>
-            </Button>
           </div>
         </div>
       </div>
