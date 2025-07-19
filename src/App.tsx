@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,7 @@ import { Safety } from "./pages/Safety";
 import { Reports } from "./pages/Reports";
 import { Settings } from "./pages/Settings";
 import { About } from "./pages/About";
+import { UserProfile } from "@/components/UserProfile";
 import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -31,14 +33,16 @@ const mockUserData = {
 const AppContent = () => {
   const [userData] = useState(mockUserData);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
+  const [appState, setAppState] = useState('');
   const location = useLocation();
 
   // Listen for authentication state changes
   useEffect(() => {
     const handleStorageChange = () => {
       const authState = localStorage.getItem('isAuthenticated');
+      const currentAppState = localStorage.getItem('appState');
       setIsAuthenticated(authState === 'true');
+      setAppState(currentAppState || '');
     };
 
     // Check initial state
@@ -54,16 +58,16 @@ const AppContent = () => {
     };
   }, []);
 
-  // Only show navigation when authenticated AND not on the main route (which handles verification)
-  const showNavigation = isAuthenticated && location.pathname !== '/';
-  const showTopNavigation = isAuthenticated && location.pathname !== '/';
+  // Show navigation only when authenticated, on home page, and specifically in home state (not loading/verification)
+  const showNavigation = isAuthenticated && location.pathname === '/' && appState === 'home';
+  const showTopNavigation = isAuthenticated && location.pathname !== '/' && appState === 'home';
 
   return (
     <div className="min-h-screen bg-background">
       {showTopNavigation && (
         <TopNavigation 
           userData={userData} 
-          onProfile={() => setShowProfile(true)} 
+          onProfile={() => {}} 
         />
       )}
       <Routes>
@@ -74,6 +78,7 @@ const AppContent = () => {
         <Route path="/polls" element={<Polls userData={userData} />} />
         <Route path="/safety" element={<Safety userData={userData} />} />
         <Route path="/reports" element={<Reports userData={userData} />} />
+        <Route path="/profile" element={<UserProfile userData={userData} onBack={() => window.history.back()} />} />
         <Route path="/settings" element={<Settings userData={userData} />} />
         <Route path="/about" element={<About />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
