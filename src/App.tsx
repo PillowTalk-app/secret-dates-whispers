@@ -56,9 +56,9 @@ const AppContent = () => {
     };
   }, []);
 
-  // Show navigation when authenticated
-  const showNavigation = isAuthenticated;
-  const showTopNavigation = isAuthenticated;
+  // Show navigation when authenticated and not on index page
+  const showNavigation = isAuthenticated && location.pathname !== '/';
+  const showTopNavigation = isAuthenticated && location.pathname !== '/';
 
   return (
     <div className="min-h-screen bg-background">
