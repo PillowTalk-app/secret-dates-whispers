@@ -58,9 +58,9 @@ const AppContent = () => {
     };
   }, []);
 
-  // Show navigation when authenticated and on home state or other pages
-  const showNavigation = isAuthenticated && (location.pathname !== '/' || appState === 'home');
-  const showTopNavigation = isAuthenticated && (location.pathname !== '/' || appState === 'home');
+  // Show navigation only when authenticated, on home page, and specifically in home state (not loading/verification)
+  const showNavigation = isAuthenticated && location.pathname === '/' && appState === 'home';
+  const showTopNavigation = isAuthenticated && location.pathname !== '/' && appState === 'home';
 
   return (
     <div className="min-h-screen bg-background">
