@@ -9,6 +9,7 @@ type AppState = 'loading' | 'verification' | 'home' | 'messaging' | 'profile';
 
 interface UserData {
   name: string;
+  screenName: string;
   gender: 'male' | 'female';
   phone: string;
   email: string;
@@ -75,7 +76,7 @@ const Index = () => {
   if (appState === 'home' && userData) {
     return (
       <HomePage 
-        userGender={userData.gender} 
+        userData={userData}
         onMessage={handleMessage}
         onProfile={handleProfileView}
       />

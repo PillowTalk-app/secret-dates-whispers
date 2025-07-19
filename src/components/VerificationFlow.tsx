@@ -6,13 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, Camera, User, Phone, Mail, Scan, Upload } from "lucide-react";
 
 interface VerificationFlowProps {
-  onComplete: (userData: { name: string; gender: 'male' | 'female'; phone: string; email: string }) => void;
+  onComplete: (userData: { name: string; screenName: string; gender: 'male' | 'female'; phone: string; email: string }) => void;
 }
 
 export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
+    screenName: '',
     gender: '' as 'male' | 'female' | '',
     phone: '',
     email: '',
@@ -24,9 +25,10 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
   };
 
   const handleComplete = () => {
-    if (formData.name && formData.gender && formData.phone && formData.email && formData.faceVerified) {
+    if (formData.name && formData.screenName && formData.gender && formData.phone && formData.email && formData.faceVerified) {
       onComplete({
         name: formData.name,
+        screenName: formData.screenName,
         gender: formData.gender,
         phone: formData.phone,
         email: formData.email
@@ -141,6 +143,19 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
                   </p>
                 </div>
 
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Creative Screen Name</label>
+                  <Input
+                    placeholder="e.g., MidnightDreamer, SunsetWanderer"
+                    value={formData.screenName}
+                    onChange={(e) => setFormData(prev => ({ ...prev, screenName: e.target.value }))}
+                    className="bg-card/50 border-border/50 h-12"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    This is how others will see you - be creative and keep it discreet
+                  </p>
+                </div>
+
                 <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
                   <div className="flex items-start space-x-3">
                     <Shield className="h-5 w-5 text-accent mt-0.5" />
@@ -229,7 +244,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
                 onClick={handleNext}
                 disabled={
                   (step === 1 && (!formData.name || !formData.gender || !formData.phone)) ||
-                  (step === 2 && !formData.email)
+                  (step === 2 && (!formData.email || !formData.screenName))
                 }
                 className="ml-auto"
               >
