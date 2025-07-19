@@ -1,21 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { VerificationFlow } from "@/components/VerificationFlow";
 import { HomePage } from "@/components/HomePage";
 import { MessagingInterface } from "@/components/MessagingInterface";
+import { UserProfile } from "@/components/UserProfile";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
-type AppState = 'verification' | 'home' | 'messaging';
+type AppState = 'loading' | 'verification' | 'home' | 'messaging' | 'profile';
 
 interface UserData {
   name: string;
+  screenName: string;
   gender: 'male' | 'female';
   phone: string;
   email: string;
 }
 
 const Index = () => {
-  const [appState, setAppState] = useState<AppState>('verification');
+  const [appState, setAppState] = useState<AppState>('loading');
   const [userData, setUserData] = useState<UserData | null>(null);
   const [activePostId, setActivePostId] = useState<string>('');
+
+  const handleLoadingComplete = () => {
+    setAppState('verification');
+  };
 
   const handleVerificationComplete = (data: UserData) => {
     setUserData(data);
@@ -32,6 +39,18 @@ const Index = () => {
     setActivePostId('');
   };
 
+  const handleProfileView = () => {
+    setAppState('profile');
+  };
+
+  const handleBackFromProfile = () => {
+    setAppState('home');
+  };
+
+  if (appState === 'loading') {
+    return <LoadingScreen onComplete={handleLoadingComplete} />;
+  }
+
   if (appState === 'verification') {
     return <VerificationFlow onComplete={handleVerificationComplete} />;
   }
@@ -45,11 +64,21 @@ const Index = () => {
     );
   }
 
+  if (appState === 'profile' && userData) {
+    return (
+      <UserProfile 
+        userData={userData} 
+        onBack={handleBackFromProfile} 
+      />
+    );
+  }
+
   if (appState === 'home' && userData) {
     return (
       <HomePage 
-        userGender={userData.gender} 
-        onMessage={handleMessage} 
+        userData={userData}
+        onMessage={handleMessage}
+        onProfile={handleProfileView}
       />
     );
   }
