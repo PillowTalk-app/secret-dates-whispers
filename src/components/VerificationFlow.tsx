@@ -16,16 +16,15 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
     gender: '' as 'male' | 'female' | '',
     phone: '',
     email: '',
-    idUploaded: false,
-    photoVerified: false
+    faceVerified: false
   });
 
   const handleNext = () => {
-    if (step < 4) setStep(step + 1);
+    if (step < 3) setStep(step + 1);
   };
 
   const handleComplete = () => {
-    if (formData.name && formData.gender && formData.phone && formData.email) {
+    if (formData.name && formData.gender && formData.phone && formData.email && formData.faceVerified) {
       onComplete({
         name: formData.name,
         gender: formData.gender,
@@ -49,7 +48,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
             </div>
           </div>
           <CardTitle className="text-xl">Identity Verification</CardTitle>
-          <CardDescription>Step {step} of 4 - Secure & Discreet</CardDescription>
+          <CardDescription>Step {step} of 3 - Secure & Discreet</CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-6">
@@ -124,51 +123,20 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
           {step === 3 && (
             <div className="space-y-4">
               <div className="text-center">
-                <Scan className="h-12 w-12 text-accent mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">ID Document Scan</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Upload a clear photo of your government-issued ID (Driver's License, Passport, or State ID)
-                </p>
-                
-                <div className="border-2 border-dashed border-border/50 rounded-lg p-8 mb-4 hover:border-accent/50 transition-colors">
-                  <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground mb-2">Drag and drop your ID or click to browse</p>
-                  <Button
-                    variant="outline"
-                    onClick={() => setFormData(prev => ({ ...prev, idUploaded: true }))}
-                    className="mt-2"
-                  >
-                    {formData.idUploaded ? '✓ ID Uploaded' : 'Choose File'}
-                  </Button>
-                </div>
-                
-                {formData.idUploaded && (
-                  <div className="bg-accent/10 border border-accent/20 rounded-lg p-3">
-                    <p className="text-sm text-accent">✓ Document uploaded successfully</p>
-                    <p className="text-xs text-muted-foreground mt-1">Your information is encrypted and secure</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {step === 4 && (
-            <div className="space-y-4">
-              <div className="text-center">
                 <Camera className="h-12 w-12 text-accent mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Photo Verification</h3>
+                <h3 className="font-semibold mb-2">Face Verification</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Take a selfie to verify your identity
+                  Take a selfie to verify your gender and identity. This ensures only women see men and only men see women.
                 </p>
                 <Button
                   variant="luxury"
-                  onClick={() => setFormData(prev => ({ ...prev, photoVerified: true }))}
+                  onClick={() => setFormData(prev => ({ ...prev, faceVerified: true }))}
                   className="w-full h-12 mb-4"
                 >
-                  {formData.photoVerified ? '✓ Photo Verified' : 'Take Selfie'}
+                  {formData.faceVerified ? '✓ Face Verified' : 'Take Selfie'}
                 </Button>
                 
-                {formData.idUploaded && formData.photoVerified && (
+                {formData.faceVerified && (
                   <div className="space-y-3">
                     <Badge variant="secondary" className="bg-accent/20 text-accent">
                       ✓ Verification Complete
@@ -189,13 +157,12 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
               </Button>
             )}
             
-            {step < 4 ? (
+            {step < 3 ? (
               <Button
                 onClick={handleNext}
                 disabled={
                   (step === 1 && (!formData.name || !formData.gender || !formData.phone)) ||
-                  (step === 2 && !formData.email) ||
-                  (step === 3 && !formData.idUploaded)
+                  (step === 2 && !formData.email)
                 }
                 className="ml-auto"
               >
@@ -204,7 +171,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
             ) : (
               <Button
                 onClick={handleComplete}
-                disabled={!formData.idUploaded || !formData.photoVerified}
+                disabled={!formData.faceVerified}
                 className="ml-auto"
               >
                 Enter App
