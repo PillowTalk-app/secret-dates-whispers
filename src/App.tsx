@@ -54,10 +54,8 @@ const AppContent = () => {
     };
   }, []);
 
-  // Show navigation when authenticated
-  const showNavigation = isAuthenticated;
-  
-  // Show top navigation only when authenticated and not on the main index route
+  // Only show navigation when authenticated AND not on the main route (which handles verification)
+  const showNavigation = isAuthenticated && location.pathname !== '/';
   const showTopNavigation = isAuthenticated && location.pathname !== '/';
 
   return (
