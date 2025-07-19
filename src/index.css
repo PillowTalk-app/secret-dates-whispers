@@ -6,13 +6,13 @@
 
 @layer base {
   :root {
-    /* Core Background & Text - Lighter Theme */
-    --background: 0 0% 98%;
-    --foreground: 0 0% 15%;
+    /* Core Background & Text - Dark Teal Theme */
+    --background: 180 47% 13%;
+    --foreground: 0 0% 98%;
 
     /* Card System */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 15%;
+    --card: 180 47% 16%;
+    --card-foreground: 0 0% 95%;
 
     /* Interactive Elements */
     --popover: 180 47% 18%;
