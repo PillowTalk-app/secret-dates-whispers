@@ -15,11 +15,7 @@ interface UserData {
   email: string;
 }
 
-interface IndexProps {
-  onAuthComplete: () => void;
-}
-
-const Index = ({ onAuthComplete }: IndexProps) => {
+const Index = () => {
   const [appState, setAppState] = useState<AppState>('loading');
   const [userData, setUserData] = useState<UserData | null>(null);
   const [activePostId, setActivePostId] = useState<string>('');
@@ -31,11 +27,6 @@ const Index = ({ onAuthComplete }: IndexProps) => {
   const handleVerificationComplete = (data: UserData) => {
     setUserData(data);
     setAppState('home');
-    // Set authentication state
-    localStorage.setItem('isAuthenticated', 'true');
-    // Trigger custom event to notify App component
-    window.dispatchEvent(new Event('authStateChange'));
-    onAuthComplete();
   };
 
   const handleMessage = (postId: string) => {
