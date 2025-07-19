@@ -25,7 +25,6 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
     targetName: '',
     targetPhone: '',
     content: '',
-    category: 'dating' as 'dating' | 'relationship' | 'hookup',
     images: [] as string[],
     location: ''
   });
@@ -64,22 +63,12 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
       targetName: '',
       targetPhone: '',
       content: '',
-      category: 'dating',
       images: [],
       location: ''
     });
     
     setIsSubmitting(false);
     onPostCreated?.();
-  };
-
-  const getCategoryDescription = (category: string) => {
-    switch (category) {
-      case 'dating': return 'Share experiences from casual dating, first dates, or early connections';
-      case 'relationship': return 'Share experiences from serious relationships, long-term partners';
-      case 'hookup': return 'Share experiences from casual encounters or one-time meetings';
-      default: return '';
-    }
   };
 
   return (
@@ -137,44 +126,21 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
                 />
               </div>
             </div>
-          </div>
+            </div>
 
-          {/* Category Selection */}
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Experience Category</label>
-            <Select 
-              value={postData.category} 
-              onValueChange={(value: 'dating' | 'relationship' | 'hookup') => 
-                setPostData(prev => ({ ...prev, category: value }))
-              }
-            >
-              <SelectTrigger className="bg-card/50 border-border/50">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-card border-border/50">
-                <SelectItem value="dating">Dating</SelectItem>
-                <SelectItem value="relationship">Relationship</SelectItem>
-                <SelectItem value="hookup">Hookup</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground mt-1">
-              {getCategoryDescription(postData.category)}
-            </p>
-          </div>
-
-          {/* Content */}
-          <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Your Experience</label>
-            <Textarea
-              placeholder="Share your experience honestly and respectfully. Focus on behaviors, communication style, and how they treated you. This helps others make informed decisions."
-              value={postData.content}
-              onChange={(e) => setPostData(prev => ({ ...prev, content: e.target.value }))}
-              className="bg-card/50 border-border/50 min-h-[120px]"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Be specific about behaviors and interactions. Avoid personal attacks.
-            </p>
-          </div>
+            {/* Content */}
+            <div>
+              <label className="text-sm font-medium mb-2 block text-foreground">Your Experience</label>
+              <Textarea
+                placeholder="Share your experience honestly and respectfully. Focus on behaviors, communication style, and how they treated you. This helps others make informed decisions."
+                value={postData.content}
+                onChange={(e) => setPostData(prev => ({ ...prev, content: e.target.value }))}
+                className="bg-card/50 border-border/50 min-h-[120px]"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Be specific about behaviors and interactions. Avoid personal attacks.
+              </p>
+            </div>
 
           {/* Image Upload */}
           <div>
@@ -182,11 +148,11 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
             <div className="grid grid-cols-2 gap-3 mb-3">
               {postData.images.map((image, index) => (
                 <div key={index} className="relative aspect-square">
-                  <img 
-                    src={image} 
-                    alt={`Upload ${index + 1}`} 
-                    className="w-full h-full object-cover rounded-lg border border-border/50"
-                  />
+                        <img 
+                          src={image} 
+                          alt={`Upload ${index + 1}`} 
+                          className="w-full h-full object-cover rounded-lg border-2 border-accent/60 shadow-lg"
+                        />
                   <Button
                     variant="ghost"
                     size="sm"

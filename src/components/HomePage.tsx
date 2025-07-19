@@ -35,7 +35,6 @@ interface Post {
   timestamp: string;
   responses: number;
   isActive: boolean;
-  category: 'dating' | 'relationship' | 'hookup';
   images?: string[];
   location: string;
 }
@@ -53,64 +52,59 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     targetName: '',
     targetPhone: '',
     content: '',
-    category: 'dating' as Post['category'],
     images: [] as string[]
   });
 
   // Initialize with mock posts
   useEffect(() => {
     const mockPosts: Post[] = [
-      {
-        id: '1',
-        authorName: 'MysticWaves',
-        authorGender: userData.gender === 'male' ? 'female' : 'male',
-        targetName: 'Alex Johnson',
-        targetPhone: '+1 (555) 123-4567',
-        content: 'Went on 3 dates with this person. They seemed genuine at first but turned out to be quite manipulative. Be careful if you match with them.',
-        timestamp: '2 hours ago',
-        responses: 5,
-        isActive: true,
-        category: 'dating',
-        location: 'Brooklyn, NY'
-      },
-      {
-        id: '2',
-        authorName: 'SunsetDreamer',
-        authorGender: userData.gender === 'male' ? 'female' : 'male',
-        targetName: 'Sam Wilson',
-        content: "Amazing partner for 6 months. Very honest, caring, and respectful. Highly recommend if you're looking for something serious.",
-        timestamp: '4 hours ago',
-        responses: 12,
-        isActive: true,
-        category: 'relationship',
-        location: 'Manhattan, NY'
-      },
-      {
-        id: '3',
-        authorName: 'NightOwl',
-        authorGender: userData.gender === 'male' ? 'female' : 'male',
-        targetName: 'Jordan Smith',
-        targetPhone: '+1 (555) 987-6543',
-        content: 'Had a casual encounter. They were respectful and communicated well about boundaries. Safe and consensual experience.',
-        timestamp: '1 day ago',
-        responses: 3,
-        isActive: false,
-        category: 'hookup',
-        images: [`https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=400&fit=crop`],
-        location: 'Queens, NY'
-      },
-      {
-        id: '4',
-        authorName: 'CityExplorer',
-        authorGender: userData.gender === 'male' ? 'female' : 'male',
-        targetName: 'Riley Thompson',
-        content: 'Great first date at a local café. Very engaging conversation and respectful throughout.',
-        timestamp: '6 hours ago',
-        responses: 2,
-        isActive: true,
-        category: 'dating',
-        location: 'Los Angeles, CA'
-      }
+        {
+          id: '1',
+          authorName: 'MysticWaves',
+          authorGender: userData.gender === 'male' ? 'female' : 'male',
+          targetName: 'Alex Johnson',
+          targetPhone: '+1 (555) 123-4567',
+          content: 'Went on 3 dates with this person. They seemed genuine at first but turned out to be quite manipulative. Be careful if you match with them.',
+          timestamp: '2 hours ago',
+          responses: 5,
+          isActive: true,
+          location: 'Brooklyn, NY'
+        },
+        {
+          id: '2',
+          authorName: 'SunsetDreamer',
+          authorGender: userData.gender === 'male' ? 'female' : 'male',
+          targetName: 'Sam Wilson',
+          content: "Amazing partner for 6 months. Very honest, caring, and respectful. Highly recommend if you're looking for something serious.",
+          timestamp: '4 hours ago',
+          responses: 12,
+          isActive: true,
+          location: 'Manhattan, NY'
+        },
+        {
+          id: '3',
+          authorName: 'NightOwl',
+          authorGender: userData.gender === 'male' ? 'female' : 'male',
+          targetName: 'Jordan Smith',
+          targetPhone: '+1 (555) 987-6543',
+          content: 'Had a casual encounter. They were respectful and communicated well about boundaries. Safe and consensual experience.',
+          timestamp: '1 day ago',
+          responses: 3,
+          isActive: false,
+          images: [`https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=400&h=400&fit=crop`],
+          location: 'Queens, NY'
+        },
+        {
+          id: '4',
+          authorName: 'CityExplorer',
+          authorGender: userData.gender === 'male' ? 'female' : 'male',
+          targetName: 'Riley Thompson',
+          content: 'Great first date at a local café. Very engaging conversation and respectful throughout.',
+          timestamp: '6 hours ago',
+          responses: 2,
+          isActive: true,
+          location: 'Los Angeles, CA'
+        }
     ];
     setPosts(mockPosts);
   }, [userData.gender]);
@@ -151,7 +145,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       timestamp: 'Just now',
       responses: 0,
       isActive: true,
-      category: newPost.category,
       images: newPost.images.length > 0 ? newPost.images : undefined,
       location: 'Current Location' // In a real app, this would be user's actual location
     };
@@ -161,7 +154,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       targetName: '',
       targetPhone: '',
       content: '',
-      category: 'dating',
       images: []
     });
     setIsCreateDialogOpen(false);
@@ -269,20 +261,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                     onChange={(e) => setNewPost(prev => ({ ...prev, targetPhone: e.target.value }))}
                     className="bg-card/50 border-border/50"
                   />
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Category</label>
-                  <Select value={newPost.category} onValueChange={(value: Post['category']) => setNewPost(prev => ({ ...prev, category: value }))}>
-                    <SelectTrigger className="bg-card/50 border-border/50">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-border/50">
-                      <SelectItem value="dating">Dating</SelectItem>
-                      <SelectItem value="relationship">Relationship</SelectItem>
-                      <SelectItem value="hookup">Hookup</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
 
                 <div>
@@ -406,22 +384,13 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 };
 
 const PostSquare = ({ post, onClick }: { post: Post; onClick: () => void }) => {
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'dating': return 'bg-pink-500/20 text-pink-300';
-      case 'relationship': return 'bg-purple-500/20 text-purple-300';
-      case 'hookup': return 'bg-orange-500/20 text-orange-300';
-      default: return 'bg-muted text-muted-foreground';
-    }
-  };
-
   const displayImage = post.images && post.images.length > 0 
     ? post.images[0] 
     : `https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop&auto=faces`;
 
   return (
     <div 
-      className="aspect-square relative cursor-pointer group overflow-hidden rounded-lg border border-border/30"
+      className="aspect-square relative cursor-pointer group overflow-hidden rounded-lg border-2 border-accent/60 shadow-lg"
       onClick={onClick}
     >
       <img 
@@ -431,13 +400,6 @@ const PostSquare = ({ post, onClick }: { post: Post; onClick: () => void }) => {
       />
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
       
-      {/* Category badge */}
-      <div className="absolute top-2 left-2">
-        <Badge className={`${getCategoryColor(post.category)} text-xs`}>
-          {post.category}
-        </Badge>
-      </div>
-
       {/* Response indicator */}
       <div className="absolute bottom-2 right-2 bg-black/60 rounded-full px-2 py-1 text-xs text-white">
         <MessageCircle className="h-3 w-3 inline mr-1" />
@@ -467,15 +429,6 @@ const PostDetailView = ({
   isSaved: boolean;
   onClose: () => void;
 }) => {
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'dating': return 'bg-primary/20 text-primary';
-      case 'relationship': return 'bg-accent/20 text-accent-foreground';
-      case 'hookup': return 'bg-secondary/50 text-secondary-foreground';
-      default: return 'bg-muted text-muted-foreground';
-    }
-  };
-
   return (
     <div className="space-y-5 p-1">
       {/* Header */}
@@ -498,7 +451,7 @@ const PostDetailView = ({
 
       {/* Post Images */}
       {post.images && post.images.length > 0 && (
-        <div className="rounded-xl overflow-hidden bg-gray-50">
+        <div className="rounded-xl overflow-hidden bg-gray-50 border-2 border-accent/60 shadow-lg">
           <img 
             src={post.images[0]} 
             alt="Post image" 
@@ -511,9 +464,6 @@ const PostDetailView = ({
       <div className="bg-gray-50 rounded-xl p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h4 className="font-semibold text-gray-900">About: {post.targetName}</h4>
-          <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
-            {post.category}
-          </Badge>
         </div>
         <div className="flex items-center text-sm text-gray-600">
           <MapPin className="h-4 w-4 mr-2" />

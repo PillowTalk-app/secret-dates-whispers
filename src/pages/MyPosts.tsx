@@ -27,7 +27,6 @@ interface MyPost {
   views: number;
   likes: number;
   isActive: boolean;
-  category: 'dating' | 'relationship' | 'hookup';
   images?: string[];
   location: string;
 }
@@ -44,7 +43,6 @@ export const MyPosts = ({ userData }: MyPostsProps) => {
       views: 45,
       likes: 12,
       isActive: true,
-      category: 'relationship',
       location: 'Brooklyn, NY',
       images: ['https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop']
     },
@@ -57,19 +55,9 @@ export const MyPosts = ({ userData }: MyPostsProps) => {
       views: 28,
       likes: 7,
       isActive: false,
-      category: 'dating',
       location: 'Manhattan, NY'
     }
   ]);
-
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'dating': return 'bg-pink-500/20 text-pink-300';
-      case 'relationship': return 'bg-purple-500/20 text-purple-300';
-      case 'hookup': return 'bg-orange-500/20 text-orange-300';
-      default: return 'bg-muted text-muted-foreground';
-    }
-  };
 
   const activePosts = myPosts.filter(post => post.isActive);
   const inactivePosts = myPosts.filter(post => !post.isActive);
@@ -100,7 +88,7 @@ export const MyPosts = ({ userData }: MyPostsProps) => {
             </Card>
           ) : (
             activePosts.map((post) => (
-              <PostCard key={post.id} post={post} getCategoryColor={getCategoryColor} />
+              <PostCard key={post.id} post={post} />
             ))
           )}
         </TabsContent>
@@ -114,7 +102,7 @@ export const MyPosts = ({ userData }: MyPostsProps) => {
             </Card>
           ) : (
             inactivePosts.map((post) => (
-              <PostCard key={post.id} post={post} getCategoryColor={getCategoryColor} />
+              <PostCard key={post.id} post={post} />
             ))
           )}
         </TabsContent>
@@ -123,16 +111,13 @@ export const MyPosts = ({ userData }: MyPostsProps) => {
   );
 };
 
-const PostCard = ({ post, getCategoryColor }: { post: MyPost; getCategoryColor: (category: string) => string }) => (
+const PostCard = ({ post }: { post: MyPost }) => (
   <Card className="bg-gradient-card border-border/50 hover:shadow-card transition-all">
     <CardHeader>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-2 mb-2">
             <CardTitle className="text-lg">{post.targetName}</CardTitle>
-            <Badge className={getCategoryColor(post.category)}>
-              {post.category}
-            </Badge>
             {post.isActive && (
               <Badge variant="secondary" className="bg-accent/20 text-accent">
                 Active
@@ -166,7 +151,7 @@ const PostCard = ({ post, getCategoryColor }: { post: MyPost; getCategoryColor: 
               key={index}
               src={image} 
               alt={`Post image ${index + 1}`} 
-              className="w-full aspect-square object-cover rounded-lg border border-border/50"
+              className="w-full aspect-square object-cover rounded-lg border-2 border-accent/60 shadow-lg"
             />
           ))}
         </div>
