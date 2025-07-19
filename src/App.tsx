@@ -33,6 +33,7 @@ const mockUserData = {
 const AppContent = () => {
   const [userData] = useState(mockUserData);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [appState, setAppState] = useState('');
   const [showProfile, setShowProfile] = useState(false);
   const location = useLocation();
 
@@ -40,7 +41,9 @@ const AppContent = () => {
   useEffect(() => {
     const handleStorageChange = () => {
       const authState = localStorage.getItem('isAuthenticated');
+      const currentAppState = localStorage.getItem('appState');
       setIsAuthenticated(authState === 'true');
+      setAppState(currentAppState || '');
     };
 
     // Check initial state
@@ -56,9 +59,9 @@ const AppContent = () => {
     };
   }, []);
 
-  // Show navigation when authenticated and not on index page
-  const showNavigation = isAuthenticated && location.pathname !== '/';
-  const showTopNavigation = isAuthenticated && location.pathname !== '/';
+  // Show navigation when authenticated and on home state or other pages
+  const showNavigation = isAuthenticated && (location.pathname !== '/' || appState === 'home');
+  const showTopNavigation = isAuthenticated && (location.pathname !== '/' || appState === 'home');
 
   return (
     <div className="min-h-screen bg-background">

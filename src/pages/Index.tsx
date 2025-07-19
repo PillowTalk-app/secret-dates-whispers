@@ -26,6 +26,7 @@ const Index = ({ onAuthComplete }: IndexProps) => {
 
   const handleLoadingComplete = () => {
     setAppState('verification');
+    localStorage.setItem('appState', 'verification');
   };
 
   const handleVerificationComplete = (data: UserData) => {
@@ -33,6 +34,7 @@ const Index = ({ onAuthComplete }: IndexProps) => {
     setAppState('home');
     // Set authentication state
     localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('appState', 'home');
     // Trigger custom event to notify App component
     window.dispatchEvent(new Event('authStateChange'));
     onAuthComplete();
