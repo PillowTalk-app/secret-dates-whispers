@@ -104,7 +104,7 @@ export const HomePage = ({ userGender, onMessage, onProfile }: HomePageProps) =>
               <span className="text-2xl font-bold bg-gradient-accent bg-clip-text text-transparent">
                 Pillow Talk
               </span>
-              <p className="text-xs text-muted-foreground ml-2">not gossip just experience</p>
+              <p className="text-xs text-muted-foreground ml-2">Not gossip just experience</p>
               <Badge variant="secondary" className="bg-accent/20 text-accent text-xs ml-1">
                 Verified
               </Badge>

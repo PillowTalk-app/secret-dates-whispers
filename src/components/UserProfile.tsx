@@ -177,7 +177,7 @@ export const UserProfile = ({ userData, onBack }: UserProfileProps) => {
               </Button>
               <div>
                 <h1 className="text-xl font-semibold">My Profile</h1>
-                <p className="text-sm text-muted-foreground">not gossip just experience</p>
+                <p className="text-sm text-muted-foreground">Not gossip just experience</p>
               </div>
             </div>
             
