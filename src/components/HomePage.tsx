@@ -482,7 +482,7 @@ const PostDetailView = ({
       {/* Target Person Photo */}
       {post.targetImage && (
         <div className="flex justify-center">
-          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200 shadow-lg">
+          <div className="w-64 h-64 rounded-lg overflow-hidden border-4 border-gray-200 shadow-lg">
             <img 
               src={post.targetImage} 
               alt={post.targetName}
