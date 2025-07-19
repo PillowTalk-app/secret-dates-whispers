@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { Search, MessageCircle, Clock, TrendingUp, Phone, User, Send, Bookmark, Plus, Camera, X, MapPin } from "lucide-react";
 
 interface UserData {
@@ -41,7 +42,8 @@ interface Post {
 
 export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('all');
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [searchRadius, setSearchRadius] = useState(25); // radius in miles
   const [activeTab, setActiveTab] = useState('new');
   const [savedPosts, setSavedPosts] = useState<string[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -118,7 +120,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       post.targetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (post.targetPhone && post.targetPhone.includes(searchQuery));
     
-    const matchesLocation = selectedLocation === 'all' || 
+    const matchesLocation = selectedLocation === '' || 
       post.location.toLowerCase().includes(selectedLocation.toLowerCase());
     
     const matchesTab = activeTab === 'new' || 
@@ -127,8 +129,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     return matchesSearch && matchesLocation && matchesTab;
   });
 
-  // Get unique locations for the filter dropdown
-  const availableLocations = ['all', ...Array.from(new Set(posts.map(post => post.location)))];;
 
   const handleSavePost = (postId: string) => {
     setSavedPosts(prev => 
@@ -336,20 +336,35 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           </div>
 
           {/* Location Filter */}
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
-            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-              <SelectTrigger className="pl-10 bg-card/50 border-border/50 h-12">
-                <SelectValue placeholder="Filter by location..." />
-              </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                {availableLocations.map((location) => (
-                  <SelectItem key={location} value={location} className="hover:bg-gray-50">
-                    {location === 'all' ? 'All Locations' : location}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="space-y-3">
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+              <Input
+                placeholder="Enter your location (e.g., Brooklyn, NY)"
+                value={selectedLocation}
+                onChange={(e) => setSelectedLocation(e.target.value)}
+                className="pl-10 bg-card/50 border-border/50 h-12"
+              />
+            </div>
+            
+            <div className="px-3">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-gray-700">Search Radius</label>
+                <span className="text-sm text-gray-500">{searchRadius} miles</span>
+              </div>
+              <Slider
+                value={[searchRadius]}
+                onValueChange={(value) => setSearchRadius(value[0])}
+                max={100}
+                min={1}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-400 mt-1">
+                <span>1 mile</span>
+                <span>100 miles</span>
+              </div>
+            </div>
           </div>
         </div>
 
