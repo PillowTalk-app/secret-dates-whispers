@@ -188,139 +188,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border/50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className="text-2xl font-bold bg-gradient-accent bg-clip-text text-transparent">
-                Pillow Talk
-              </span>
-              <p className="text-xs text-muted-foreground ml-2">Not gossip just experience</p>
-              <Badge variant="secondary" className="bg-accent/20 text-accent text-xs ml-1">
-                Verified
-              </Badge>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="h-9 bg-teal-700 hover:bg-teal-800 text-white">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Share Experience
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md bg-card border-border/50">
-                  <DialogHeader>
-                    <DialogTitle>Share Your Experience</DialogTitle>
-                    <DialogDescription>
-                      Help others by sharing your dating experience
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">Person's Name</label>
-                      <Input
-                        placeholder="First name or nickname"
-                        value={newPost.targetName}
-                        onChange={(e) => setNewPost(prev => ({ ...prev, targetName: e.target.value }))}
-                        className="bg-card/50 border-border/50"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">Phone Number (Optional)</label>
-                      <Input
-                        placeholder="+1 (555) 123-4567"
-                        value={newPost.targetPhone}
-                        onChange={(e) => setNewPost(prev => ({ ...prev, targetPhone: e.target.value }))}
-                        className="bg-card/50 border-border/50"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">Category</label>
-                      <Select value={newPost.category} onValueChange={(value: Post['category']) => setNewPost(prev => ({ ...prev, category: value }))}>
-                        <SelectTrigger className="bg-card/50 border-border/50">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-border/50">
-                          <SelectItem value="dating">Dating</SelectItem>
-                          <SelectItem value="relationship">Relationship</SelectItem>
-                          <SelectItem value="hookup">Hookup</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">Your Experience</label>
-                      <Textarea
-                        placeholder="Share your experience honestly and respectfully..."
-                        value={newPost.content}
-                        onChange={(e) => setNewPost(prev => ({ ...prev, content: e.target.value }))}
-                        className="bg-card/50 border-border/50 min-h-[100px]"
-                      />
-                    </div>
-
-                    {/* Image Upload Section */}
-                    <div>
-                      <label className="text-sm font-medium mb-2 block">Photos (Optional)</label>
-                      <div className="grid grid-cols-2 gap-2 mb-3">
-                        {newPost.images.map((image, index) => (
-                          <div key={index} className="relative aspect-square">
-                            <img 
-                              src={image} 
-                              alt={`Upload ${index + 1}`} 
-                              className="w-full h-full object-cover rounded-lg border border-border/50"
-                            />
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => removeImage(index)}
-                              className="absolute top-1 right-1 h-6 w-6 p-0 bg-destructive/80 hover:bg-destructive text-destructive-foreground"
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                      {newPost.images.length < 4 && (
-                        <Button
-                          variant="outline"
-                          onClick={handleAddImage}
-                          className="w-full border-dashed border-border/50 h-20"
-                        >
-                          <Camera className="h-4 w-4 mr-2" />
-                          Add Photo
-                        </Button>
-                      )}
-                    </div>
-
-                    <div className="flex justify-end space-x-2 pt-4">
-                      <Button variant="ghost" onClick={() => setIsCreateDialogOpen(false)}>
-                        Cancel
-                      </Button>
-                      <Button 
-                        onClick={handleCreatePost}
-                        disabled={!newPost.targetName || !newPost.content}
-                        className="bg-accent hover:bg-accent/90"
-                      >
-                        Share Experience
-                      </Button>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-              
-              <Avatar className="border-2 border-accent/30" onClick={onProfile}>
-                <AvatarFallback className="bg-gradient-accent text-accent-foreground cursor-pointer hover:shadow-glow transition-all">
-                  {userData.gender === 'male' ? 'M' : 'F'}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         {/* Search and Filter Bar */}
         <div className="space-y-4 mb-6">
@@ -367,7 +234,118 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
             </div>
           </div>
         </div>
+        {/* Create Experience Button */}
+        <div className="mb-6">
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" className="w-full h-12 bg-teal-700 hover:bg-teal-800 text-white">
+                <Plus className="h-4 w-4 mr-2" />
+                Share Experience
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md bg-card border-border/50">
+              <DialogHeader>
+                <DialogTitle>Share Your Experience</DialogTitle>
+                <DialogDescription>
+                  Help others by sharing your dating experience
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Person's Name</label>
+                  <Input
+                    placeholder="First name or nickname"
+                    value={newPost.targetName}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, targetName: e.target.value }))}
+                    className="bg-card/50 border-border/50"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Phone Number (Optional)</label>
+                  <Input
+                    placeholder="+1 (555) 123-4567"
+                    value={newPost.targetPhone}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, targetPhone: e.target.value }))}
+                    className="bg-card/50 border-border/50"
+                  />
+                </div>
 
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Category</label>
+                  <Select value={newPost.category} onValueChange={(value: Post['category']) => setNewPost(prev => ({ ...prev, category: value }))}>
+                    <SelectTrigger className="bg-card/50 border-border/50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-border/50">
+                      <SelectItem value="dating">Dating</SelectItem>
+                      <SelectItem value="relationship">Relationship</SelectItem>
+                      <SelectItem value="hookup">Hookup</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Your Experience</label>
+                  <Textarea
+                    placeholder="Share your experience honestly and respectfully..."
+                    value={newPost.content}
+                    onChange={(e) => setNewPost(prev => ({ ...prev, content: e.target.value }))}
+                    className="bg-card/50 border-border/50 min-h-[100px]"
+                  />
+                </div>
+
+                {/* Image Upload Section */}
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Photos (Optional)</label>
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    {newPost.images.map((image, index) => (
+                      <div key={index} className="relative aspect-square">
+                        <img 
+                          src={image} 
+                          alt={`Upload ${index + 1}`} 
+                          className="w-full h-full object-cover rounded-lg border border-border/50"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-1 right-1 h-6 w-6 p-0 bg-destructive/80 hover:bg-destructive text-destructive-foreground"
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  {newPost.images.length < 4 && (
+                    <Button
+                      variant="outline"
+                      onClick={handleAddImage}
+                      className="w-full border-dashed border-border/50 h-20"
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Add Photo
+                    </Button>
+                  )}
+                </div>
+
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button variant="ghost" onClick={() => setIsCreateDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button 
+                    onClick={handleCreatePost}
+                    disabled={!newPost.targetName || !newPost.content}
+                    className="bg-accent hover:bg-accent/90"
+                  >
+                    Share Experience
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+        
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
           <TabsList className="grid w-full grid-cols-2 bg-card/50 border border-border/50">

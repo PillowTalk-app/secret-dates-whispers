@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { TopNavigation } from "@/components/TopNavigation";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { MyPosts } from "./pages/MyPosts";
@@ -13,6 +14,7 @@ import { CreatePost } from "./pages/CreatePost";
 import { Safety } from "./pages/Safety";
 import { Reports } from "./pages/Reports";
 import { Settings } from "./pages/Settings";
+import { About } from "./pages/About";
 import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -29,6 +31,7 @@ const mockUserData = {
 const AppContent = () => {
   const [userData] = useState(mockUserData);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const location = useLocation();
 
   // Listen for authentication state changes
@@ -53,21 +56,31 @@ const AppContent = () => {
 
   // Show navigation when authenticated
   const showNavigation = isAuthenticated;
+  
+  // Show top navigation when authenticated and not on home route during verification
+  const showTopNavigation = isAuthenticated;
 
   return (
-          <div className="min-h-screen bg-background">
-            <Routes>
-              <Route path="/" element={<Index onAuthComplete={() => setIsAuthenticated(true)} />} />
-              <Route path="/create" element={<CreatePost userData={userData} />} />
-              <Route path="/my-posts" element={<MyPosts userData={userData} />} />
-              <Route path="/messages" element={<Messages userData={userData} />} />
-              <Route path="/polls" element={<Polls userData={userData} />} />
-              <Route path="/safety" element={<Safety userData={userData} />} />
-              <Route path="/reports" element={<Reports userData={userData} />} />
-              <Route path="/settings" element={<Settings userData={userData} />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+    <div className="min-h-screen bg-background">
+      {showTopNavigation && (
+        <TopNavigation 
+          userData={userData} 
+          onProfile={() => setShowProfile(true)} 
+        />
+      )}
+      <Routes>
+        <Route path="/" element={<Index onAuthComplete={() => setIsAuthenticated(true)} />} />
+        <Route path="/create" element={<CreatePost userData={userData} />} />
+        <Route path="/my-posts" element={<MyPosts userData={userData} />} />
+        <Route path="/messages" element={<Messages userData={userData} />} />
+        <Route path="/polls" element={<Polls userData={userData} />} />
+        <Route path="/safety" element={<Safety userData={userData} />} />
+        <Route path="/reports" element={<Reports userData={userData} />} />
+        <Route path="/settings" element={<Settings userData={userData} />} />
+        <Route path="/about" element={<About />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
       {showNavigation && <BottomNavigation />}
     </div>
   );
