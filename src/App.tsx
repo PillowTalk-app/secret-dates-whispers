@@ -56,9 +56,9 @@ const AppContent = () => {
     };
   }, []);
 
-  // Only show navigation on authenticated pages that aren't the main route (which handles verification)
-  const showNavigation = isAuthenticated && location.pathname !== '/';
-  const showTopNavigation = isAuthenticated && location.pathname !== '/';
+  // Show navigation when authenticated
+  const showNavigation = isAuthenticated;
+  const showTopNavigation = isAuthenticated;
 
   return (
     <div className="min-h-screen bg-background">
