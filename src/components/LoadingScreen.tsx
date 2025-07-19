@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import pillowLogo from "@/assets/pillow-talk-logo.png";
 
 interface LoadingScreenProps {
   onComplete: () => void;
@@ -50,7 +49,7 @@ export const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         <div className="relative">
           <div className="absolute inset-0 bg-accent/20 rounded-2xl blur-xl scale-110 animate-pulse"></div>
           <img 
-            src={pillowLogo} 
+            src="/lovable-uploads/a3ca0fb5-905f-470d-ac61-7e26940cc492.png" 
             alt="Pillow Talk" 
             className="relative w-64 h-64 object-contain animate-scale-in shadow-luxury"
           />
