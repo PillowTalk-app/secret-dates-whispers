@@ -16,6 +16,7 @@ import { Safety } from "./pages/Safety";
 import { Reports } from "./pages/Reports";
 import { Settings } from "./pages/Settings";
 import { About } from "./pages/About";
+import { UserProfile } from "@/components/UserProfile";
 import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -81,6 +82,14 @@ const AppContent = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
       {showNavigation && <BottomNavigation />}
+      
+      {/* User Profile Modal */}
+      {showProfile && (
+        <UserProfile 
+          userData={userData} 
+          onBack={() => setShowProfile(false)} 
+        />
+      )}
     </div>
   );
 };
