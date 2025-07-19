@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Camera, User, Phone, Mail, Scan, Upload } from "lucide-react";
-import pillowIcon from "@/assets/pillow-icon.png";
 
 interface VerificationFlowProps {
   onComplete: (userData: { name: string; gender: 'male' | 'female'; phone: string; email: string }) => void;
@@ -41,7 +40,12 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
       <Card className="w-full max-w-md bg-gradient-card shadow-luxury border-border/50">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
-            <img src={pillowIcon} alt="Pillow Talk" className="h-12 w-12 mr-3" />
+            <div className="bg-background p-4 rounded-xl border border-border/20 mr-3">
+              <div className="w-12 h-8 bg-foreground rounded-full relative transform rotate-12">
+                <div className="absolute inset-1 bg-background rounded-full"></div>
+                <div className="absolute top-0.5 left-1 right-1 h-1 bg-foreground/20 rounded-full"></div>
+              </div>
+            </div>
             <div className="text-center">
               <span className="text-2xl font-bold bg-gradient-accent bg-clip-text text-transparent">
                 Pillow Talk

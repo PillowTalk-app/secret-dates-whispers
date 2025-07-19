@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { VerificationFlow } from "@/components/VerificationFlow";
 import { HomePage } from "@/components/HomePage";
 import { MessagingInterface } from "@/components/MessagingInterface";
 import { UserProfile } from "@/components/UserProfile";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
-type AppState = 'verification' | 'home' | 'messaging' | 'profile';
+type AppState = 'loading' | 'verification' | 'home' | 'messaging' | 'profile';
 
 interface UserData {
   name: string;
@@ -14,9 +15,13 @@ interface UserData {
 }
 
 const Index = () => {
-  const [appState, setAppState] = useState<AppState>('verification');
+  const [appState, setAppState] = useState<AppState>('loading');
   const [userData, setUserData] = useState<UserData | null>(null);
   const [activePostId, setActivePostId] = useState<string>('');
+
+  const handleLoadingComplete = () => {
+    setAppState('verification');
+  };
 
   const handleVerificationComplete = (data: UserData) => {
     setUserData(data);
@@ -40,6 +45,10 @@ const Index = () => {
   const handleBackFromProfile = () => {
     setAppState('home');
   };
+
+  if (appState === 'loading') {
+    return <LoadingScreen onComplete={handleLoadingComplete} />;
+  }
 
   if (appState === 'verification') {
     return <VerificationFlow onComplete={handleVerificationComplete} />;
