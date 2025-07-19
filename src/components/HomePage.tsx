@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Search, MessageCircle, Clock, TrendingUp, Phone, User, Send, Bookmark, Plus, Camera, X, MapPin } from "lucide-react";
+import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin } from "lucide-react";
 
 interface UserData {
   name: string;
@@ -52,7 +52,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [newPost, setNewPost] = useState({
     targetName: '',
-    targetPhone: '',
     content: '',
     images: [] as string[]
   });
@@ -121,8 +120,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = searchQuery === '' || 
-      post.targetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (post.targetPhone && post.targetPhone.includes(searchQuery));
+      post.targetName.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesLocation = selectedLocation === '' || 
       post.location.toLowerCase().includes(selectedLocation.toLowerCase());
@@ -151,7 +149,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       authorGender: userData.gender,
       authorImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&crop=face',
       targetName: newPost.targetName,
-      targetPhone: newPost.targetPhone || undefined,
       content: newPost.content,
       timestamp: 'Just now',
       responses: 0,
@@ -163,7 +160,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     setPosts(prev => [post, ...prev]);
     setNewPost({
       targetName: '',
-      targetPhone: '',
       content: '',
       images: []
     });
@@ -198,7 +194,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search by name or phone number..."
+              placeholder="Search by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 bg-card/50 border-border/50 h-12"
@@ -260,16 +256,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                     placeholder="First name or nickname"
                     value={newPost.targetName}
                     onChange={(e) => setNewPost(prev => ({ ...prev, targetName: e.target.value }))}
-                    className="bg-card/50 border-border/50"
-                  />
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Phone Number (Optional)</label>
-                  <Input
-                    placeholder="+1 (555) 123-4567"
-                    value={newPost.targetPhone}
-                    onChange={(e) => setNewPost(prev => ({ ...prev, targetPhone: e.target.value }))}
                     className="bg-card/50 border-border/50"
                   />
                 </div>
@@ -446,17 +432,9 @@ const PostDetailView = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <Avatar className="w-10 h-10 border-2 border-gray-100">
-            {post.authorImage ? (
-              <img 
-                src={post.authorImage} 
-                alt={post.authorName}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
-                {post.authorGender === 'male' ? 'M' : 'F'}
-              </AvatarFallback>
-            )}
+            <AvatarFallback className="bg-gray-100 text-gray-600 text-sm font-medium">
+              {post.authorName.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
           <div>
             <h3 className="font-semibold text-gray-900">{post.authorName}</h3>
