@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign } from "lucide-react";
+import { CommentsDialog } from "@/components/CommentsDialog";
 import { PostBoostButton } from "@/components/PostBoostButton";
 import { useBoostedPosts } from "@/hooks/useBoostedPosts";
 import { useMemoryMatches } from '@/hooks/useMemoryMatches';
@@ -52,6 +53,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [searchRadius, setSearchRadius] = useState(25); // radius in miles
   const [activeTab, setActiveTab] = useState('new');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newPost, setNewPost] = useState({
@@ -144,6 +146,11 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
   const handleSavePost = (post: Post) => {
     savePost(post.id, post.authorName, post.targetName);
+  };
+
+  const handleViewComments = (post: Post) => {
+    setSelectedPost(post);
+    setIsCommentsOpen(true);
   };
 
   const handleCreatePost = async () => {
@@ -502,6 +509,12 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
             )}
           </DialogContent>
         </Dialog>
+        
+        <CommentsDialog 
+          post={selectedPost} 
+          isOpen={isCommentsOpen} 
+          onClose={() => setIsCommentsOpen(false)} 
+        />
       </div>
     </div>
   );
@@ -646,17 +659,22 @@ const PostDetailView = ({
 
       {/* Actions */}
       <div className="flex items-center justify-between pt-2">
-        <div className="flex items-center space-x-1 text-sm text-gray-500">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => handleViewComments(post)}
+          className="flex items-center space-x-1 text-sm text-gray-500 hover:text-gray-700 p-1"
+        >
           <MessageCircle className="h-4 w-4" />
           <span>{post.responses} responses</span>
+        </Button>
+        
+        <div className="flex items-center text-sm text-gray-500">
           {post.isActive && (
-            <>
-              <span className="mx-2">•</span>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse" />
-                <span>Active</span>
-              </div>
-            </>
+            <div className="flex items-center">
+              <div className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse" />
+              <span>Active</span>
+            </div>
           )}
         </div>
 
