@@ -13,6 +13,7 @@ import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, C
 import { PostBoostButton } from "@/components/PostBoostButton";
 import { useBoostedPosts } from "@/hooks/useBoostedPosts";
 import { useMemoryMatches } from '@/hooks/useMemoryMatches';
+import { useSavedPostNotifications } from '@/hooks/useSavedPostNotifications';
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface UserData {
@@ -50,10 +51,9 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [searchRadius, setSearchRadius] = useState(25); // radius in miles
   const [activeTab, setActiveTab] = useState('new');
-  const [savedPosts, setSavedPosts] = useState<string[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [newPost, setNewPost] = useState({
     targetName: '',
     content: '',
@@ -61,9 +61,10 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     wantsBoost: false
   });
   
-  // Boost functionality
+  // Hooks
   const { isBoosted, getBoostEndTime, addBoostedPost } = useBoostedPosts();
   const { detectPotentialMatch } = useMemoryMatches();
+  const { savePost, isPostSaved } = useSavedPostNotifications();
 
   // Initialize with mock posts
   useEffect(() => {
@@ -141,12 +142,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   });
 
 
-  const handleSavePost = (postId: string) => {
-    setSavedPosts(prev => 
-      prev.includes(postId) 
-        ? prev.filter(id => id !== postId)
-        : [...prev, postId]
-    );
+  const handleSavePost = (post: Post) => {
+    savePost(post.id, post.authorName, post.targetName);
   };
 
   const handleCreatePost = async () => {
@@ -499,7 +496,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 post={selectedPost} 
                 onMessage={onMessage}
                 onSave={handleSavePost}
-                isSaved={savedPosts.includes(selectedPost.id)}
+                isSaved={isPostSaved(selectedPost.id)}
                 onClose={() => setSelectedPost(null)}
               />
             )}
@@ -569,7 +566,7 @@ const PostDetailView = ({
 }: { 
   post: Post; 
   onMessage: (postId: string) => void; 
-  onSave: (postId: string) => void; 
+  onSave: (post: Post) => void; 
   isSaved: boolean;
   onClose: () => void;
 }) => {
@@ -667,7 +664,7 @@ const PostDetailView = ({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onSave(post.id)}
+            onClick={() => onSave(post)}
             className="text-gray-400 hover:text-gray-600 h-8 w-8 p-0"
           >
             <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current text-blue-500' : ''}`} />
