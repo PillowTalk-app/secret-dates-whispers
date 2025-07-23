@@ -9,7 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin } from "lucide-react";
+import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap } from "lucide-react";
+import { PostBoostButton } from "@/components/PostBoostButton";
+import { useBoostedPosts } from "@/hooks/useBoostedPosts";
 
 interface UserData {
   name: string;
@@ -55,6 +57,9 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     content: '',
     images: [] as string[]
   });
+  
+  // Boost functionality
+  const { isBoosted, getBoostEndTime } = useBoostedPosts();
 
   // Initialize with mock posts
   useEffect(() => {
@@ -398,13 +403,20 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 };
 
 const PostSquare = ({ post, onClick }: { post: Post; onClick: () => void }) => {
+  const { isBoosted } = useBoostedPosts();
+  const postIsBoosted = isBoosted(post.id);
+  
   const displayImage = post.images && post.images.length > 0 
     ? post.images[0] 
     : `https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop&auto=faces`;
 
   return (
     <div 
-      className="aspect-square relative cursor-pointer group overflow-hidden rounded-lg border-2 border-accent/60 shadow-lg"
+      className={`aspect-square relative cursor-pointer group overflow-hidden rounded-lg border-2 shadow-lg ${
+        postIsBoosted 
+          ? 'border-yellow-400 shadow-yellow-400/30 ring-2 ring-yellow-400/20' 
+          : 'border-accent/60'
+      }`}
       onClick={onClick}
     >
       <img 
@@ -413,6 +425,16 @@ const PostSquare = ({ post, onClick }: { post: Post; onClick: () => void }) => {
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
+      
+      {/* Boost indicator */}
+      {postIsBoosted && (
+        <div className="absolute top-2 left-2">
+          <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-semibold">
+            <Zap className="h-3 w-3 mr-1" />
+            Boosted
+          </Badge>
+        </div>
+      )}
       
       {/* Response indicator */}
       <div className="absolute bottom-2 right-2 bg-black/60 rounded-full px-2 py-1 text-xs text-white">
@@ -443,6 +465,12 @@ const PostDetailView = ({
   isSaved: boolean;
   onClose: () => void;
 }) => {
+  const { isBoosted, getBoostEndTime } = useBoostedPosts();
+  const postIsBoosted = isBoosted(post.id);
+  const boostEndTime = getBoostEndTime(post.id);
+  
+  // Mock logic to determine if current user is the post owner
+  const isOwner = post.authorName === 'MysticWaves'; // In real app, compare with actual user data
   return (
     <div className="space-y-5 p-1">
       {/* Header */}
@@ -499,6 +527,16 @@ const PostDetailView = ({
       {/* Content */}
       <div className="space-y-3">
         <p className="text-gray-800 leading-relaxed text-sm">{post.content}</p>
+      </div>
+
+      {/* Boost Button */}
+      <div className="flex justify-center">
+        <PostBoostButton 
+          postId={post.id}
+          isOwner={isOwner}
+          isBoosted={postIsBoosted}
+          boostEndTime={boostEndTime}
+        />
       </div>
 
       {/* Actions */}
