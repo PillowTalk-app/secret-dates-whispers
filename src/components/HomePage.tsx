@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign } from "lucide-react";
 import { CommentsDialog } from "@/components/CommentsDialog";
+import { MessagingRestrictions } from "@/components/MessagingRestrictions";
+import { useMessagingEligibility } from "@/hooks/useMessagingEligibility";
 import { PostBoostButton } from "@/components/PostBoostButton";
 import { useBoostedPosts } from "@/hooks/useBoostedPosts";
 import { useMemoryMatches } from '@/hooks/useMemoryMatches';
@@ -54,6 +56,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [activeTab, setActiveTab] = useState('new');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const [messagingUserId, setMessagingUserId] = useState<string | null>(null);
+  const [messagingUserName, setMessagingUserName] = useState<string>('');
   const [posts, setPosts] = useState<Post[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newPost, setNewPost] = useState({
@@ -67,6 +71,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const { isBoosted, getBoostEndTime, addBoostedPost } = useBoostedPosts();
   const { detectPotentialMatch } = useMemoryMatches();
   const { savePost, isPostSaved } = useSavedPostNotifications();
+  const { canMessageUser, createSharedContext } = useMessagingEligibility();
 
   // Initialize with mock posts
   useEffect(() => {
@@ -151,6 +156,19 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const handleViewComments = (post: Post) => {
     setSelectedPost(post);
     setIsCommentsOpen(true);
+    
+    // Create shared context when viewing comments
+    createSharedContext(
+      'mock-user-id', 
+      post.authorName, 
+      'post_comment',
+      `Viewed and can comment on ${post.authorName}'s post about ${post.targetName}`
+    );
+  };
+
+  const handleMessageUser = (userId: string, userName: string) => {
+    setMessagingUserId(userId);
+    setMessagingUserName(userName);
   };
 
   const handleCreatePost = async () => {
@@ -505,6 +523,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 onSave={handleSavePost}
                 isSaved={isPostSaved(selectedPost.id)}
                 onClose={() => setSelectedPost(null)}
+                onMessageUser={handleMessageUser}
               />
             )}
           </DialogContent>
@@ -514,6 +533,21 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           post={selectedPost} 
           isOpen={isCommentsOpen} 
           onClose={() => setIsCommentsOpen(false)} 
+        />
+        
+        <MessagingRestrictions
+          userId={messagingUserId || ''}
+          userName={messagingUserName}
+          isOpen={!!messagingUserId}
+          onClose={() => {
+            setMessagingUserId(null);
+            setMessagingUserName('');
+          }}
+          onProceedToMessage={() => {
+            onMessage(messagingUserId || '');
+            setMessagingUserId(null);
+            setMessagingUserName('');
+          }}
         />
       </div>
     </div>
@@ -575,13 +609,15 @@ const PostDetailView = ({
   onMessage, 
   onSave, 
   isSaved, 
-  onClose 
+  onClose,
+  onMessageUser
 }: { 
   post: Post; 
   onMessage: (postId: string) => void; 
   onSave: (post: Post) => void; 
   isSaved: boolean;
   onClose: () => void;
+  onMessageUser: (userId: string, userName: string) => void;
 }) => {
   const { isBoosted, getBoostEndTime } = useBoostedPosts();
   const postIsBoosted = isBoosted(post.id);
@@ -688,7 +724,7 @@ const PostDetailView = ({
             <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current text-blue-500' : ''}`} />
           </Button>
           <Button
-            onClick={() => onMessage(post.id)}
+            onClick={() => onMessageUser('mock-user-id', post.authorName)}
             className="bg-blue-500 hover:bg-blue-600 text-white h-8 px-4 text-sm rounded-lg"
           >
             <Send className="h-3 w-3 mr-1" />
