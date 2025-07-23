@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Send, Shield, Clock } from "lucide-react";
 
@@ -17,6 +17,8 @@ interface Message {
   content: string;
   timestamp: string;
   isOwn: boolean;
+  avatar?: string;
+  userName?: string;
 }
 
 export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) => {
@@ -27,21 +29,27 @@ export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) 
       senderId: 'other',
       content: 'Hi, I saw your post about Alex Johnson. I had a similar experience. Would you mind sharing more details?',
       timestamp: '10:30 AM',
-      isOwn: false
+      isOwn: false,
+      avatar: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
+      userName: 'Sarah M.'
     },
     {
       id: '2',
       senderId: 'me',
       content: 'Sure, I appreciate you reaching out. What specifically would you like to know?',
       timestamp: '10:32 AM',
-      isOwn: true
+      isOwn: true,
+      avatar: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=150&h=150&fit=crop&crop=face',
+      userName: 'You'
     },
     {
       id: '3',
       senderId: 'other',
       content: 'Did they also promise things early on that they didn\'t follow through with?',
       timestamp: '10:35 AM',
-      isOwn: false
+      isOwn: false,
+      avatar: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
+      userName: 'Sarah M.'
     }
   ]);
 
@@ -53,7 +61,9 @@ export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) 
       senderId: 'me',
       content: newMessage,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isOwn: true
+      isOwn: true,
+      avatar: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=150&h=150&fit=crop&crop=face',
+      userName: 'You'
     };
 
     setMessages(prev => [...prev, message]);
@@ -111,21 +121,39 @@ export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) 
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'}`}
+            className={`flex items-end space-x-2 ${message.isOwn ? 'justify-end flex-row-reverse space-x-reverse' : 'justify-start'}`}
           >
-            <div
-              className={`max-w-[70%] p-3 rounded-lg ${
-                message.isOwn
-                  ? 'bg-gradient-primary text-primary-foreground rounded-br-sm'
-                  : 'bg-card border border-border/50 rounded-bl-sm'
-              }`}
-            >
-              <p className="break-words">{message.content}</p>
-              <div className={`flex items-center justify-between mt-1 text-xs ${
-                message.isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'
-              }`}>
-                <Clock className="h-3 w-3" />
-                <span className="ml-1">{message.timestamp}</span>
+            {/* Profile Avatar */}
+            <Avatar className="w-8 h-8 border-2 border-border/30 flex-shrink-0">
+              {message.avatar && (
+                <AvatarImage src={message.avatar} alt={message.userName || 'User'} />
+              )}
+              <AvatarFallback className="text-xs bg-gradient-card">
+                {message.userName ? message.userName.charAt(0).toUpperCase() : 'U'}
+              </AvatarFallback>
+            </Avatar>
+
+            {/* Message Content */}
+            <div className="flex flex-col max-w-[70%]">
+              {!message.isOwn && (
+                <span className="text-xs text-muted-foreground mb-1 px-1">
+                  {message.userName}
+                </span>
+              )}
+              <div
+                className={`p-3 rounded-lg ${
+                  message.isOwn
+                    ? 'bg-gradient-primary text-primary-foreground rounded-br-sm'
+                    : 'bg-card border border-border/50 rounded-bl-sm'
+                }`}
+              >
+                <p className="break-words">{message.content}</p>
+                <div className={`flex items-center justify-end mt-1 text-xs ${
+                  message.isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                }`}>
+                  <Clock className="h-3 w-3" />
+                  <span className="ml-1">{message.timestamp}</span>
+                </div>
               </div>
             </div>
           </div>
