@@ -12,7 +12,9 @@ import { Slider } from "@/components/ui/slider";
 import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign } from "lucide-react";
 import { CommentsDialog } from "@/components/CommentsDialog";
 import { MessagingRestrictions } from "@/components/MessagingRestrictions";
+import { DatingFootprintDisplay } from "@/components/DatingFootprintDisplay";
 import { useMessagingEligibility } from "@/hooks/useMessagingEligibility";
+import { useDatingFootprint } from "@/hooks/useDatingFootprint";
 import { PostBoostButton } from "@/components/PostBoostButton";
 import { useBoostedPosts } from "@/hooks/useBoostedPosts";
 import { useMemoryMatches } from '@/hooks/useMemoryMatches';
@@ -58,6 +60,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [messagingUserId, setMessagingUserId] = useState<string | null>(null);
   const [messagingUserName, setMessagingUserName] = useState<string>('');
+  const [footprintPerson, setFootprintPerson] = useState<string | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newPost, setNewPost] = useState({
@@ -72,6 +75,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const { detectPotentialMatch } = useMemoryMatches();
   const { savePost, isPostSaved } = useSavedPostNotifications();
   const { canMessageUser, createSharedContext } = useMessagingEligibility();
+  const { getFootprintForPerson, analyzeFootprint, getConfidenceLevel } = useDatingFootprint();
 
   // Initialize with mock posts
   useEffect(() => {
@@ -169,6 +173,10 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const handleMessageUser = (userId: string, userName: string) => {
     setMessagingUserId(userId);
     setMessagingUserName(userName);
+  };
+
+  const handleViewFootprint = (personName: string) => {
+    setFootprintPerson(personName);
   };
 
   const handleCreatePost = async () => {
@@ -524,6 +532,10 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 isSaved={isPostSaved(selectedPost.id)}
                 onClose={() => setSelectedPost(null)}
                 onMessageUser={handleMessageUser}
+                onViewFootprint={handleViewFootprint}
+                footprint={getFootprintForPerson(selectedPost.targetName)}
+                analyzeFootprint={analyzeFootprint}
+                getConfidenceLevel={getConfidenceLevel}
               />
             )}
           </DialogContent>
@@ -549,6 +561,26 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
             setMessagingUserName('');
           }}
         />
+
+        {footprintPerson && (() => {
+          const footprint = getFootprintForPerson(footprintPerson);
+          if (!footprint) return null;
+          
+          const analysis = analyzeFootprint(footprint);
+          const confidenceLevel = getConfidenceLevel(footprint.confidenceScore);
+          
+          return (
+            <Dialog open={!!footprintPerson} onOpenChange={() => setFootprintPerson(null)}>
+              <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+                <DatingFootprintDisplay 
+                  footprint={footprint}
+                  analysis={analysis}
+                  confidenceLevel={confidenceLevel}
+                />
+              </DialogContent>
+            </Dialog>
+          );
+        })()}
       </div>
     </div>
   );
@@ -610,7 +642,11 @@ const PostDetailView = ({
   onSave, 
   isSaved, 
   onClose,
-  onMessageUser
+  onMessageUser,
+  onViewFootprint,
+  footprint,
+  analyzeFootprint,
+  getConfidenceLevel
 }: { 
   post: Post; 
   onMessage: (postId: string) => void; 
@@ -618,6 +654,10 @@ const PostDetailView = ({
   isSaved: boolean;
   onClose: () => void;
   onMessageUser: (userId: string, userName: string) => void;
+  onViewFootprint: (personName: string) => void;
+  footprint: any;
+  analyzeFootprint: any;
+  getConfidenceLevel: any;
 }) => {
   const { isBoosted, getBoostEndTime } = useBoostedPosts();
   const postIsBoosted = isBoosted(post.id);
@@ -625,6 +665,7 @@ const PostDetailView = ({
   
   // Mock logic to determine if current user is the post owner
   const isOwner = post.authorName === 'MysticWaves'; // In real app, compare with actual user data
+  
   return (
     <div className="space-y-5 p-1">
       {/* Header */}
