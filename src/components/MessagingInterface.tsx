@@ -121,22 +121,22 @@ export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) 
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex items-end space-x-2 ${message.isOwn ? 'justify-end flex-row-reverse space-x-reverse' : 'justify-start'}`}
+            className={`flex items-start space-x-3 ${message.isOwn ? 'justify-end flex-row-reverse space-x-reverse' : 'justify-start'}`}
           >
             {/* Profile Avatar */}
-            <Avatar className="w-8 h-8 border-2 border-border/30 flex-shrink-0">
+            <Avatar className="w-10 h-10 border-2 border-primary/20 flex-shrink-0 mt-1">
               {message.avatar && (
                 <AvatarImage src={message.avatar} alt={message.userName || 'User'} />
               )}
-              <AvatarFallback className="text-xs bg-gradient-card">
+              <AvatarFallback className="text-sm bg-gradient-card font-semibold">
                 {message.userName ? message.userName.charAt(0).toUpperCase() : 'U'}
               </AvatarFallback>
             </Avatar>
 
             {/* Message Content */}
-            <div className="flex flex-col max-w-[70%]">
+            <div className="flex flex-col max-w-[65%]">
               {!message.isOwn && (
-                <span className="text-xs text-muted-foreground mb-1 px-1">
+                <span className="text-xs text-muted-foreground mb-1 px-1 font-medium">
                   {message.userName}
                 </span>
               )}
