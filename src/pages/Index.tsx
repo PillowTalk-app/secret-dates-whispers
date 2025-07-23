@@ -4,8 +4,9 @@ import { HomePage } from "@/components/HomePage";
 import { MessagingInterface } from "@/components/MessagingInterface";
 import { UserProfile } from "@/components/UserProfile";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { AuthChoiceScreen } from "@/components/AuthChoiceScreen";
 
-type AppState = 'loading' | 'verification' | 'home' | 'messaging' | 'profile';
+type AppState = 'loading' | 'auth-choice' | 'verification' | 'signin' | 'home' | 'messaging' | 'profile';
 
 interface UserData {
   name: string;
@@ -25,8 +26,18 @@ const Index = ({ onAuthComplete }: IndexProps) => {
   const [activePostId, setActivePostId] = useState<string>('');
 
   const handleLoadingComplete = () => {
+    setAppState('auth-choice');
+    localStorage.setItem('appState', 'auth-choice');
+  };
+
+  const handleSignUp = () => {
     setAppState('verification');
     localStorage.setItem('appState', 'verification');
+  };
+
+  const handleSignIn = () => {
+    setAppState('signin');
+    localStorage.setItem('appState', 'signin');
   };
 
   const handleVerificationComplete = (data: UserData) => {
@@ -62,7 +73,16 @@ const Index = ({ onAuthComplete }: IndexProps) => {
     return <LoadingScreen onComplete={handleLoadingComplete} />;
   }
 
+  if (appState === 'auth-choice') {
+    return <AuthChoiceScreen onSignUp={handleSignUp} onSignIn={handleSignIn} />;
+  }
+
   if (appState === 'verification') {
+    return <VerificationFlow onComplete={handleVerificationComplete} />;
+  }
+
+  if (appState === 'signin') {
+    // For now, redirect to verification - you can implement actual sign in later
     return <VerificationFlow onComplete={handleVerificationComplete} />;
   }
 
