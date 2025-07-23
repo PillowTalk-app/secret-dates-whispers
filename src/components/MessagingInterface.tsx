@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Send, Shield, Clock } from "lucide-react";
 
@@ -17,7 +17,6 @@ interface Message {
   content: string;
   timestamp: string;
   isOwn: boolean;
-  avatar?: string;
   userName?: string;
 }
 
@@ -30,7 +29,6 @@ export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) 
       content: 'Hi, I saw your post about Alex Johnson. I had a similar experience. Would you mind sharing more details?',
       timestamp: '10:30 AM',
       isOwn: false,
-      avatar: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
       userName: 'Sarah M.'
     },
     {
@@ -39,7 +37,6 @@ export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) 
       content: 'Sure, I appreciate you reaching out. What specifically would you like to know?',
       timestamp: '10:32 AM',
       isOwn: true,
-      avatar: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=150&h=150&fit=crop&crop=face',
       userName: 'You'
     },
     {
@@ -48,7 +45,6 @@ export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) 
       content: 'Did they also promise things early on that they didn\'t follow through with?',
       timestamp: '10:35 AM',
       isOwn: false,
-      avatar: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
       userName: 'Sarah M.'
     }
   ]);
@@ -62,7 +58,6 @@ export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) 
       content: newMessage,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       isOwn: true,
-      avatar: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=150&h=150&fit=crop&crop=face',
       userName: 'You'
     };
 
@@ -125,9 +120,6 @@ export const MessagingInterface = ({ postId, onBack }: MessagingInterfaceProps) 
           >
             {/* Profile Avatar */}
             <Avatar className="w-10 h-10 border-2 border-primary/20 flex-shrink-0 mt-1">
-              {message.avatar && (
-                <AvatarImage src={message.avatar} alt={message.userName || 'User'} />
-              )}
               <AvatarFallback className="text-sm bg-gradient-card font-semibold">
                 {message.userName ? message.userName.charAt(0).toUpperCase() : 'U'}
               </AvatarFallback>
