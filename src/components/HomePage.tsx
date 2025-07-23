@@ -150,7 +150,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   };
 
   const handleCreatePost = async () => {
-    if (!newPost.targetName || !newPost.content) return;
+    if (!newPost.targetName || !newPost.content || newPost.images.length === 0) return;
 
     // If user wants boost, handle payment first
     if (newPost.wantsBoost) {
@@ -344,7 +344,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
                 {/* Image Upload Section */}
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Photos (Optional)</label>
+                  <label className="text-sm font-medium mb-2 block">Photo Required *</label>
                   <div className="grid grid-cols-2 gap-2 mb-3">
                     {newPost.images.map((image, index) => (
                       <div key={index} className="relative aspect-square">
@@ -382,7 +382,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                   </Button>
                   <Button 
                     onClick={handleCreatePost}
-                    disabled={!newPost.targetName || !newPost.content}
+                    disabled={!newPost.targetName || !newPost.content || newPost.images.length === 0}
                     className={newPost.wantsBoost 
                       ? "bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-semibold" 
                       : "bg-accent hover:bg-accent/90"
