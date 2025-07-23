@@ -9,9 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap } from "lucide-react";
+import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign } from "lucide-react";
 import { PostBoostButton } from "@/components/PostBoostButton";
 import { useBoostedPosts } from "@/hooks/useBoostedPosts";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface UserData {
   name: string;
@@ -55,11 +56,12 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [newPost, setNewPost] = useState({
     targetName: '',
     content: '',
-    images: [] as string[]
+    images: [] as string[],
+    wantsBoost: false
   });
   
   // Boost functionality
-  const { isBoosted, getBoostEndTime } = useBoostedPosts();
+  const { isBoosted, getBoostEndTime, addBoostedPost } = useBoostedPosts();
 
   // Initialize with mock posts
   useEffect(() => {
@@ -145,9 +147,42 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     );
   };
 
-  const handleCreatePost = () => {
+  const handleCreatePost = async () => {
     if (!newPost.targetName || !newPost.content) return;
 
+    // If user wants boost, handle payment first
+    if (newPost.wantsBoost) {
+      await handleBoostPayment();
+      return;
+    }
+
+    // Create regular post without boost
+    createPost();
+  };
+
+  const handleBoostPayment = async () => {
+    try {
+      // Mock payment flow - same as PostBoostButton but for pre-posting
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const mockStripeUrl = `https://checkout.stripe.com/pay/mock-session-pre-boost-${Date.now()}`;
+      
+      // Open Stripe checkout in a new tab
+      const paymentWindow = window.open(mockStripeUrl, '_blank');
+      
+      // Simulate successful payment after a delay
+      setTimeout(() => {
+        // In real app, this would be triggered by payment success webhook
+        createPost(true); // Create post with boost enabled
+        if (paymentWindow) paymentWindow.close();
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Payment failed:', error);
+    }
+  };
+
+  const createPost = (boosted: boolean = false) => {
     const post: Post = {
       id: Date.now().toString(),
       authorName: userData.screenName,
@@ -163,10 +198,17 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     };
 
     setPosts(prev => [post, ...prev]);
+    
+    // If boosted, add to boosted posts
+    if (boosted) {
+      addBoostedPost(post.id);
+    }
+    
     setNewPost({
       targetName: '',
       content: '',
-      images: []
+      images: [],
+      wantsBoost: false
     });
     setIsCreateDialogOpen(false);
   };
@@ -244,6 +286,51 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                   />
                 </div>
 
+                {/* Boost Option */}
+                <div className="p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <Checkbox 
+                      id="boost-option"
+                      checked={newPost.wantsBoost}
+                      onCheckedChange={(checked) => 
+                        setNewPost(prev => ({ ...prev, wantsBoost: !!checked }))
+                      }
+                      className="border-yellow-400 data-[state=checked]:bg-yellow-500"
+                    />
+                    <div className="flex-1">
+                      <label 
+                        htmlFor="boost-option"
+                        className="text-sm font-semibold text-yellow-800 cursor-pointer flex items-center"
+                      >
+                        <Zap className="h-4 w-4 mr-1 text-yellow-600" />
+                        Boost This Post
+                        <Badge className="ml-2 bg-yellow-500 text-yellow-900 text-xs">
+                          <DollarSign className="h-3 w-3 mr-1" />
+                          2.99
+                        </Badge>
+                      </label>
+                      <p className="text-xs text-yellow-700 mt-1">
+                        Get 48 hours of enhanced visibility and priority placement
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {newPost.wantsBoost && (
+                    <div className="mt-3 p-3 bg-yellow-200/50 rounded-lg border border-yellow-300">
+                      <div className="flex items-center text-xs text-yellow-800">
+                        <Zap className="h-3 w-3 mr-1" />
+                        <span className="font-medium">Boost Benefits:</span>
+                      </div>
+                      <ul className="text-xs text-yellow-700 mt-1 space-y-1">
+                        <li>• Higher placement in feeds</li>
+                        <li>• Special ⚡ boost indicator</li>
+                        <li>• 48 hours of enhanced visibility</li>
+                        <li>• Payment processed before posting</li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
                 {/* Image Upload Section */}
                 <div>
                   <label className="text-sm font-medium mb-2 block">Photos (Optional)</label>
@@ -285,9 +372,19 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                   <Button 
                     onClick={handleCreatePost}
                     disabled={!newPost.targetName || !newPost.content}
-                    className="bg-accent hover:bg-accent/90"
+                    className={newPost.wantsBoost 
+                      ? "bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-semibold" 
+                      : "bg-accent hover:bg-accent/90"
+                    }
                   >
-                    Share Experience
+                    {newPost.wantsBoost ? (
+                      <>
+                        <Zap className="h-4 w-4 mr-2" />
+                        Pay & Boost Post
+                      </>
+                    ) : (
+                      "Share Experience"
+                    )}
                   </Button>
                 </div>
               </div>
