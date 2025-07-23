@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { VerificationFlow } from "@/components/VerificationFlow";
+import { SignInFlow } from "@/components/SignInFlow";
 import { HomePage } from "@/components/HomePage";
 import { MessagingInterface } from "@/components/MessagingInterface";
 import { UserProfile } from "@/components/UserProfile";
@@ -40,6 +41,17 @@ const Index = ({ onAuthComplete }: IndexProps) => {
     localStorage.setItem('appState', 'signin');
   };
 
+  const handleSignInComplete = (data: UserData) => {
+    setUserData(data);
+    setAppState('home');
+    // Set authentication state
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('appState', 'home');
+    // Trigger custom event to notify App component
+    window.dispatchEvent(new Event('authStateChange'));
+    onAuthComplete();
+  };
+
   const handleVerificationComplete = (data: UserData) => {
     setUserData(data);
     setAppState('home');
@@ -49,6 +61,11 @@ const Index = ({ onAuthComplete }: IndexProps) => {
     // Trigger custom event to notify App component
     window.dispatchEvent(new Event('authStateChange'));
     onAuthComplete();
+  };
+
+  const handleBackToAuthChoice = () => {
+    setAppState('auth-choice');
+    localStorage.setItem('appState', 'auth-choice');
   };
 
   const handleMessage = (postId: string) => {
@@ -82,8 +99,7 @@ const Index = ({ onAuthComplete }: IndexProps) => {
   }
 
   if (appState === 'signin') {
-    // For now, redirect to verification - you can implement actual sign in later
-    return <VerificationFlow onComplete={handleVerificationComplete} />;
+    return <SignInFlow onComplete={handleSignInComplete} onBack={handleBackToAuthChoice} />;
   }
 
   if (appState === 'messaging' && userData) {
