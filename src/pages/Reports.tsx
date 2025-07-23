@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, Shield, Clock, CheckCircle, User, MessageSquare, Eye } from "lucide-react";
+import { AlertTriangle, Shield, Clock, CheckCircle, User, MessageSquare, Eye, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   name: string;
@@ -36,6 +37,7 @@ interface Report {
 }
 
 export const Reports = ({ userData }: ReportsProps) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'my-reports' | 'create-report'>('my-reports');
   const [newReport, setNewReport] = useState({
     targetType: 'post' as 'post' | 'user' | 'message',
@@ -113,6 +115,16 @@ export const Reports = ({ userData }: ReportsProps) => {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl pb-24">
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="mb-4 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground mb-2">Safety & Reports</h1>
         <p className="text-muted-foreground">Help keep our community safe by reporting inappropriate behavior</p>

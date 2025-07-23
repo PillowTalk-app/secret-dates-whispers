@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Camera, X, MapPin, AlertCircle } from "lucide-react";
+import { Camera, X, MapPin, AlertCircle, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   name: string;
@@ -21,6 +22,7 @@ interface CreatePostProps {
 }
 
 export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
+  const navigate = useNavigate();
   const [postData, setPostData] = useState({
     targetName: '',
     content: '',
@@ -71,6 +73,16 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-2xl pb-24">
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="mb-4 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground mb-2">Share Your Experience</h1>
         <p className="text-muted-foreground">Help the community by sharing your dating experiences honestly and respectfully</p>

@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Send, MoreVertical } from "lucide-react";
+import { Search, Send, MoreVertical, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   name: string;
@@ -41,6 +42,7 @@ interface Conversation {
 }
 
 export const Messages = ({ userData }: MessagesProps) => {
+  const navigate = useNavigate();
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -129,6 +131,16 @@ export const Messages = ({ userData }: MessagesProps) => {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="mb-4 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground mb-2">Messages</h1>
         <p className="text-muted-foreground">Connect with other community members safely</p>

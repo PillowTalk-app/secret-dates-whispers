@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-import { Plus, Users, Clock, TrendingUp, MessageSquare, BarChart3 } from "lucide-react";
+import { Plus, Users, Clock, TrendingUp, MessageSquare, BarChart3, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   name: string;
@@ -54,6 +55,7 @@ interface Question {
 }
 
 export const Polls = ({ userData }: PollsProps) => {
+  const navigate = useNavigate();
   const [isCreatePollOpen, setIsCreatePollOpen] = useState(false);
   const [isCreateQuestionOpen, setIsCreateQuestionOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'polls' | 'questions'>('polls');
@@ -170,6 +172,16 @@ export const Polls = ({ userData }: PollsProps) => {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="mb-4 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground mb-2">Community Voice</h1>
         <p className="text-muted-foreground">Share polls, ask questions, and get community insights</p>

@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Shield, Eye, Bell, Lock, MapPin, Users, Smartphone } from "lucide-react";
+import { Shield, Eye, Bell, Lock, MapPin, Users, Smartphone, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   name: string;
@@ -23,6 +24,7 @@ interface SettingsProps {
 }
 
 export const Settings = ({ userData }: SettingsProps) => {
+  const navigate = useNavigate();
   const [privacySettings, setPrivacySettings] = useState({
     profileVisibility: 'public',
     showLocation: true,
@@ -55,6 +57,16 @@ export const Settings = ({ userData }: SettingsProps) => {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl pb-24">
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="mb-4 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground mb-2">Settings & Privacy</h1>
         <p className="text-muted-foreground">Manage your privacy, safety, and notification preferences</p>

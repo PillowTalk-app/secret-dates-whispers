@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertTriangle, Shield, MapPin, Clock, Users, TrendingUp, Eye } from "lucide-react";
+import { AlertTriangle, Shield, MapPin, Clock, Users, TrendingUp, Eye, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   name: string;
@@ -37,6 +38,7 @@ interface SafetyScore {
 }
 
 export const Safety = ({ userData }: SafetyProps) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'alerts' | 'score' | 'insights'>('alerts');
 
   const [safetyAlerts] = useState<SafetyAlert[]>([
@@ -112,6 +114,16 @@ export const Safety = ({ userData }: SafetyProps) => {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl pb-24">
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="mb-4 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground mb-2">Safety Dashboard</h1>
         <p className="text-muted-foreground">Stay informed about community safety and your contribution</p>

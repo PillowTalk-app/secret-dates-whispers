@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageCircle, Eye, Heart, Edit, Trash2, MapPin } from "lucide-react";
+import { MessageCircle, Eye, Heart, Edit, Trash2, MapPin, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface UserData {
   name: string;
@@ -32,6 +33,7 @@ interface MyPost {
 }
 
 export const MyPosts = ({ userData }: MyPostsProps) => {
+  const navigate = useNavigate();
   const [myPosts] = useState<MyPost[]>([
     {
       id: '1',
@@ -64,6 +66,16 @@ export const MyPosts = ({ userData }: MyPostsProps) => {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(-1)}
+          className="mb-4 text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+      </div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground mb-2">My Posts</h1>
         <p className="text-muted-foreground">Manage your shared experiences and see engagement</p>
