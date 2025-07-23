@@ -26,6 +26,30 @@ const Index = ({ onAuthComplete }: IndexProps) => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [activePostId, setActivePostId] = useState<string>('');
 
+  // Check if user is already authenticated on component mount
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    const savedAppState = localStorage.getItem('appState');
+    
+    if (isAuthenticated && savedAppState === 'home') {
+      // User is already authenticated, set up mock user data and go to home
+      const mockUserData: UserData = {
+        name: 'Jane Smith',
+        screenName: 'MidnightMuse',
+        gender: 'female',
+        phone: '+1 (555) 987-6543',
+        email: 'jane@example.com'
+      };
+      
+      setUserData(mockUserData);
+      setAppState('home');
+      onAuthComplete();
+    } else {
+      // Not authenticated, start with loading screen
+      setAppState('loading');
+    }
+  }, [onAuthComplete]);
+
   const handleLoadingComplete = () => {
     setAppState('auth-choice');
     localStorage.setItem('appState', 'auth-choice');

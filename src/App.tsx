@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { TopNavigation } from "@/components/TopNavigation";
 import Index from "./pages/Index";
@@ -36,6 +36,12 @@ const AppContent = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [appState, setAppState] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Safe navigation to home - always goes to authenticated home page
+  const navigateToHome = () => {
+    navigate('/', { replace: true });
+  };
 
   // Listen for authentication state changes
   useEffect(() => {
@@ -80,7 +86,7 @@ const AppContent = () => {
         <Route path="/polls" element={<Polls userData={userData} />} />
         <Route path="/safety" element={<Safety userData={userData} />} />
         <Route path="/reports" element={<Reports userData={userData} />} />
-        <Route path="/profile" element={<UserProfile userData={userData} onBack={() => window.history.back()} />} />
+        <Route path="/profile" element={<UserProfile userData={userData} onBack={navigateToHome} />} />
         <Route path="/settings" element={<Settings userData={userData} />} />
         <Route path="/matches" element={<Matches />} />
         <Route path="/about" element={<About />} />

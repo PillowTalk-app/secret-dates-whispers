@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -19,9 +20,10 @@ export const Matches = () => {
   } = useMemoryMatches();
 
   const [activeTab, setActiveTab] = useState('pending');
+  const navigate = useNavigate();
 
   const handleBack = () => {
-    window.history.back();
+    navigate('/', { replace: true });
   };
 
   return (
