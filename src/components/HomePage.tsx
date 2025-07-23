@@ -719,6 +719,33 @@ const PostDetailView = ({
         </div>
       </div>
 
+      {/* Dating Footprint Section - Always show for demo */}
+      <div className="px-4 pb-4">
+        <div 
+          onClick={() => onViewFootprint(post.targetName)}
+          className="cursor-pointer hover:bg-accent/5 rounded-lg transition-colors"
+        >
+          {footprint ? (
+            <DatingFootprintDisplay 
+              footprint={footprint}
+              analysis={analyzeFootprint(footprint)}
+              confidenceLevel={getConfidenceLevel(footprint.confidenceScore)}
+              isPreview={true}
+            />
+          ) : (
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-4 w-4 bg-blue-500 rounded-full" />
+                <span className="text-sm font-medium">No Dating Footprint Yet</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Click to check if {post.targetName} has been mentioned in other verified posts.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Content */}
       <div className="space-y-3">
         <p className="text-gray-800 leading-relaxed text-sm">{post.content}</p>
