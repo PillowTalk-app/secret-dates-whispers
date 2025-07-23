@@ -3,13 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Zap, Clock, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { createClient } from "@supabase/supabase-js";
-
-// Note: In a real app, these would be environment variables
-const supabaseUrl = "your-supabase-url"; // Replace with actual URL
-const supabaseAnonKey = "your-supabase-anon-key"; // Replace with actual key
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Note: In a real implementation, this would use the actual Supabase client
+// For now, we'll mock the payment flow
 
 interface PostBoostButtonProps {
   postId: string;
@@ -35,21 +30,24 @@ export const PostBoostButton = ({ postId, isOwner, isBoosted, boostEndTime }: Po
     try {
       setIsLoading(true);
       
-      const { data, error } = await supabase.functions.invoke('create-boost-payment', {
-        body: { postId },
+      // Mock payment flow - in a real app, this would call the Supabase edge function
+      // const { data, error } = await supabase.functions.invoke('create-boost-payment', {
+      //   body: { postId },
+      // });
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock Stripe checkout URL for demonstration
+      const mockStripeUrl = `https://checkout.stripe.com/pay/mock-session-${postId}`;
+      
+      // Open Stripe checkout in a new tab
+      window.open(mockStripeUrl, '_blank');
+      
+      toast({
+        title: "Redirecting to Payment",
+        description: "Complete your payment to boost this post for 48 hours",
       });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        // Open Stripe checkout in a new tab
-        window.open(data.url, '_blank');
-        
-        toast({
-          title: "Redirecting to Payment",
-          description: "Complete your payment to boost this post for 48 hours",
-        });
-      }
     } catch (error) {
       console.error('Error creating boost payment:', error);
       toast({
