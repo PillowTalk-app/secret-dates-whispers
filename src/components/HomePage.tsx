@@ -12,6 +12,7 @@ import { Slider } from "@/components/ui/slider";
 import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign } from "lucide-react";
 import { PostBoostButton } from "@/components/PostBoostButton";
 import { useBoostedPosts } from "@/hooks/useBoostedPosts";
+import { useMemoryMatches } from '@/hooks/useMemoryMatches';
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface UserData {
@@ -62,6 +63,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   
   // Boost functionality
   const { isBoosted, getBoostEndTime, addBoostedPost } = useBoostedPosts();
+  const { detectPotentialMatch } = useMemoryMatches();
 
   // Initialize with mock posts
   useEffect(() => {
@@ -182,7 +184,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     }
   };
 
-  const createPost = (boosted: boolean = false) => {
+  const createPost = async (boosted: boolean = false) => {
     const post: Post = {
       id: Date.now().toString(),
       authorName: userData.screenName,
@@ -203,6 +205,15 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     if (boosted) {
       addBoostedPost(post.id);
     }
+    
+    // Check for potential memory matches
+    await detectPotentialMatch({
+      id: post.id,
+      targetName: post.targetName,
+      images: post.images || [],
+      content: post.content,
+      userId: 'current-user-id' // In real app, get from auth
+    });
     
     setNewPost({
       targetName: '',

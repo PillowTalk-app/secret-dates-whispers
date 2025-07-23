@@ -16,6 +16,7 @@ import { Safety } from "./pages/Safety";
 import { Reports } from "./pages/Reports";
 import { Settings } from "./pages/Settings";
 import { About } from "./pages/About";
+import { Matches } from "./pages/Matches";
 import { UserProfile } from "@/components/UserProfile";
 import { useState, useEffect } from "react";
 
@@ -81,6 +82,7 @@ const AppContent = () => {
         <Route path="/reports" element={<Reports userData={userData} />} />
         <Route path="/profile" element={<UserProfile userData={userData} onBack={() => window.history.back()} />} />
         <Route path="/settings" element={<Settings userData={userData} />} />
+        <Route path="/matches" element={<Matches />} />
         <Route path="/about" element={<About />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
