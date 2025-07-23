@@ -175,7 +175,7 @@ export const Polls = ({ userData }: PollsProps) => {
       <div className="mb-4">
         <Button
           variant="ghost"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           className="mb-4 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
