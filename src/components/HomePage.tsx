@@ -5,11 +5,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Search, MessageCircle, Clock, TrendingUp, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign } from "lucide-react";
+import { Search, MessageCircle, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign } from "lucide-react";
 import { CommentsDialog } from "@/components/CommentsDialog";
 import { MessagingRestrictions } from "@/components/MessagingRestrictions";
 import { DatingFootprintDisplay } from "@/components/DatingFootprintDisplay";
@@ -55,7 +54,6 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const [searchRadius, setSearchRadius] = useState(25); // radius in miles
-  const [activeTab, setActiveTab] = useState('new');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [messagingUserId, setMessagingUserId] = useState<string | null>(null);
@@ -146,10 +144,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     const matchesLocation = selectedLocation === '' || 
       post.location.toLowerCase().includes(selectedLocation.toLowerCase());
     
-    const matchesTab = activeTab === 'new' || 
-      (activeTab === 'active' && post.isActive);
-    
-    return matchesSearch && matchesLocation && matchesTab;
+    return matchesSearch && matchesLocation;
   });
 
 
@@ -481,35 +476,12 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           </div>
         </div>
         
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-          <TabsList className="grid w-full grid-cols-2 bg-card/50 border border-border/50">
-            <TabsTrigger value="new" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              New Posts
-            </TabsTrigger>
-            <TabsTrigger value="active" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-              <Clock className="h-4 w-4 mr-2" />
-              Active
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="new" className="mt-6">
-            <div className="grid grid-cols-3 gap-1">
-              {filteredPosts.map((post) => (
-                <PostSquare key={post.id} post={post} onClick={() => setSelectedPost(post)} />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="active" className="mt-6">
-            <div className="grid grid-cols-3 gap-1">
-              {filteredPosts.filter(p => p.isActive).map((post) => (
-                <PostSquare key={post.id} post={post} onClick={() => setSelectedPost(post)} />
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+        {/* Posts Grid */}
+        <div className="grid grid-cols-3 gap-1">
+          {filteredPosts.map((post) => (
+            <PostSquare key={post.id} post={post} onClick={() => setSelectedPost(post)} />
+          ))}
+        </div>
 
         {/* No Results */}
         {filteredPosts.length === 0 && (
