@@ -774,7 +774,7 @@ const PostDetailView = ({
           </Avatar>
           <div>
             <h3 className="font-semibold text-gray-900">{post.authorName}</h3>
-            <p className="text-sm text-gray-500">{post.timestamp}</p>
+            <p className="text-sm text-black">{post.timestamp}</p>
           </div>
         </div>
         <Button variant="ghost" size="sm" onClick={onClose} className="text-gray-400 hover:text-gray-600 h-8 w-8 p-0">
@@ -943,8 +943,8 @@ const PostDetailView = ({
                     <Badge variant="outline" className="text-xs">
                       {comment.authorGender === 'male' ? 'M' : 'F'}
                     </Badge>
-                    <span className="text-xs text-muted-foreground">•</span>
-                    <span className="text-xs text-muted-foreground">{comment.timestamp}</span>
+                    <span className="text-xs text-black">•</span>
+                    <span className="text-xs text-black">{comment.timestamp}</span>
                   </div>
                   <p className="text-sm text-foreground leading-relaxed">{comment.content}</p>
                   
