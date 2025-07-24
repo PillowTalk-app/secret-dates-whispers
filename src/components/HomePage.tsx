@@ -52,6 +52,15 @@ interface Post {
   location: string;
 }
 
+interface Comment {
+  id: string;
+  authorName: string;
+  authorGender: 'male' | 'female';
+  content: string;
+  timestamp: string;
+  replies?: Comment[];
+}
+
 export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -64,6 +73,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [showBoostCelebration, setShowBoostCelebration] = useState(false);
+  const [comments, setComments] = useState<{ [postId: string]: Comment[] }>({});
+  const [newComment, setNewComment] = useState('');
   const [newPost, setNewPost] = useState({
     targetName: '',
     content: '',
@@ -135,10 +146,66 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           responses: 2,
           isActive: true,
           location: 'Los Angeles, CA'
-        }
+      }
     ];
     setPosts(mockPosts);
+
+    // Initialize mock comments
+    const mockComments: { [postId: string]: Comment[] } = {
+      '1': [
+        {
+          id: 'c1',
+          authorName: 'Anonymous User',
+          authorGender: 'female',
+          content: "Thanks for sharing this. I had a similar experience with someone who seemed charming at first.",
+          timestamp: '1 hour ago'
+        },
+        {
+          id: 'c2',
+          authorName: 'CosmicSeeker',
+          authorGender: 'male',
+          content: "This is really helpful info. Dating can be tough when people aren't genuine.",
+          timestamp: '30 minutes ago'
+        }
+      ],
+      '2': [
+        {
+          id: 'c3',
+          authorName: 'WisdomSeeker',
+          authorGender: 'female',
+          content: "Great to hear a positive story! Communication is so important in relationships.",
+          timestamp: '2 hours ago'
+        }
+      ]
+    };
+    setComments(mockComments);
   }, [userData.gender]);
+
+  const addComment = (postId: string) => {
+    if (!newComment.trim()) return;
+
+    const comment: Comment = {
+      id: Date.now().toString(),
+      authorName: userData.screenName,
+      authorGender: userData.gender,
+      content: newComment,
+      timestamp: 'Just now'
+    };
+
+    setComments(prev => ({
+      ...prev,
+      [postId]: [...(prev[postId] || []), comment]
+    }));
+
+    // Update post response count
+    setPosts(prev => prev.map(post => 
+      post.id === postId 
+        ? { ...post, responses: post.responses + 1 }
+        : post
+    ));
+
+    setNewComment('');
+  };
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = searchQuery === '' || 
@@ -539,6 +606,10 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 footprint={getFootprintForPerson(selectedPost.targetName)}
                 analyzeFootprint={analyzeFootprint}
                 getConfidenceLevel={getConfidenceLevel}
+                comments={comments}
+                newComment={newComment}
+                setNewComment={setNewComment}
+                addComment={addComment}
               />
             )}
           </DialogContent>
@@ -663,7 +734,11 @@ const PostDetailView = ({
   onViewFootprint,
   footprint,
   analyzeFootprint,
-  getConfidenceLevel
+  getConfidenceLevel,
+  comments,
+  newComment,
+  setNewComment,
+  addComment
 }: { 
   post: Post; 
   onMessage: (postId: string) => void; 
@@ -675,6 +750,10 @@ const PostDetailView = ({
   footprint: any;
   analyzeFootprint: any;
   getConfidenceLevel: any;
+  comments: { [postId: string]: Comment[] };
+  newComment: string;
+  setNewComment: (value: string) => void;
+  addComment: (postId: string) => void;
 }) => {
   const { isBoosted, getBoostEndTime } = useBoostedPosts();
   const postIsBoosted = isBoosted(post.id);
@@ -768,53 +847,126 @@ const PostDetailView = ({
         <p className="text-gray-800 leading-relaxed text-sm">{post.content}</p>
       </div>
 
-      {/* Boost Button */}
-      <div className="flex justify-center">
-        <PostBoostButton 
-          postId={post.id}
-          isOwner={isOwner}
-          isBoosted={postIsBoosted}
-          boostEndTime={boostEndTime}
-        />
-      </div>
-
       {/* Actions */}
-      <div className="flex items-center justify-between pt-2">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => alert('Comments feature - click responses to view comments')}
-          className="flex items-center space-x-1 text-sm text-gray-500 hover:text-gray-700 p-1"
-        >
-          <MessageCircle className="h-4 w-4" />
-          <span>{post.responses} responses</span>
-        </Button>
-        
-        <div className="flex items-center text-sm text-gray-500">
-          {post.isActive && (
-            <div className="flex items-center">
-              <div className="w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse" />
-              <span>Active</span>
-            </div>
-          )}
-        </div>
-
-        <div className="flex space-x-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <MessageCircle className="h-4 w-4 mr-2" />
+            {post.responses} {post.responses === 1 ? 'Comment' : 'Comments'}
+          </Button>
+          
           <Button
             variant="ghost"
             size="sm"
             onClick={() => onSave(post)}
-            className="text-gray-400 hover:text-gray-600 h-8 w-8 p-0"
+            className="text-muted-foreground hover:text-foreground"
           >
-            <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-current text-blue-500' : ''}`} />
+            <Bookmark className="h-4 w-4 mr-2" />
+            {isSaved ? 'Saved' : 'Save'}
           </Button>
+        </div>
+        
+        <div className="flex items-center space-x-2">
           <Button
+            variant="outline"
+            size="sm"
             onClick={() => onMessageUser('mock-user-id', post.authorName)}
-            className="bg-blue-500 hover:bg-blue-600 text-white h-8 px-4 text-sm rounded-lg"
           >
-            <Send className="h-3 w-3 mr-1" />
+            <Send className="h-4 w-4 mr-2" />
             Message
           </Button>
+          
+          <PostBoostButton 
+            postId={post.id}
+            isOwner={isOwner}
+            isBoosted={postIsBoosted}
+            boostEndTime={boostEndTime}
+          />
+        </div>
+      </div>
+
+      {/* Comments Section */}
+      <div className="border-t border-border/50 mt-6 pt-6">
+        <h3 className="text-lg font-semibold mb-4">Comments ({comments[post.id]?.length || 0})</h3>
+        
+        {/* Add Comment */}
+        <div className="mb-6">
+          <div className="flex items-start space-x-3">
+            <Avatar className="border border-border/50">
+              <AvatarFallback className="bg-primary/20 text-primary">
+                U
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <Textarea
+                placeholder="Share your thoughts respectfully..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                className="min-h-[100px] resize-none"
+              />
+              <div className="flex justify-between items-center mt-2">
+                <p className="text-xs text-muted-foreground">
+                  Keep comments respectful and helpful
+                </p>
+                <Button 
+                  onClick={() => addComment(post.id)}
+                  disabled={!newComment.trim()}
+                  size="sm"
+                >
+                  <Send className="h-3 w-3 mr-2" />
+                  Post Comment
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Comments List */}
+        <div className="space-y-4">
+          {comments[post.id]?.length > 0 ? (
+            comments[post.id].map((comment) => (
+              <div key={comment.id} className="flex items-start space-x-3 p-4 bg-muted/30 rounded-lg">
+                <Avatar className="border border-border/50">
+                  <AvatarFallback className="bg-secondary text-secondary-foreground">
+                    {comment.authorName.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <p className="font-medium text-sm">{comment.authorName}</p>
+                    <Badge variant="outline" className="text-xs">
+                      {comment.authorGender === 'male' ? 'M' : 'F'}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">•</span>
+                    <span className="text-xs text-muted-foreground">{comment.timestamp}</span>
+                  </div>
+                  <p className="text-sm text-foreground leading-relaxed">{comment.content}</p>
+                  
+                  {/* Comment actions */}
+                  <div className="flex items-center space-x-4 mt-2">
+                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground">
+                      Like
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground">
+                      Reply
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive">
+                      Report
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <MessageCircle className="h-12 w-12 mx-auto mb-3 opacity-50" />
+              <p className="text-sm">No comments yet. Be the first to share your thoughts!</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
