@@ -3,8 +3,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Users, MessageCircle, Heart, Bookmark } from 'lucide-react';
+import { AlertCircle, Users, MessageCircle, Heart, Bookmark, Lock } from 'lucide-react';
 import { useMessagingEligibility, type MessagingEligibility } from '@/hooks/useMessagingEligibility';
+import { useMatchPayments } from '@/hooks/useMatchPayments';
 
 interface MessagingRestrictionsProps {
   userId: string;
@@ -22,7 +23,10 @@ export const MessagingRestrictions = ({
   onProceedToMessage
 }: MessagingRestrictionsProps) => {
   const { canMessageUser } = useMessagingEligibility();
+  const { canMessage } = useMatchPayments();
   const eligibility = canMessageUser(userId);
+  
+  const canActuallyMessage = eligibility.canMessage && canMessage();
 
   const getContextIcon = (type: string) => {
     switch (type) {
@@ -61,10 +65,42 @@ export const MessagingRestrictions = ({
           <DialogTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
             Message {userName}
+            {!canMessage() && <Lock className="h-4 w-4 text-muted-foreground" />}
           </DialogTitle>
         </DialogHeader>
 
-        {eligibility.canMessage ? (
+        {!canMessage() ? (
+          <div className="space-y-4">
+            <div className="text-center space-y-3">
+              <Lock className="h-12 w-12 text-primary mx-auto" />
+              <h3 className="text-lg font-semibold">Messaging Locked</h3>
+              <p className="text-muted-foreground">
+                You need to unlock matches and messaging to send messages.
+              </p>
+            </div>
+            
+            <div className="bg-secondary/50 p-4 rounded-lg">
+              <p className="text-sm text-center">
+                <strong>$5.99</strong> unlocks all matches and unlimited messaging
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={onClose} className="flex-1">
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => {
+                  onClose();
+                  window.location.href = '/matches';
+                }}
+                className="flex-1 bg-primary hover:bg-primary/90"
+              >
+                Unlock Now
+              </Button>
+            </div>
+          </div>
+        ) : eligibility.canMessage ? (
           <div className="space-y-4">
             <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
               <div className="h-2 w-2 bg-green-500 rounded-full" />
@@ -107,7 +143,11 @@ export const MessagingRestrictions = ({
               <Button variant="outline" onClick={onClose} className="flex-1">
                 Cancel
               </Button>
-              <Button onClick={onProceedToMessage} className="flex-1">
+              <Button 
+                onClick={onProceedToMessage} 
+                className="flex-1"
+                disabled={!canActuallyMessage}
+              >
                 Send Message
               </Button>
             </div>

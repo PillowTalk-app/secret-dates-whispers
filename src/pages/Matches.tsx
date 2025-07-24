@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Sparkles, Users, Clock } from 'lucide-react';
+import { ArrowLeft, Sparkles, Users, Clock, Lock } from 'lucide-react';
 import { MemoryMatchNotification } from '@/components/MemoryMatchNotification';
 import { MemoryComparison } from '@/components/MemoryComparison';
 import { useMemoryMatches } from '@/hooks/useMemoryMatches';
+import { useMatchPayments } from '@/hooks/useMatchPayments';
+import { UnlockMatchesDialog } from '@/components/UnlockMatchesDialog';
 
 export const Matches = () => {
   const {
@@ -20,10 +22,25 @@ export const Matches = () => {
   } = useMemoryMatches();
 
   const [activeTab, setActiveTab] = useState('pending');
+  const [showUnlockDialog, setShowUnlockDialog] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
   const navigate = useNavigate();
+  
+  const { hasUnlockedMatches, canAccessMatches } = useMatchPayments();
+
+  useEffect(() => {
+    const savedUserData = localStorage.getItem('userData');
+    if (savedUserData) {
+      setUserData(JSON.parse(savedUserData));
+    }
+  }, []);
 
   const handleBack = () => {
     navigate('/', { replace: true });
+  };
+
+  const handleUnlockClick = () => {
+    setShowUnlockDialog(true);
   };
 
   return (
@@ -53,18 +70,51 @@ export const Matches = () => {
           </div>
         </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="pending" className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              Pending ({pendingMatches.length})
-            </TabsTrigger>
-            <TabsTrigger value="comparisons" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Comparisons ({activeComparisons.length})
-            </TabsTrigger>
-          </TabsList>
+        {/* Content */}
+        {!hasUnlockedMatches ? (
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
+            <CardContent className="p-8 text-center space-y-6">
+              <div className="flex justify-center">
+                <div className="relative">
+                  <Lock className="h-16 w-16 text-primary" />
+                  <Sparkles className="h-6 w-6 text-accent absolute -top-1 -right-1" />
+                </div>
+              </div>
+              
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Unlock Your Matches</h2>
+                <p className="text-muted-foreground mb-4">
+                  Discover people you have in common and start meaningful conversations
+                </p>
+                <p className="text-lg font-semibold text-primary">$5.99 - One Time Payment</p>
+              </div>
+
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>✓ See all your memory matches</p>
+                <p>✓ Unlimited messaging with matches</p>
+                <p>✓ Compare experiences safely</p>
+              </div>
+
+              <Button 
+                onClick={handleUnlockClick}
+                className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3"
+              >
+                Unlock All Matches
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="pending" className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Pending ({pendingMatches.length})
+              </TabsTrigger>
+              <TabsTrigger value="comparisons" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Comparisons ({activeComparisons.length})
+              </TabsTrigger>
+            </TabsList>
 
           {/* Pending Matches */}
           <TabsContent value="pending" className="space-y-4">
@@ -120,6 +170,15 @@ export const Matches = () => {
             )}
           </TabsContent>
         </Tabs>
+        )}
+
+        {userData && (
+          <UnlockMatchesDialog 
+            isOpen={showUnlockDialog}
+            onClose={() => setShowUnlockDialog(false)}
+            userData={userData}
+          />
+        )}
 
         {/* How it Works */}
         <Card className="mt-8 bg-accent/5 border border-accent/20">
