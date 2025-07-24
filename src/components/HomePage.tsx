@@ -521,7 +521,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
               placeholder="Search by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-teal-800/80 border-teal-600 text-white placeholder:text-teal-200 h-12"
+              className="pl-10 bg-teal-800/80 border-teal-600 text-white placeholder:text-white/80 h-12"
             />
           </div>
 
@@ -533,7 +533,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 placeholder="Enter your location (e.g., Brooklyn, NY)"
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
-                className="pl-10 bg-teal-800/80 border-teal-600 text-white placeholder:text-teal-200 h-12"
+                className="pl-10 bg-teal-800/80 border-teal-600 text-white placeholder:text-white/80 h-12"
               />
             </div>
             
