@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Camera, User, Phone, Mail, Scan, Upload } from "lucide-react";
+import { Shield, Camera, User, Phone, Mail, Scan, Upload, AlertCircle, CheckCircle } from "lucide-react";
+import { validateScreenName, getScreenNameHelpText } from "@/utils/screenNameValidation";
 
 interface VerificationFlowProps {
   onComplete: (userData: { name: string; screenName: string; gender: 'male' | 'female'; phone: string; email: string }) => void;
@@ -19,6 +20,32 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
     email: '',
     faceVerified: false
   });
+  
+  const [screenNameValidation, setScreenNameValidation] = useState<{
+    isValid: boolean;
+    message: string;
+    suggestions?: string[];
+  } | null>(null);
+  
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+
+  // Validate screen name when it changes
+  useEffect(() => {
+    if (formData.screenName.trim()) {
+      setIsCheckingUsername(true);
+      const timer = setTimeout(() => {
+        const firstName = formData.name.split(' ')[0]; // Extract first name
+        const validation = validateScreenName(formData.screenName, firstName);
+        setScreenNameValidation(validation);
+        setIsCheckingUsername(false);
+      }, 500); // Debounce validation
+      
+      return () => clearTimeout(timer);
+    } else {
+      setScreenNameValidation(null);
+      setIsCheckingUsername(false);
+    }
+  }, [formData.screenName, formData.name]);
 
   const handleNext = () => {
     if (step < 3) setStep(step + 1);
@@ -145,15 +172,75 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
 
                 <div>
                   <label className="text-sm font-medium mb-2 block">Creative Screen Name</label>
-                  <Input
-                    placeholder="e.g., MidnightDreamer, SunsetWanderer"
-                    value={formData.screenName}
-                    onChange={(e) => setFormData(prev => ({ ...prev, screenName: e.target.value }))}
-                    className="bg-card/50 border-border/50 h-12"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    This is how others will see you - be creative and keep it discreet
-                  </p>
+                  <div className="relative">
+                    <Input
+                      placeholder="e.g., MidnightDreamer, SunsetWanderer"
+                      value={formData.screenName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, screenName: e.target.value }))}
+                      className={`bg-card/50 border-border/50 h-12 pr-10 ${
+                        screenNameValidation?.isValid === false ? 'border-red-500' : 
+                        screenNameValidation?.isValid === true ? 'border-green-500' : ''
+                      }`}
+                    />
+                    {isCheckingUsername && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <div className="animate-spin h-4 w-4 border-2 border-muted-foreground border-t-transparent rounded-full"></div>
+                      </div>
+                    )}
+                    {!isCheckingUsername && screenNameValidation && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        {screenNameValidation.isValid ? (
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4 text-red-500" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Validation message */}
+                  {screenNameValidation && (
+                    <div className={`mt-2 p-3 rounded-lg text-sm ${
+                      screenNameValidation.isValid ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
+                    }`}>
+                      <p className="font-medium flex items-center gap-2">
+                        {screenNameValidation.isValid ? (
+                          <CheckCircle className="h-4 w-4" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4" />
+                        )}
+                        {screenNameValidation.message}
+                      </p>
+                      
+                      {screenNameValidation.suggestions && (
+                        <div className="mt-2">
+                          <p className="font-medium mb-1">Try these suggestions:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {screenNameValidation.suggestions.map((suggestion, index) => (
+                              <button
+                                key={index}
+                                type="button"
+                                onClick={() => setFormData(prev => ({ ...prev, screenName: suggestion }))}
+                                className="px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 text-blue-800 rounded transition-colors"
+                              >
+                                {suggestion}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-2">
+                    <h4 className="text-sm font-medium text-amber-800 mb-1">Username Rules:</h4>
+                    <ul className="text-xs text-amber-700 space-y-1">
+                      <li>• Cannot use your first name or any common first names</li>
+                      <li>• Must be unique (not already taken)</li>
+                      <li>• Be creative - use combinations like MysticWanderer</li>
+                      <li>• 3-20 characters, no spaces or special characters</li>
+                    </ul>
+                  </div>
                 </div>
 
                 <div className="bg-muted/30 rounded-lg p-4 border border-border/50">
@@ -244,7 +331,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
                 onClick={handleNext}
                 disabled={
                   (step === 1 && (!formData.name || !formData.gender || !formData.phone)) ||
-                  (step === 2 && (!formData.email || !formData.screenName))
+                  (step === 2 && (!formData.email || !formData.screenName || screenNameValidation?.isValid === false))
                 }
                 className="ml-auto"
               >
