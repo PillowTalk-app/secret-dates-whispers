@@ -390,7 +390,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                     placeholder="First name or nickname"
                     value={newPost.targetName}
                     onChange={(e) => setNewPost(prev => ({ ...prev, targetName: e.target.value }))}
-                    className="bg-card/50 border-border/50"
+                    className="bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300"
                   />
                 </div>
 
@@ -400,7 +400,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                     placeholder="Share your experience honestly and respectfully..."
                     value={newPost.content}
                     onChange={(e) => setNewPost(prev => ({ ...prev, content: e.target.value }))}
-                    className="bg-card/50 border-border/50 min-h-[100px]"
+                    className="bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300 min-h-[100px]"
                   />
                 </div>
 
@@ -521,7 +521,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
               placeholder="Search by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-card/50 border-border/50 h-12"
+              className="pl-10 bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300 h-12"
             />
           </div>
 
@@ -533,7 +533,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 placeholder="Enter your location (e.g., Brooklyn, NY)"
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
-                className="pl-10 bg-card/50 border-border/50 h-12"
+                className="pl-10 bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300 h-12"
               />
             </div>
             
