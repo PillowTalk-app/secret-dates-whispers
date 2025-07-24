@@ -31,7 +31,7 @@ export const BoostedPostEffect = ({ children, timeRemaining }: BoostedPostEffect
       {/* Time remaining indicator */}
       {timeRemaining && (
         <div className="absolute bottom-2 right-2 z-10">
-          <Badge variant="secondary" className="bg-black/70 text-yellow-400 border border-yellow-400/50">
+          <Badge variant="secondary" className="bg-yellow-400/90 text-black border border-yellow-500/50 font-semibold">
             <Zap className="h-3 w-3 mr-1" />
             {timeRemaining}
           </Badge>
