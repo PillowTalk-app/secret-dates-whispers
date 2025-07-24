@@ -907,7 +907,7 @@ const PostDetailView = ({
                 placeholder="Share your thoughts respectfully..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="min-h-[100px] resize-none bg-cyan-50 border-cyan-300 focus:border-cyan-500 focus:ring-cyan-200 text-cyan-900 placeholder:text-cyan-600"
+                className="min-h-[100px] resize-none bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300"
               />
               <div className="flex justify-between items-center mt-2">
                 <p className="text-xs text-muted-foreground">
@@ -930,7 +930,7 @@ const PostDetailView = ({
         <div className="space-y-4">
           {comments[post.id]?.length > 0 ? (
             comments[post.id].map((comment) => (
-              <div key={comment.id} className="flex items-start space-x-3 p-4 bg-cyan-50/50 border border-cyan-200 rounded-lg">
+              <div key={comment.id} className="flex items-start space-x-3 p-4 bg-teal-800/10 border border-teal-600/30 rounded-lg">
                 <Avatar className="border border-border/50">
                   <AvatarFallback className="bg-secondary text-secondary-foreground">
                     {comment.authorName.charAt(0).toUpperCase()}
