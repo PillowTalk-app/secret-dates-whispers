@@ -19,6 +19,8 @@ import { useBoostedPosts } from "@/hooks/useBoostedPosts";
 import { useMemoryMatches } from '@/hooks/useMemoryMatches';
 import { useSavedPostNotifications } from '@/hooks/useSavedPostNotifications';
 import { Checkbox } from "@/components/ui/checkbox";
+import { BoostCelebration } from '@/components/BoostCelebration';
+import { BoostedPostEffect } from '@/components/BoostedPostEffect';
 
 interface UserData {
   name: string;
@@ -61,6 +63,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   const [footprintPerson, setFootprintPerson] = useState<string | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [showBoostCelebration, setShowBoostCelebration] = useState(false);
   const [newPost, setNewPost] = useState({
     targetName: '',
     content: '',
@@ -212,6 +215,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       setTimeout(() => {
         // In real app, this would be triggered by payment success webhook
         createPost(true); // Create post with boost enabled
+        setShowBoostCelebration(true); // Show celebration animation
         if (paymentWindow) paymentWindow.close();
       }, 3000);
       
@@ -504,6 +508,12 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           </div>
         </div>
 
+        {/* Boost Celebration Animation */}
+        <BoostCelebration 
+          isVisible={showBoostCelebration}
+          onComplete={() => setShowBoostCelebration(false)}
+        />
+
         {/* No Results */}
         {filteredPosts.length === 0 && (
           <Card className="bg-gradient-card border-border/50 text-center py-8">
@@ -580,52 +590,66 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 };
 
 const PostSquare = ({ post, onClick }: { post: Post; onClick: () => void }) => {
-  const { isBoosted } = useBoostedPosts();
-  const postIsBoosted = isBoosted(post.id);
+  const { isBoosted, getBoostEndTime } = useBoostedPosts();
+  const boosted = isBoosted(post.id);
+  const boostEndTime = boosted ? getBoostEndTime(post.id) : null;
   
-  const displayImage = post.images && post.images.length > 0 
-    ? post.images[0] 
-    : `https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop&auto=faces`;
+  const formatTimeRemaining = (endTime: string | null) => {
+    if (!endTime) return null;
+    const now = new Date();
+    const end = new Date(endTime);
+    const diff = end.getTime() - now.getTime();
+    const hours = Math.ceil(diff / (1000 * 60 * 60));
+    return hours > 0 ? `${hours}h left` : 'Expired';
+  };
 
-  return (
+  const PostContent = (
     <div 
-      className={`aspect-square relative cursor-pointer group overflow-hidden rounded-lg border-2 shadow-lg ${
-        postIsBoosted 
-          ? 'border-yellow-400 shadow-yellow-400/30 ring-2 ring-yellow-400/20' 
-          : 'border-accent/60'
-      }`}
+      className="relative aspect-square bg-gradient-card border border-border/30 rounded-lg overflow-hidden cursor-pointer group hover:scale-105 transition-transform duration-200"
       onClick={onClick}
     >
-      <img 
-        src={displayImage}
-        alt={post.targetName}
-        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-      />
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
-      
-      {/* Boost indicator */}
-      {postIsBoosted && (
-        <div className="absolute top-2 left-2">
-          <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-semibold">
-            <Zap className="h-3 w-3 mr-1" />
-            Boosted
-          </Badge>
-        </div>
+      {/* Target's image as background */}
+      {post.targetImage && (
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{ backgroundImage: `url(${post.targetImage})` }}
+        />
       )}
       
-      {/* Response indicator */}
-      <div className="absolute bottom-2 right-2 bg-black/60 rounded-full px-2 py-1 text-xs text-white">
-        <MessageCircle className="h-3 w-3 inline mr-1" />
-        {post.responses}
+      {/* Overlay content */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 flex flex-col justify-between">
+        <div className="flex justify-between items-start">
+          <div className="text-xs">
+            <p className="text-white/80 truncate">{post.authorName}</p>
+            <p className="text-white/60">{post.timestamp}</p>
+          </div>
+        </div>
+        
+        <div>
+          <h3 className="text-white font-semibold text-sm mb-1 truncate">{post.targetName}</h3>
+          <p className="text-white/80 text-xs line-clamp-2 leading-tight">{post.content}</p>
+          
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center text-white/60 text-xs">
+              <MessageCircle className="h-3 w-3 mr-1" />
+              {post.responses}
+            </div>
+            
+            {post.isActive && (
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            )}
+          </div>
+        </div>
       </div>
-
-      {/* Active indicator */}
-      {post.isActive && (
-        <div className="absolute top-2 right-2">
-          <div className="w-3 h-3 bg-accent rounded-full animate-pulse" />
-        </div>
-      )}
     </div>
+  );
+
+  return boosted ? (
+    <BoostedPostEffect timeRemaining={formatTimeRemaining(boostEndTime)}>
+      {PostContent}
+    </BoostedPostEffect>
+  ) : (
+    PostContent
   );
 };
 
