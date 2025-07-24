@@ -593,7 +593,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
         {/* Post Detail Modal */}
         <Dialog open={selectedPost !== null} onOpenChange={() => setSelectedPost(null)}>
-          <DialogContent className="sm:max-w-md bg-white border-none shadow-xl max-h-[90vh] overflow-hidden rounded-2xl">
+          <DialogContent className="sm:max-w-2xl lg:max-w-4xl bg-white border-none shadow-xl max-h-[95vh] overflow-hidden rounded-2xl w-[95vw]">
             {selectedPost && (
               <PostDetailView 
                 post={selectedPost} 
@@ -763,7 +763,7 @@ const PostDetailView = ({
   const isOwner = post.authorName === 'MysticWaves'; // In real app, compare with actual user data
   
   return (
-    <div className="space-y-5 p-1">
+    <div className="space-y-6 p-4 max-h-[90vh] overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
@@ -796,7 +796,7 @@ const PostDetailView = ({
       {/* Target Person Photo */}
       {post.targetImage && (
         <div className="flex justify-center">
-          <div className="w-64 h-64 rounded-lg overflow-hidden border-4 border-gray-200 shadow-lg">
+          <div className="w-80 h-80 rounded-lg overflow-hidden border-4 border-gray-200 shadow-lg">
             <img 
               src={post.targetImage} 
               alt={post.targetName}
@@ -848,34 +848,35 @@ const PostDetailView = ({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-gray-50 rounded-lg">
+        <div className="flex items-center space-x-6">
           <Button
             variant="ghost"
-            size="sm"
+            size="default"
             onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground h-10 px-4"
           >
-            <MessageCircle className="h-4 w-4 mr-2" />
+            <MessageCircle className="h-5 w-5 mr-2" />
             {post.responses} {post.responses === 1 ? 'Comment' : 'Comments'}
           </Button>
           
           <Button
             variant="ghost"
-            size="sm"
+            size="default"
             onClick={() => onSave(post)}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground h-10 px-4"
           >
-            <Bookmark className="h-4 w-4 mr-2" />
+            <Bookmark className="h-5 w-5 mr-2" />
             {isSaved ? 'Saved' : 'Save'}
           </Button>
         </div>
         
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3 w-full sm:w-auto">
           <Button
             variant="outline"
-            size="sm"
+            size="default"
             onClick={() => onMessageUser('mock-user-id', post.authorName)}
+            className="flex-1 sm:flex-initial h-10 px-6"
           >
             <Send className="h-4 w-4 mr-2" />
             Message
