@@ -907,7 +907,7 @@ const PostDetailView = ({
                 placeholder="Share your thoughts respectfully..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="min-h-[100px] resize-none"
+                className="min-h-[100px] resize-none bg-accent/10 border-accent/30 focus:border-accent focus:ring-accent/20 text-foreground placeholder:text-accent/70"
               />
               <div className="flex justify-between items-center mt-2">
                 <p className="text-xs text-muted-foreground">
