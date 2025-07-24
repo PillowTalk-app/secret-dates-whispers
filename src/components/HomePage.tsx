@@ -390,7 +390,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                     placeholder="First name or nickname"
                     value={newPost.targetName}
                     onChange={(e) => setNewPost(prev => ({ ...prev, targetName: e.target.value }))}
-                    className="bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300"
+                    className="bg-card/50 border-border/50"
                   />
                 </div>
 
@@ -400,7 +400,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                     placeholder="Share your experience honestly and respectfully..."
                     value={newPost.content}
                     onChange={(e) => setNewPost(prev => ({ ...prev, content: e.target.value }))}
-                    className="bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300 min-h-[100px]"
+                    className="bg-card/50 border-border/50 min-h-[100px]"
                   />
                 </div>
 
@@ -521,7 +521,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
               placeholder="Search by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300 h-12"
+              className="pl-10 bg-card/50 border-border/50 h-12"
             />
           </div>
 
@@ -533,7 +533,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 placeholder="Enter your location (e.g., Brooklyn, NY)"
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
-                className="pl-10 bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300 h-12"
+                className="pl-10 bg-card/50 border-border/50 h-12"
               />
             </div>
             
@@ -907,7 +907,7 @@ const PostDetailView = ({
                 placeholder="Share your thoughts respectfully..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="min-h-[100px] resize-none bg-teal-800/20 border-teal-600 focus:border-teal-400 focus:ring-teal-500/30 text-teal-100 placeholder:text-teal-300"
+                className="min-h-[100px] resize-none bg-accent/10 border-accent/30 focus:border-accent focus:ring-accent/20 text-foreground placeholder:text-accent/70"
               />
               <div className="flex justify-between items-center mt-2">
                 <p className="text-xs text-muted-foreground">
@@ -930,7 +930,7 @@ const PostDetailView = ({
         <div className="space-y-4">
           {comments[post.id]?.length > 0 ? (
             comments[post.id].map((comment) => (
-              <div key={comment.id} className="flex items-start space-x-3 p-4 bg-teal-800/10 border border-teal-600/30 rounded-lg">
+              <div key={comment.id} className="flex items-start space-x-3 p-4 bg-muted/30 rounded-lg">
                 <Avatar className="border border-border/50">
                   <AvatarFallback className="bg-secondary text-secondary-foreground">
                     {comment.authorName.charAt(0).toUpperCase()}
