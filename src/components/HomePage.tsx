@@ -853,6 +853,7 @@ const PostDetailView = ({
           <Button
             variant="ghost"
             size="sm"
+            onClick={() => document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' })}
             className="text-muted-foreground hover:text-foreground"
           >
             <MessageCircle className="h-4 w-4 mr-2" />
@@ -890,7 +891,7 @@ const PostDetailView = ({
       </div>
 
       {/* Comments Section */}
-      <div className="border-t border-border/50 mt-6 pt-6">
+      <div id="comments-section" className="border-t border-border/50 mt-6 pt-6">
         <h3 className="text-lg font-semibold mb-4">Comments ({comments[post.id]?.length || 0})</h3>
         
         {/* Add Comment */}
