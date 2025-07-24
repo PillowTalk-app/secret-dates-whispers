@@ -8,8 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Shield, Eye, Bell, Lock, MapPin, Users, Smartphone, ArrowLeft } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Shield, Eye, Bell, Lock, MapPin, Users, Smartphone, ArrowLeft, LogOut, UserX, AlertTriangle, Info, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserData {
   name: string;
@@ -25,6 +27,9 @@ interface SettingsProps {
 
 export const Settings = ({ userData }: SettingsProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [privacySettings, setPrivacySettings] = useState({
     profileVisibility: 'public',
     showLocation: true,
@@ -55,6 +60,63 @@ export const Settings = ({ userData }: SettingsProps) => {
     { id: '2', name: 'SpamAccount99', blockedDate: '1 week ago' }
   ]);
 
+  const handleSignOut = () => {
+    setIsSigningOut(true);
+    setTimeout(() => {
+      // Clear authentication data
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('appState');
+      localStorage.removeItem('userData');
+      
+      // Clear any payment data
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('match_payment_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+      
+      // Navigate to landing page
+      window.location.href = '/';
+      setIsSigningOut(false);
+    }, 1000);
+  };
+
+  const handleDeleteAccount = () => {
+    setIsDeletingAccount(true);
+    setTimeout(() => {
+      // Mark account for deletion with 30-day recovery period
+      const deletionDate = new Date();
+      deletionDate.setDate(deletionDate.getDate() + 30);
+      
+      localStorage.setItem('accountDeletionScheduled', JSON.stringify({
+        scheduledDate: new Date().toISOString(),
+        recoveryDeadline: deletionDate.toISOString(),
+        userEmail: userData.email,
+        userName: userData.name
+      }));
+      
+      // Clear authentication but keep deletion data
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('appState');
+      localStorage.removeItem('userData');
+      
+      toast({
+        title: "Account Deletion Scheduled",
+        description: "Your account will be deleted in 30 days. Check your email for recovery instructions.",
+        variant: "destructive",
+      });
+      
+      // Navigate to landing page
+      window.location.href = '/';
+      setIsDeletingAccount(false);
+    }, 2000);
+  };
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl pb-24">
       <div className="mb-4">
@@ -73,7 +135,7 @@ export const Settings = ({ userData }: SettingsProps) => {
       </div>
 
       <Tabs defaultValue="privacy" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 bg-card/50 border border-border/50">
+        <TabsList className="grid w-full grid-cols-5 bg-card/50 border border-border/50">
           <TabsTrigger value="privacy" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
             <Lock className="h-4 w-4 mr-2" />
             Privacy
@@ -89,6 +151,10 @@ export const Settings = ({ userData }: SettingsProps) => {
           <TabsTrigger value="blocked" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
             <Users className="h-4 w-4 mr-2" />
             Blocked
+          </TabsTrigger>
+          <TabsTrigger value="account" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
+            <UserX className="h-4 w-4 mr-2" />
+            Account
           </TabsTrigger>
         </TabsList>
 
@@ -378,6 +444,157 @@ export const Settings = ({ userData }: SettingsProps) => {
                   </div>
                 ))
               )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="account" className="space-y-6">
+          {/* Account Information */}
+          <Card className="bg-gradient-card border-border/50">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <User className="h-5 w-5 text-accent" />
+                <span>Account Information</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Name</Label>
+                  <p className="text-foreground font-medium">{userData.name}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Screen Name</Label>
+                  <p className="text-foreground font-medium">@{userData.screenName}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Email</Label>
+                  <p className="text-foreground font-medium">{userData.email}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium text-muted-foreground">Phone</Label>
+                  <p className="text-foreground font-medium">{userData.phone}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Sign Out */}
+          <Card className="bg-gradient-card border-border/50">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <LogOut className="h-5 w-5 text-blue-500" />
+                <span>Sign Out</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Sign out of your account on this device. You can sign back in anytime.
+              </p>
+              
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="w-full border-blue-200 text-blue-600 hover:bg-blue-50">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                      <LogOut className="h-5 w-5" />
+                      Sign Out
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to sign out? You'll need to sign back in to access your account.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction 
+                      onClick={handleSignOut}
+                      disabled={isSigningOut}
+                      className="bg-blue-600 hover:bg-blue-700"
+                    >
+                      {isSigningOut ? 'Signing Out...' : 'Sign Out'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardContent>
+          </Card>
+
+          {/* Delete Account */}
+          <Card className="bg-gradient-card border-red-200/50 border">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2 text-red-600">
+                <UserX className="h-5 w-5" />
+                <span>Delete Account</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <Info className="h-5 w-5 text-amber-600 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-amber-800 mb-1">30-Day Recovery Period</h4>
+                    <p className="text-sm text-amber-700">
+                      Your account will be scheduled for deletion but can be recovered within 30 days. 
+                      After 30 days, your account and all data will be permanently deleted.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>When you delete your account:</p>
+                <ul className="list-disc list-inside space-y-1 ml-4">
+                  <li>Your profile and posts will be hidden immediately</li>
+                  <li>Your messages will be deleted</li>
+                  <li>You'll receive an email with recovery instructions</li>
+                  <li>You have 30 days to recover your account</li>
+                  <li>After 30 days, deletion is permanent</li>
+                </ul>
+              </div>
+              
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" className="w-full">
+                    <UserX className="h-4 w-4 mr-2" />
+                    Delete Account
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2 text-red-600">
+                      <AlertTriangle className="h-5 w-5" />
+                      Delete Account
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-3">
+                      <p>
+                        <strong>This action will schedule your account for deletion.</strong>
+                      </p>
+                      <p>
+                        Your account will be immediately deactivated and scheduled for permanent deletion in 30 days. 
+                        You'll receive an email with instructions to recover your account if you change your mind.
+                      </p>
+                      <p className="text-red-600 font-medium">
+                        Are you absolutely sure you want to continue?
+                      </p>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction 
+                      onClick={handleDeleteAccount}
+                      disabled={isDeletingAccount}
+                      className="bg-red-600 hover:bg-red-700"
+                    >
+                      {isDeletingAccount ? 'Scheduling Deletion...' : 'Yes, Delete My Account'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardContent>
           </Card>
         </TabsContent>
