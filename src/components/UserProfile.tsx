@@ -6,11 +6,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Bell, ArrowLeft, Plus, Bookmark, MessageCircle, Clock, Trash2, Edit3 } from "lucide-react";
+import { Bell, ArrowLeft, Plus, Bookmark, MessageCircle, Clock, Trash2, Edit3, Settings } from "lucide-react";
 
 interface UserProfileProps {
   userData: { name: string; gender: 'male' | 'female'; phone: string; email: string };
   onBack: () => void;
+  onNavigateToSettings?: () => void;
 }
 
 interface Post {
@@ -38,7 +39,7 @@ interface Notification {
   isRead: boolean;
 }
 
-export const UserProfile = ({ userData, onBack }: UserProfileProps) => {
+export const UserProfile = ({ userData, onBack, onNavigateToSettings }: UserProfileProps) => {
   const [activeTab, setActiveTab] = useState('my-posts');
   const [showNewPostForm, setShowNewPostForm] = useState(false);
   const [newPost, setNewPost] = useState<{
@@ -182,6 +183,18 @@ export const UserProfile = ({ userData, onBack }: UserProfileProps) => {
             </div>
             
             <div className="flex items-center space-x-3">
+              {/* Settings Button */}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={onNavigateToSettings}
+                className="text-muted-foreground hover:text-foreground"
+                title="Settings"
+              >
+                <Settings className="h-5 w-5" />
+              </Button>
+              
+              {/* Notifications */}
               <div className="relative">
                 <Bell className="h-5 w-5 text-muted-foreground" />
                 {unreadCount > 0 && (
@@ -191,6 +204,7 @@ export const UserProfile = ({ userData, onBack }: UserProfileProps) => {
                 )}
               </div>
               
+              {/* Profile Avatar */}
               <Avatar className="border-2 border-primary/30">
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground">
                   {userData.name.charAt(0).toUpperCase()}
@@ -216,6 +230,18 @@ export const UserProfile = ({ userData, onBack }: UserProfileProps) => {
                 Verified {userData.gender === 'male' ? 'Male' : 'Female'}
               </Badge>
             </CardDescription>
+            
+            {/* Quick Settings Access */}
+            <div className="mt-4 pt-4 border-t border-border/30">
+              <Button 
+                variant="outline" 
+                onClick={onNavigateToSettings}
+                className="w-full"
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Account Settings
+              </Button>
+            </div>
           </CardHeader>
         </Card>
 

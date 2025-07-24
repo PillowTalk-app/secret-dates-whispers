@@ -86,7 +86,7 @@ const AppContent = () => {
         <Route path="/polls" element={<Polls userData={userData} />} />
         <Route path="/safety" element={<Safety userData={userData} />} />
         <Route path="/reports" element={<Reports userData={userData} />} />
-        <Route path="/profile" element={<UserProfile userData={userData} onBack={navigateToHome} />} />
+        <Route path="/profile" element={<UserProfile userData={userData} onBack={navigateToHome} onNavigateToSettings={() => navigate('/settings')} />} />
         <Route path="/settings" element={<Settings userData={userData} />} />
         <Route path="/matches" element={<Matches />} />
         <Route path="/about" element={<About />} />
