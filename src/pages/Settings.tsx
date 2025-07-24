@@ -31,7 +31,6 @@ export const Settings = ({ userData }: SettingsProps) => {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [privacySettings, setPrivacySettings] = useState({
-    profileVisibility: 'public',
     showLocation: true,
     showLastSeen: true,
     allowMessages: 'verified',
@@ -159,23 +158,6 @@ export const Settings = ({ userData }: SettingsProps) => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium text-foreground">Who can see your profile</Label>
-                  <Select 
-                    value={privacySettings.profileVisibility} 
-                    onValueChange={(value) => setPrivacySettings(prev => ({ ...prev, profileVisibility: value }))}
-                  >
-                    <SelectTrigger className="bg-card/50 border-border/50 mt-2">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-card border-border/50">
-                      <SelectItem value="public">Everyone</SelectItem>
-                      <SelectItem value="verified">Verified users only</SelectItem>
-                      <SelectItem value="private">Private (hidden)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <Label className="text-sm font-medium text-foreground">Show approximate location</Label>
