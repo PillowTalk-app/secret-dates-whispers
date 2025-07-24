@@ -157,7 +157,7 @@ export const Messages = ({ userData }: MessagesProps) => {
                   placeholder="Search conversations..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-card/50 border-border/50"
+                  className="pl-10 bg-teal-800/80 border-teal-600 text-white placeholder:text-teal-200"
                 />
               </div>
             </CardHeader>
@@ -261,7 +261,7 @@ export const Messages = ({ userData }: MessagesProps) => {
                     value={messageInput}
                     onChange={(e) => setMessageInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                    className="bg-card/50 border-border/50"
+                    className="bg-teal-800/80 border-teal-600 text-white placeholder:text-teal-200"
                   />
                   <Button onClick={handleSendMessage} className="bg-accent hover:bg-accent/90">
                     <Send className="h-4 w-4" />
