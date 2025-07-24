@@ -145,6 +145,17 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       post.location.toLowerCase().includes(selectedLocation.toLowerCase());
     
     return matchesSearch && matchesLocation;
+  }).sort((a, b) => {
+    // Sort by timestamp - newer posts first
+    const getTimestamp = (timeStr: string) => {
+      if (timeStr === 'Just now') return Date.now();
+      if (timeStr.includes('minute')) return Date.now() - parseInt(timeStr) * 60 * 1000;
+      if (timeStr.includes('hour')) return Date.now() - parseInt(timeStr) * 60 * 60 * 1000;
+      if (timeStr.includes('day')) return Date.now() - parseInt(timeStr) * 24 * 60 * 60 * 1000;
+      return Date.now() - 1000000; // fallback for older posts
+    };
+    
+    return getTimestamp(b.timestamp) - getTimestamp(a.timestamp);
   });
 
 
@@ -476,11 +487,21 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           </div>
         </div>
         
-        {/* Posts Grid */}
-        <div className="grid grid-cols-3 gap-1">
-          {filteredPosts.map((post) => (
-            <PostSquare key={post.id} post={post} onClick={() => setSelectedPost(post)} />
-          ))}
+        {/* New Posts Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-foreground mb-4 flex items-center">
+            <div className="w-1 h-6 bg-gradient-to-b from-primary to-accent rounded-full mr-3"></div>
+            New Posts
+            <span className="ml-2 text-sm text-muted-foreground font-normal">
+              ({filteredPosts.length})
+            </span>
+          </h2>
+          
+          <div className="grid grid-cols-3 gap-1">
+            {filteredPosts.map((post) => (
+              <PostSquare key={post.id} post={post} onClick={() => setSelectedPost(post)} />
+            ))}
+          </div>
         </div>
 
         {/* No Results */}
