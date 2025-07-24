@@ -55,11 +55,6 @@ export const Settings = ({ userData }: SettingsProps) => {
     locationRadius: [25] // miles
   });
 
-  const [blockedUsers] = useState([
-    { id: '1', name: 'SuspiciousUser123', blockedDate: '2 days ago' },
-    { id: '2', name: 'SpamAccount99', blockedDate: '1 week ago' }
-  ]);
-
   const handleSignOut = () => {
     setIsSigningOut(true);
     setTimeout(() => {
@@ -135,7 +130,7 @@ export const Settings = ({ userData }: SettingsProps) => {
       </div>
 
       <Tabs defaultValue="privacy" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 bg-card/50 border border-border/50">
+        <TabsList className="grid w-full grid-cols-4 bg-card/50 border border-border/50">
           <TabsTrigger value="privacy" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
             <Lock className="h-4 w-4 mr-2" />
             Privacy
@@ -147,10 +142,6 @@ export const Settings = ({ userData }: SettingsProps) => {
           <TabsTrigger value="notifications" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
             <Bell className="h-4 w-4 mr-2" />
             Notifications
-          </TabsTrigger>
-          <TabsTrigger value="blocked" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-            <Users className="h-4 w-4 mr-2" />
-            Blocked
           </TabsTrigger>
           <TabsTrigger value="account" className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
             <UserX className="h-4 w-4 mr-2" />
@@ -413,37 +404,6 @@ export const Settings = ({ userData }: SettingsProps) => {
                   onCheckedChange={(checked) => setNotificationSettings(prev => ({ ...prev, communityUpdates: checked }))}
                 />
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="blocked" className="space-y-6">
-          <Card className="bg-gradient-card border-border/50">
-            <CardHeader>
-              <CardTitle>Blocked Users</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Users you've blocked can't message you or see your posts
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {blockedUsers.length === 0 ? (
-                <div className="text-center py-8">
-                  <Users className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                  <p className="text-muted-foreground">No blocked users</p>
-                </div>
-              ) : (
-                blockedUsers.map((user) => (
-                  <div key={user.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                    <div>
-                      <p className="font-medium text-foreground">{user.name}</p>
-                      <p className="text-sm text-muted-foreground">Blocked {user.blockedDate}</p>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-accent hover:text-accent/80">
-                      Unblock
-                    </Button>
-                  </div>
-                ))
-              )}
             </CardContent>
           </Card>
         </TabsContent>
