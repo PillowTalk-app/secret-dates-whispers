@@ -60,6 +60,7 @@ interface Comment {
   authorGender: 'male' | 'female';
   content: string;
   timestamp: string;
+  likes: number;
   replies?: Comment[];
 }
 
@@ -85,6 +86,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   });
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportingComment, setReportingComment] = useState<{ id: string; authorName: string } | null>(null);
   
   // Hooks
   const { isBoosted, getBoostEndTime, addBoostedPost } = useBoostedPosts();
@@ -162,14 +165,16 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorName: 'Anonymous User',
           authorGender: 'female',
           content: "Thanks for sharing this. I had a similar experience with someone who seemed charming at first.",
-          timestamp: '1 hour ago'
+          timestamp: '1 hour ago',
+          likes: 3
         },
         {
           id: 'c2',
           authorName: 'CosmicSeeker',
           authorGender: 'male',
           content: "This is really helpful info. Dating can be tough when people aren't genuine.",
-          timestamp: '30 minutes ago'
+          timestamp: '30 minutes ago',
+          likes: 1
         }
       ],
       '2': [
@@ -178,7 +183,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorName: 'WisdomSeeker',
           authorGender: 'female',
           content: "Great to hear a positive story! Communication is so important in relationships.",
-          timestamp: '2 hours ago'
+          timestamp: '2 hours ago',
+          likes: 5
         }
       ]
     };
@@ -193,7 +199,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       authorName: userData.screenName,
       authorGender: userData.gender,
       content: newComment,
-      timestamp: 'Just now'
+      timestamp: 'Just now',
+      likes: 0
     };
 
     setComments(prev => ({
@@ -841,9 +848,23 @@ const PostDetailView = ({
   const boostEndTime = getBoostEndTime(post.id);
   
   // Comment interaction handlers - defined locally in PostDetailView
+  const [localComments, setLocalComments] = useState(comments[post.id] || []);
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportingCommentData, setReportingCommentData] = useState<{ id: string; authorName: string } | null>(null);
+
+  // Update local comments when prop changes
+  useEffect(() => {
+    setLocalComments(comments[post.id] || []);
+  }, [comments, post.id]);
+
   const handleLikeComment = (commentId: string) => {
-    console.log('Liked comment:', commentId);
-    // In a real app, this would update the like count
+    setLocalComments(prev => 
+      prev.map(comment => 
+        comment.id === commentId 
+          ? { ...comment, likes: comment.likes + 1 }
+          : comment
+      )
+    );
   };
 
   const handleReplyToComment = (commentId: string) => {
@@ -852,14 +873,24 @@ const PostDetailView = ({
   };
 
   const handleReportComment = (commentId: string) => {
-    console.log('Report comment:', commentId);
-    // In a real app, this would open a report dialog
+    const comment = localComments.find(c => c.id === commentId);
+    if (comment) {
+      setReportingCommentData({ id: commentId, authorName: comment.authorName });
+      setReportModalOpen(true);
+    }
+  };
+
+  const handleReportSubmitted = () => {
+    console.log('Report submitted successfully');
+    setReportModalOpen(false);
+    setReportingCommentData(null);
   };
   
   // Mock logic to determine if current user is the post owner
   const isOwner = post.authorName === 'MysticWaves'; // In real app, compare with actual user data
   
   return (
+    <>
     <div className="space-y-6 p-4 max-h-[90vh] overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -1059,7 +1090,7 @@ const PostDetailView = ({
                       className="h-6 px-2 text-xs text-black hover:text-black hover:bg-gray-100"
                     >
                       <Heart className="h-3 w-3 mr-1" />
-                      Like
+                      Like ({localComments.find(c => c.id === comment.id)?.likes || 0})
                     </Button>
                     <Button 
                       variant="ghost" 
@@ -1100,5 +1131,19 @@ const PostDetailView = ({
         </div>
       </div>
     </div>
+
+    {/* Report Modal */}
+    <ReportModal
+      isOpen={reportModalOpen}
+      onClose={() => {
+        setReportModalOpen(false);
+        setReportingCommentData(null);
+      }}
+      targetType="post"
+      targetId={reportingCommentData?.id || ''}
+      targetName={reportingCommentData?.authorName || ''}
+      onReportSubmitted={handleReportSubmitted}
+    />
+  </>
   );
 };
