@@ -65,10 +65,14 @@ const AppContent = () => {
     };
   }, []);
 
-  // Only show bottom navigation when fully authenticated and specifically in home state
-  // Hide during loading, verification, auth-choice, signin, messaging, and profile states
+  // Only show bottom navigation when fully authenticated and in home state
+  // Hide during ALL authentication phases: loading, verification, auth-choice, signin
   const showNavigation = isAuthenticated && location.pathname === '/' && appState === 'home';
-  const showTopNavigation = (isAuthenticated && location.pathname !== '/' && appState !== 'loading' && appState !== 'verification' && appState !== 'auth-choice' && appState !== 'signin') || location.pathname === '/about';
+    
+  // Hide top navigation during authentication flow and on home page
+  const showTopNavigation = isAuthenticated && 
+    location.pathname !== '/' && 
+    !['loading', 'verification', 'auth-choice', 'signin'].includes(appState);
 
   return (
     <div className="min-h-screen bg-background">
