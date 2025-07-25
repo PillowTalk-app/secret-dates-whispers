@@ -8,8 +8,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Search, MessageCircle, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign, AlertCircle, Shield } from "lucide-react";
+import { Search, MessageCircle, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign, AlertCircle, Shield, Heart } from "lucide-react";
 import { validatePostContent, getContentGuidelines } from "@/utils/postContentValidation";
+import { ReportModal } from "@/components/ReportModal";
 import { CommentsDialog } from "@/components/CommentsDialog";
 import { MessagingRestrictions } from "@/components/MessagingRestrictions";
 import { DatingFootprintDisplay } from "@/components/DatingFootprintDisplay";
@@ -364,6 +365,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
       images: prev.images.filter((_, i) => i !== index) 
     }));
   };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -838,6 +840,22 @@ const PostDetailView = ({
   const postIsBoosted = isBoosted(post.id);
   const boostEndTime = getBoostEndTime(post.id);
   
+  // Comment interaction handlers - defined locally in PostDetailView
+  const handleLikeComment = (commentId: string) => {
+    console.log('Liked comment:', commentId);
+    // In a real app, this would update the like count
+  };
+
+  const handleReplyToComment = (commentId: string) => {
+    console.log('Reply to comment:', commentId);
+    // In a real app, this would open a reply interface
+  };
+
+  const handleReportComment = (commentId: string) => {
+    console.log('Report comment:', commentId);
+    // In a real app, this would open a report dialog
+  };
+  
   // Mock logic to determine if current user is the post owner
   const isOwner = post.authorName === 'MysticWaves'; // In real app, compare with actual user data
   
@@ -1029,13 +1047,29 @@ const PostDetailView = ({
                   
                   {/* Comment actions */}
                   <div className="flex items-center space-x-4 mt-2">
-                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleLikeComment(comment.id)}
+                      className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      <Heart className="h-3 w-3 mr-1" />
                       Like
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleReplyToComment(comment.id)}
+                      className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+                    >
                       Reply
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleReportComment(comment.id)}
+                      className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive"
+                    >
                       Report
                     </Button>
                   </div>
