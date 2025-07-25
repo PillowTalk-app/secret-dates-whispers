@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Camera, X, MapPin, AlertCircle, ArrowLeft, Shield } from "lucide-react";
@@ -34,6 +35,7 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [showValidation, setShowValidation] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const handleAddImage = () => {
     // Mock image upload - in real app would handle file upload
@@ -222,13 +224,48 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
             </div>
           </div>
 
+          {/* Terms of Service and Privacy Policy Disclaimer */}
+          <div className="bg-card/30 rounded-lg p-4 border border-border/50">
+            <div className="flex items-start space-x-2">
+              <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+              <div className="text-sm">
+                <h4 className="font-medium text-foreground mb-2">Terms of Service & Privacy Policy</h4>
+                <div className="text-muted-foreground space-y-2">
+                  <p>By posting, you acknowledge and agree that:</p>
+                  <ul className="space-y-1 pl-4">
+                    <li>• <strong>You are 100% responsible</strong> for all content you post</li>
+                    <li>• All content is <strong>subjective, opinion-based, and not verified</strong></li>
+                    <li>• There is <strong>no expectation of truth or accuracy</strong> for any posts</li>
+                    <li>• Content represents personal experiences and opinions only</li>
+                    <li>• You understand this platform operates similarly to Reddit and other opinion forums</li>
+                    <li>• You will not post false, defamatory, or malicious content</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2 mt-4">
+              <Checkbox 
+                id="terms-agreement"
+                checked={agreedToTerms}
+                onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+              />
+              <label 
+                htmlFor="terms-agreement" 
+                className="text-sm text-foreground font-medium cursor-pointer"
+              >
+                I acknowledge and agree to the Terms of Service and understand that content is opinion-based
+              </label>
+            </div>
+          </div>
+
           {/* Submit Button */}
           <Button 
             onClick={handleSubmit}
-            disabled={!postData.targetName || !postData.content || isSubmitting}
+            disabled={!postData.targetName || !postData.content || !agreedToTerms || isSubmitting}
             className="w-full bg-teal-700 hover:bg-teal-800 text-white h-12"
           >
-            {isSubmitting ? 'Sharing Experience...' : 'Share Experience'}
+            {isSubmitting ? "Sharing Experience..." : "Share Experience"}
           </Button>
         </CardContent>
       </Card>
