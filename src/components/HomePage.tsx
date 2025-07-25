@@ -712,6 +712,12 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           return (
             <Dialog open={!!footprintPerson} onOpenChange={() => setFootprintPerson(null)}>
               <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Dating Footprint Analysis</DialogTitle>
+                  <DialogDescription>
+                    View aggregated behavioral patterns and mentions from verified posts about {footprintPerson}
+                  </DialogDescription>
+                </DialogHeader>
                 <DatingFootprintDisplay 
                   footprint={footprint}
                   analysis={analysis}
