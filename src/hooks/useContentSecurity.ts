@@ -17,59 +17,11 @@ export const useContentSecurity = () => {
         } catch (error) {
           console.warn('Security features not available:', error);
         }
-      } else {
-        // Web platform - disable right-click and some keyboard shortcuts
-        const disableRightClick = (e: MouseEvent) => {
-          e.preventDefault();
-          return false;
-        };
-
-        const disableKeyShortcuts = (e: KeyboardEvent) => {
-          // Disable common screenshot/sharing shortcuts
-          if (
-            (e.ctrlKey && (e.key === 's' || e.key === 'p' || e.key === 'a')) ||
-            (e.metaKey && (e.key === 's' || e.key === 'p' || e.key === 'a')) ||
-            e.key === 'PrintScreen' ||
-            e.key === 'F12' ||
-            (e.ctrlKey && e.shiftKey && e.key === 'I')
-          ) {
-            e.preventDefault();
-            return false;
-          }
-        };
-
-        const disableTextSelection = () => {
-          document.body.style.userSelect = 'none';
-          document.body.style.webkitUserSelect = 'none';
-        };
-
-        document.addEventListener('contextmenu', disableRightClick);
-        document.addEventListener('keydown', disableKeyShortcuts);
-        disableTextSelection();
-
-        return () => {
-          document.removeEventListener('contextmenu', disableRightClick);
-          document.removeEventListener('keydown', disableKeyShortcuts);
-          document.body.style.userSelect = '';
-          document.body.style.webkitUserSelect = '';
-        };
       }
     };
 
     initSecurity();
   }, []);
-
-  const showSecurityWarning = () => {
-    if (Capacitor.isNativePlatform()) {
-      // Native toast/alert for mobile
-      return 'Content is protected for privacy';
-    } else {
-      // Web notification
-      alert('This content is protected and cannot be copied or shared');
-    }
-  };
-
-  return { showSecurityWarning };
 };
 
 // Extend window interface for native security plugins
