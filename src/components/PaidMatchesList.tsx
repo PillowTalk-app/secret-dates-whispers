@@ -13,7 +13,6 @@ interface Match {
   mutualPersonPhoto: string; // Photo of person they both dated
   sharedMemory: string;
   matchedOn: string;
-  location: string;
   canMessage: boolean;
   hasConversation: boolean;
   lastActivity?: string;
@@ -28,7 +27,6 @@ const mockMatches: Match[] = [
     mutualPersonPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     sharedMemory: "You both posted about dating Alex from downtown - discovered similar experiences about communication patterns and how they handled conflict resolution",
     matchedOn: "2 days ago",
-    location: "2 miles away",
     canMessage: true,
     hasConversation: false
   },
@@ -39,7 +37,6 @@ const mockMatches: Match[] = [
     mutualPersonPhoto: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face",
     sharedMemory: "Both shared experiences about dating someone from the gym - found common red flags including inconsistent texting and mixed signals about commitment",
     matchedOn: "1 week ago",
-    location: "5 miles away", 
     canMessage: true,
     hasConversation: true,
     lastActivity: "Active 2h ago"
@@ -50,8 +47,7 @@ const mockMatches: Match[] = [
     mutualPersonName: "Taylor Kim",
     mutualPersonPhoto: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=150&h=150&fit=crop&crop=face",
     sharedMemory: "Matched on experiences with someone from dating app - shared insights about messaging patterns and discovered similar experiences with love bombing behavior",
-    matchedOn: "3 days ago", 
-    location: "1 mile away",
+    matchedOn: "3 days ago",
     canMessage: true,
     hasConversation: false
   }

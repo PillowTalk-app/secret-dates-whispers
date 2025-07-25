@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageCircle, Heart, Clock, MapPin, Sparkles, Activity } from "lucide-react";
+import { MessageCircle, Heart, Clock, Sparkles, Activity } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface Match {
@@ -12,7 +12,6 @@ interface Match {
   mutualPersonPhoto: string; // Photo of person they both dated
   sharedMemory: string;
   matchedOn: string;
-  location: string;
   canMessage: boolean;
   hasConversation: boolean;
   lastActivity?: string;
@@ -76,10 +75,6 @@ export const MatchCard = ({ match, onStartConversation }: MatchCardProps) => {
               <p className="text-sm text-muted-foreground">
                 Mutual connection with <span className="font-medium text-accent">{match.username}</span>
               </p>
-              <div className="flex items-center text-sm text-muted-foreground mt-1">
-                <MapPin className="h-3 w-3 mr-1" />
-                {match.location}
-              </div>
               {match.lastActivity && (
                 <div className="flex items-center text-xs text-green-600 mt-1">
                   <Activity className="h-3 w-3 mr-1" />
