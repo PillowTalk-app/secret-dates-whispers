@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Shield, Camera, User, Phone, Mail, Scan, Upload, AlertCircle, CheckCircle } from "lucide-react";
 import { validateScreenName, getScreenNameHelpText } from "@/utils/screenNameValidation";
 
@@ -18,7 +19,8 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
     gender: '' as 'male' | 'female' | '',
     phone: '',
     email: '',
-    faceVerified: false
+    faceVerified: false,
+    isOver18: false
   });
   
   const [screenNameValidation, setScreenNameValidation] = useState<{
@@ -142,6 +144,25 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
                   <p className="text-xs text-muted-foreground mt-2">
                     This determines who can see your profile
                   </p>
+                </div>
+
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-start space-x-3">
+                    <Checkbox 
+                      id="age-verification"
+                      checked={formData.isOver18}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isOver18: !!checked }))}
+                      className="mt-0.5"
+                    />
+                    <div className="flex-1">
+                      <label htmlFor="age-verification" className="text-sm font-medium text-red-800 cursor-pointer">
+                        I confirm that I am 18 years of age or older
+                      </label>
+                      <p className="text-xs text-red-700 mt-1">
+                        You must be at least 18 years old to use Pillow Talk. This is required by law.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -330,7 +351,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
               <Button
                 onClick={handleNext}
                 disabled={
-                  (step === 1 && (!formData.name || !formData.gender || !formData.phone)) ||
+                  (step === 1 && (!formData.name || !formData.gender || !formData.phone || !formData.isOver18)) ||
                   (step === 2 && (!formData.email || !formData.screenName || screenNameValidation?.isValid === false))
                 }
                 className="ml-auto"
