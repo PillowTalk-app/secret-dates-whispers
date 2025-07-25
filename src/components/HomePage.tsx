@@ -147,7 +147,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorGender: userData.gender === 'male' ? 'female' : 'male',
           authorImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
           targetName: 'Riley Thompson',
-          targetImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=300&h=300&fit=crop&crop=face',
+          targetImage: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=300&h=300&fit=crop&crop=face',
           content: 'Great first date at a local café. Very engaging conversation and respectful throughout.',
           timestamp: '6 hours ago',
           responses: 2,
