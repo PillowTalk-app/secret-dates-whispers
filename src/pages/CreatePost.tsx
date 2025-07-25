@@ -157,7 +157,7 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
 
           {/* Image Upload */}
           <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Photos (Optional)</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Photos of Person (Required)</label>
             <div className="grid grid-cols-2 gap-3 mb-3">
               {postData.images.map((image, index) => (
                 <div key={index} className="relative aspect-square">
@@ -188,7 +188,7 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
               </Button>
             )}
             <p className="text-xs text-muted-foreground mt-1">
-              Only include photos that are relevant and appropriate
+              At least one photo of the person is required to help the community identify them
             </p>
           </div>
 
@@ -262,7 +262,7 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
           {/* Submit Button */}
           <Button 
             onClick={handleSubmit}
-            disabled={!postData.targetName || !postData.content || !agreedToTerms || isSubmitting}
+            disabled={!postData.targetName || !postData.content || postData.images.length === 0 || !agreedToTerms || isSubmitting}
             className="w-full bg-teal-700 hover:bg-teal-800 text-white h-12"
           >
             {isSubmitting ? "Sharing Experience..." : "Share Experience"}

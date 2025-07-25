@@ -259,7 +259,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   };
 
   const handleCreatePost = async () => {
-    if (!newPost.targetName || !newPost.content || newPost.images.length === 0) return;
+    if (!newPost.targetName || !newPost.content || newPost.images.length === 0 || !agreedToTerms) return;
 
     // Validate content before submission
     const validation = validatePostContent(newPost.content, newPost.targetName);
