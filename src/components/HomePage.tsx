@@ -400,7 +400,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 Create Post
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md bg-card border-border/50">
+            <DialogContent className="sm:max-w-md bg-card border-border/50 max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Share Your Experience</DialogTitle>
                 <DialogDescription>
