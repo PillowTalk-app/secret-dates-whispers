@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Send, MoreVertical, ArrowLeft } from "lucide-react";
@@ -34,6 +34,8 @@ interface Conversation {
   id: string;
   participantName: string;
   participantGender: 'male' | 'female';
+  mutualPersonName: string; // Name of person they both dated
+  mutualPersonPhoto: string; // Photo of person they both dated
   lastMessage: string;
   lastMessageTime: string;
   unreadCount: number;
@@ -52,6 +54,8 @@ export const Messages = ({ userData }: MessagesProps) => {
       id: '1',
       participantName: 'MysticWaves',
       participantGender: userData.gender === 'male' ? 'female' : 'male',
+      mutualPersonName: 'Alex Chen',
+      mutualPersonPhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
       lastMessage: 'Thanks for sharing that post about Alex. Really helpful!',
       lastMessageTime: '2m ago',
       unreadCount: 2,
@@ -62,7 +66,7 @@ export const Messages = ({ userData }: MessagesProps) => {
           senderId: '1',
           senderName: 'MysticWaves',
           senderGender: userData.gender === 'male' ? 'female' : 'male',
-          content: 'Hi! I saw your post about Alex Johnson. Could you tell me more about your experience?',
+          content: 'Hi! I saw your post about Alex Chen. Could you tell me more about your experience?',
           timestamp: '10:30 AM',
           isRead: true
         },
@@ -71,7 +75,7 @@ export const Messages = ({ userData }: MessagesProps) => {
           senderId: userData.phone,
           senderName: userData.screenName,
           senderGender: userData.gender,
-          content: 'Sure! What would you like to know specifically?',
+          content: 'Sure! What would you like to know specifically about dating Alex?',
           timestamp: '10:35 AM',
           isRead: true
         },
@@ -90,6 +94,8 @@ export const Messages = ({ userData }: MessagesProps) => {
       id: '2',
       participantName: 'SunsetDreamer',
       participantGender: userData.gender === 'male' ? 'female' : 'male',
+      mutualPersonName: 'Jordan Martinez',
+      mutualPersonPhoto: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
       lastMessage: 'Looking forward to connecting more!',
       lastMessageTime: '1h ago',
       unreadCount: 0,
@@ -100,7 +106,7 @@ export const Messages = ({ userData }: MessagesProps) => {
           senderId: '2',
           senderName: 'SunsetDreamer',
           senderGender: userData.gender === 'male' ? 'female' : 'male',
-          content: 'Hey! Your review about Sam was really detailed. Thanks for sharing.',
+          content: 'Hey! Your review about Jordan Martinez was really detailed. Thanks for sharing.',
           timestamp: '9:15 AM',
           isRead: true
         },
@@ -172,9 +178,17 @@ export const Messages = ({ userData }: MessagesProps) => {
                     onClick={() => setSelectedConversation(conversation.id)}
                   >
                     <div className="flex items-start space-x-3">
-                      <div className="relative">
-                        <Avatar className="border-2 border-primary/20">
-                          <AvatarFallback className="bg-gradient-primary text-primary-foreground text-sm">
+                      <div className="relative flex space-x-2">
+                        {/* Mutual Person Avatar */}
+                        <Avatar className="h-10 w-10 border-2 border-accent/30">
+                          <AvatarImage src={conversation.mutualPersonPhoto} alt={conversation.mutualPersonName} />
+                          <AvatarFallback className="bg-gradient-accent text-accent-foreground text-xs">
+                            {conversation.mutualPersonName.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        {/* User Avatar - smaller, overlapping */}
+                        <Avatar className="h-8 w-8 -ml-3 border-2 border-primary/20">
+                          <AvatarFallback className="bg-gradient-primary text-primary-foreground text-xs">
                             {conversation.participantName.charAt(0).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
@@ -184,7 +198,10 @@ export const Messages = ({ userData }: MessagesProps) => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-foreground truncate">{conversation.participantName}</h3>
+                          <div>
+                            <h3 className="font-semibold text-foreground text-sm">{conversation.participantName}</h3>
+                            <p className="text-xs text-muted-foreground">about {conversation.mutualPersonName}</p>
+                          </div>
                           <span className="text-xs text-muted-foreground">{conversation.lastMessageTime}</span>
                         </div>
                         <p className="text-sm text-muted-foreground truncate mt-1">{conversation.lastMessage}</p>
@@ -210,14 +227,27 @@ export const Messages = ({ userData }: MessagesProps) => {
               <CardHeader className="border-b border-border/30">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <Avatar className="border-2 border-primary/20">
-                      <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                        {selectedConv.participantName.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="relative flex space-x-2">
+                      {/* Mutual Person Avatar - larger in chat header */}
+                      <Avatar className="h-12 w-12 border-2 border-accent/30">
+                        <AvatarImage src={selectedConv.mutualPersonPhoto} alt={selectedConv.mutualPersonName} />
+                        <AvatarFallback className="bg-gradient-accent text-accent-foreground">
+                          {selectedConv.mutualPersonName.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      {/* User Avatar - smaller, overlapping */}
+                      <Avatar className="h-10 w-10 -ml-4 border-2 border-primary/20">
+                        <AvatarFallback className="bg-gradient-primary text-primary-foreground">
+                          {selectedConv.participantName.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
                     <div>
                       <h3 className="font-semibold text-foreground">{selectedConv.participantName}</h3>
                       <p className="text-sm text-muted-foreground">
+                        Discussing experiences about <span className="font-medium text-accent">{selectedConv.mutualPersonName}</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">
                         {selectedConv.isOnline ? 'Online' : 'Last seen recently'}
                       </p>
                     </div>
