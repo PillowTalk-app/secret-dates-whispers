@@ -12,35 +12,67 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Create Supabase client using anon key for user authentication
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+  );
+
+  // Create Supabase service client for database writes
+  const supabaseService = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } }
+  );
+
   try {
-    const { userEmail, userName } = await req.json();
-    if (!userEmail || !userName) {
-      throw new Error("User email and name are required");
+    // Retrieve authenticated user
+    const authHeader = req.headers.get("Authorization")!;
+    const token = authHeader.replace("Bearer ", "");
+    const { data } = await supabaseClient.auth.getUser(token);
+    const user = data.user;
+    if (!user?.email) throw new Error("User not authenticated or email not available");
+
+    // Check if user already has a paid messaging payment
+    const { data: existingPayment } = await supabaseService
+      .from("match_payments")
+      .select("*")
+      .eq("user_email", user.email)
+      .eq("status", "paid")
+      .single();
+
+    if (existingPayment) {
+      return new Response(JSON.stringify({ 
+        error: "You already have messaging privileges unlocked" 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
 
-    // Initialize Stripe
-    const stripe = new Stripe("sk_test_51RnvNVQ9BeFdofGd81eLtN9RKKYySVV9NVhbI9HqDgYJovDCfPw854bWeEwV8Qs8eBq3C3VkQPPUg74kiP5WnHbi00KuIaQmuR", {
+    // Initialize Stripe with your live key
+    const stripe = new Stripe("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", {
       apiVersion: "2023-10-16",
     });
 
     // Check if customer exists
-    const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
     }
 
-    // Create checkout session
+    // Create checkout session for messaging unlock
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      customer_email: customerId ? undefined : userEmail,
+      customer_email: customerId ? undefined : user.email,
       line_items: [
         {
           price_data: {
             currency: "usd",
             product_data: { 
-              name: "Unlock All Matches & Messaging",
-              description: "Access all your memory matches and unlimited messaging"
+              name: "Unlock Messaging with All Matches",
+              description: "Start conversations with all your current and future matches"
             },
             unit_amount: 599, // $5.99 in cents
           },
@@ -48,28 +80,20 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/?payment=success`,
-      cancel_url: `${req.headers.get("origin")}/?payment=cancelled`,
+      success_url: `${req.headers.get("origin")}/messages?payment=success`,
+      cancel_url: `${req.headers.get("origin")}/matches?payment=cancelled`,
       metadata: {
-        user_email: userEmail,
-        user_name: userName,
-        feature: "match_unlock_all"
+        user_email: user.email,
+        feature: "messaging_unlock"
       }
     });
-
-    // Create Supabase service client
-    const supabaseService = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
 
     // Store pending payment
     await supabaseService
       .from("match_payments")
       .insert({
-        user_email: userEmail,
-        user_name: userName,
+        user_email: user.email,
+        user_name: user.user_metadata?.name || "Unknown",
         stripe_session_id: session.id,
         amount: 599,
         status: "pending",
@@ -81,7 +105,7 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error) {
-    console.error("Error creating match payment:", error);
+    console.error("Error creating messaging payment:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

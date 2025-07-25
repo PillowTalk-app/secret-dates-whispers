@@ -19,7 +19,7 @@ serve(async (req) => {
     }
 
     // Initialize Stripe
-    const stripe = new Stripe("sk_test_51RnvNVQ9BeFdofGd81eLtN9RKKYySVV9NVhbI9HqDgYJovDCfPw854bWeEwV8Qs8eBq3C3VkQPPUg74kiP5WnHbi00KuIaQmuR", {
+    const stripe = new Stripe("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", {
       apiVersion: "2023-10-16",
     });
 

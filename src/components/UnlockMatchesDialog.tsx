@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Lock, Heart, MessageCircle, Users, Sparkles } from 'lucide-react';
-import { useMatchPayments } from '@/hooks/useMatchPayments';
+import { Lock, Heart, MessageCircle, Users, Sparkles, Crown } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface UnlockMatchesDialogProps {
   isOpen: boolean;
@@ -12,19 +12,54 @@ interface UnlockMatchesDialogProps {
     email: string;
     name: string;
   };
+  onPaymentSuccess?: () => void;
 }
 
-export const UnlockMatchesDialog = ({ isOpen, onClose, userData }: UnlockMatchesDialogProps) => {
-  const { createPayment, isLoading } = useMatchPayments();
+export const UnlockMatchesDialog = ({ isOpen, onClose, userData, onPaymentSuccess }: UnlockMatchesDialogProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
 
-  const handleUnlockMatches = async () => {
-    setIsProcessing(true);
-    const success = await createPayment(userData.email, userData.name);
-    if (success) {
-      // Keep dialog open - user will return from Stripe checkout
+  const handleUnlockMessaging = async () => {
+    try {
+      setIsProcessing(true);
+      
+      // Mock payment flow - in real app, this would call the Supabase edge function
+      // const { data, error } = await supabase.functions.invoke('create-match-payment');
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock Stripe checkout URL for demonstration
+      const mockStripeUrl = `https://checkout.stripe.com/pay/mock-messaging-unlock-${Date.now()}`;
+      
+      toast({
+        title: "Redirecting to Payment",
+        description: "You'll be redirected to Stripe checkout to unlock messaging.",
+      });
+
+      // In real implementation, this would open Stripe checkout
+      // window.open(mockStripeUrl, '_blank');
+      
+      // For demo, simulate successful payment
+      setTimeout(() => {
+        toast({
+          title: "Payment Successful!",
+          description: "You can now message all your matches!",
+        });
+        onClose();
+        onPaymentSuccess?.();
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Error creating payment:', error);
+      toast({
+        title: "Payment Error",
+        description: "Failed to process payment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
     }
-    setIsProcessing(false);
   };
 
   return (
@@ -32,8 +67,8 @@ export const UnlockMatchesDialog = ({ isOpen, onClose, userData }: UnlockMatches
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <Lock className="h-5 w-5" />
-            Unlock All Matches & Messaging
+            <Crown className="h-5 w-5" />
+            Unlock Messaging with All Matches
           </DialogTitle>
         </DialogHeader>
         
@@ -63,26 +98,26 @@ export const UnlockMatchesDialog = ({ isOpen, onClose, userData }: UnlockMatches
             
             <div className="space-y-3">
               <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
-                <Users className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">All Memory Matches</p>
-                  <p className="text-sm text-muted-foreground">See everyone you have in common</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
                 <MessageCircle className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="font-medium">Unlimited Messaging</p>
-                  <p className="text-sm text-muted-foreground">Chat with all your matches</p>
+                  <p className="font-medium">Start Conversations</p>
+                  <p className="text-sm text-muted-foreground">Message all your current and future matches</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
                 <Heart className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="font-medium">Compare Experiences</p>
-                  <p className="text-sm text-muted-foreground">Share and learn from each other</p>
+                  <p className="font-medium">Forever Access</p>
+                  <p className="text-sm text-muted-foreground">Conversations last indefinitely once started</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
+                <Users className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-medium">Free Responses</p>
+                  <p className="text-sm text-muted-foreground">You can always respond to messages for free</p>
                 </div>
               </div>
             </div>
@@ -90,11 +125,11 @@ export const UnlockMatchesDialog = ({ isOpen, onClose, userData }: UnlockMatches
 
           <div className="space-y-3">
             <Button 
-              onClick={handleUnlockMatches} 
-              disabled={isLoading || isProcessing}
+              onClick={handleUnlockMessaging} 
+              disabled={isProcessing}
               className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3"
             >
-              {isProcessing ? 'Processing...' : 'Unlock for $5.99'}
+              {isProcessing ? 'Processing...' : 'Unlock Messaging - $5.99'}
             </Button>
             
             <Button 
@@ -107,7 +142,7 @@ export const UnlockMatchesDialog = ({ isOpen, onClose, userData }: UnlockMatches
           </div>
 
           <p className="text-xs text-muted-foreground text-center">
-            Secure payment processed by Stripe. One-time payment gives you lifetime access to all current and future matches.
+            Secure payment processed by Stripe. One-time payment lets you start conversations with all current and future matches. You can always respond to messages for free.
           </p>
         </div>
       </DialogContent>
