@@ -117,7 +117,7 @@ export const ReportModal = ({
               </SelectTrigger>
               <SelectContent className="bg-white border border-gray-200">
                 {reportReasons[targetType].map((reason) => (
-                  <SelectItem key={reason.value} value={reason.value} className="hover:bg-gray-50">
+                  <SelectItem key={reason.value} value={reason.value} className="hover:bg-gray-50 text-black">
                     {reason.label}
                   </SelectItem>
                 ))}
