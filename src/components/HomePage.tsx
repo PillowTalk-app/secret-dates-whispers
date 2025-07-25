@@ -1050,8 +1050,13 @@ const PostDetailView = ({
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      onClick={() => handleLikeComment(comment.id)}
-                      className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleLikeComment(comment.id);
+                        console.log("Like button clicked for comment:", comment.id);
+                      }}
+                      className="h-6 px-2 text-xs text-black hover:text-black hover:bg-gray-100"
                     >
                       <Heart className="h-3 w-3 mr-1" />
                       Like
@@ -1059,16 +1064,26 @@ const PostDetailView = ({
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      onClick={() => handleReplyToComment(comment.id)}
-                      className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleReplyToComment(comment.id);
+                        console.log("Reply button clicked for comment:", comment.id);
+                      }}
+                      className="h-6 px-2 text-xs text-black hover:text-black hover:bg-gray-100"
                     >
                       Reply
                     </Button>
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      onClick={() => handleReportComment(comment.id)}
-                      className="h-6 px-2 text-xs text-muted-foreground hover:text-destructive"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleReportComment(comment.id);
+                        console.log("Report button clicked for comment:", comment.id);
+                      }}
+                      className="h-6 px-2 text-xs text-black hover:text-destructive hover:bg-red-50"
                     >
                       Report
                     </Button>
