@@ -255,7 +255,9 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
   };
 
   const handleViewFootprint = (personName: string) => {
+    console.log("handleViewFootprint called with:", personName);
     setFootprintPerson(personName);
+    console.log("footprintPerson state set to:", personName);
   };
 
   const handleCreatePost = async () => {
@@ -703,8 +705,13 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
         />
 
         {footprintPerson && (() => {
+          console.log("footprintPerson state is:", footprintPerson);
           const footprint = getFootprintForPerson(footprintPerson);
-          if (!footprint) return null;
+          console.log("footprint data:", footprint);
+          if (!footprint) {
+            console.log("No footprint found for:", footprintPerson);
+            return null;
+          }
           
           const analysis = analyzeFootprint(footprint);
           const confidenceLevel = getConfidenceLevel(footprint.confidenceScore);
