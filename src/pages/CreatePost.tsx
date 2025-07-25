@@ -157,7 +157,7 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
 
           {/* Image Upload */}
           <div>
-            <label className="text-sm font-medium mb-2 block text-foreground">Photos of Person (Required)</label>
+            <label className="text-sm font-medium mb-2 block text-foreground">Photo (Required)</label>
             <div className="grid grid-cols-2 gap-3 mb-3">
               {postData.images.map((image, index) => (
                 <div key={index} className="relative aspect-square">
