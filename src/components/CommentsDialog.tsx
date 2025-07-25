@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, MessageCircle, Heart } from 'lucide-react';
+import { Send, MessageCircle, Heart, Shield } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { validatePostContent } from '@/utils/postContentValidation';
 
 interface Comment {
   id: string;
@@ -59,12 +60,28 @@ export const CommentsDialog = ({ post, isOpen, onClose }: CommentsDialogProps) =
   ]);
   const [newComment, setNewComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { toast } = useToast();
 
   const handleSubmitComment = async () => {
     if (!newComment.trim()) return;
 
+    // Validate comment content before submission
+    const validation = validatePostContent(newComment, '');
+    
+    if (!validation.isValid) {
+      setValidationErrors(validation.errors);
+      toast({
+        title: "Comment blocked for privacy protection",
+        description: "Please remove personal information from your comment",
+        variant: "destructive",
+        duration: 5000,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
+    setValidationErrors([]);
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -186,9 +203,25 @@ export const CommentsDialog = ({ post, isOpen, onClose }: CommentsDialogProps) =
                 onChange={(e) => setNewComment(e.target.value)}
                 className="min-h-[80px] resize-none"
               />
+              {/* Validation Errors */}
+              {validationErrors.length > 0 && (
+                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 mt-2">
+                  <div className="flex items-start space-x-2">
+                    <Shield className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                    <div className="text-sm">
+                      <h4 className="font-medium text-destructive mb-1">Privacy Protection</h4>
+                      <ul className="text-destructive/80 space-y-1">
+                        {validationErrors.map((error, index) => (
+                          <li key={index}>• {error}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="flex justify-between items-center mt-2">
                 <p className="text-xs text-muted-foreground">
-                  Your comment will be posted anonymously
+                  Comments are anonymous and cannot contain personal information
                 </p>
                 <Button
                   onClick={handleSubmitComment}
