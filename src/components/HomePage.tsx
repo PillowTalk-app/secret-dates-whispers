@@ -390,6 +390,9 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 Pillow Talk
               </h1>
               <p className="text-xs text-muted-foreground">Not gossip just experience</p>
+              <p className="text-xs text-muted-foreground/80 mt-1">
+                Content is anonymous, subjective, and unverified.
+              </p>
             </div>
           </div>
           
@@ -401,12 +404,19 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md bg-card border-border/50 max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Share Your Experience</DialogTitle>
-                <DialogDescription>
-                  Help others by sharing your dating experience
-                </DialogDescription>
-              </DialogHeader>
+                <DialogHeader>
+                  <DialogTitle>Share Your Experience</DialogTitle>
+                  <DialogDescription>
+                    Help others by sharing your dating experience
+                  </DialogDescription>
+                  <div className="mt-3 p-3 bg-muted/30 rounded-md">
+                    <p className="text-xs text-muted-foreground text-center">
+                      Content is anonymous, subjective, and unverified.<br/>
+                      Pillow Talk does not guarantee the truth or accuracy of posts.<br/>
+                      This app is for reflection, not retaliation.
+                    </p>
+                  </div>
+                </DialogHeader>
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium mb-2 block">Person's Name</label>

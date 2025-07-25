@@ -80,6 +80,13 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
           </div>
           <CardTitle className="text-xl">Identity Verification</CardTitle>
           <CardDescription>Step {step} of 3 - Secure & Discreet</CardDescription>
+          <div className="mt-3 p-3 bg-muted/30 rounded-md">
+            <p className="text-xs text-muted-foreground text-center">
+              Content is anonymous, subjective, and unverified.<br/>
+              Pillow Talk does not guarantee the truth or accuracy of posts.<br/>
+              This app is for reflection, not retaliation.
+            </p>
+          </div>
         </CardHeader>
 
         <CardContent className="space-y-6">

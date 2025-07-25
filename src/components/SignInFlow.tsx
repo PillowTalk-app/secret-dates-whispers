@@ -82,6 +82,13 @@ export const SignInFlow = ({ onComplete, onBack }: SignInFlowProps) => {
             <CardDescription>
               Sign in to your Pillow Talk account
             </CardDescription>
+            <div className="mt-3 p-3 bg-muted/30 rounded-md">
+              <p className="text-xs text-muted-foreground text-center">
+                Content is anonymous, subjective, and unverified.<br/>
+                Pillow Talk does not guarantee the truth or accuracy of posts.<br/>
+                This app is for reflection, not retaliation.
+              </p>
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">

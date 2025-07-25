@@ -17,6 +17,13 @@ export const AuthChoiceScreen = ({ onSignUp, onSignIn }: AuthChoiceScreenProps) 
           <p className="text-muted-foreground">
             Choose how you'd like to continue
           </p>
+          <div className="mt-4 p-3 bg-muted/30 rounded-md">
+            <p className="text-xs text-muted-foreground text-center">
+              Content is anonymous, subjective, and unverified.<br/>
+              Pillow Talk does not guarantee the truth or accuracy of posts.<br/>
+              This app is for reflection, not retaliation.
+            </p>
+          </div>
         </div>
 
         <div className="space-y-4">

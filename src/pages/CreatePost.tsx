@@ -102,6 +102,13 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground mb-2">Share Your Experience</h1>
         <p className="text-muted-foreground">Help the community by sharing your dating experiences honestly and respectfully</p>
+        <div className="mt-3 p-3 bg-muted/30 rounded-md">
+          <p className="text-xs text-muted-foreground text-center">
+            Content is anonymous, subjective, and unverified.<br/>
+            Pillow Talk does not guarantee the truth or accuracy of posts.<br/>
+            This app is for reflection, not retaliation.
+          </p>
+        </div>
       </div>
 
       <Card className="bg-gradient-card border-border/50">
