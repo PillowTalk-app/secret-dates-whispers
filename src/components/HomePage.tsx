@@ -911,7 +911,7 @@ const PostDetailView = ({
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <div className="flex items-center gap-2 mb-2">
                 <div className="h-4 w-4 bg-blue-500 rounded-full" />
-                <span className="text-sm font-medium">No Dating Footprint Yet</span>
+                <span className="text-sm font-medium text-gray-800">No Dating Footprint Yet</span>
               </div>
               <p className="text-xs text-muted-foreground">
                 Click to check if {post.targetName} has been mentioned in other verified posts.
