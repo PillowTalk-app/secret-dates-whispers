@@ -7,8 +7,9 @@ import { useNavigate } from "react-router-dom";
 
 interface Match {
   id: string;
-  name: string;
-  avatar: string;
+  username: string; // The other user's screen name
+  mutualPersonName: string; // Name of person they both dated
+  mutualPersonPhoto: string; // Photo of person they both dated
   sharedMemory: string;
   matchedOn: string;
   location: string;
@@ -59,9 +60,9 @@ export const MatchCard = ({ match, onStartConversation }: MatchCardProps) => {
           <div className="flex items-center space-x-4">
             <div className="relative">
               <Avatar className="h-16 w-16 ring-2 ring-accent/20 group-hover:ring-accent/40 transition-all">
-                <AvatarImage src={match.avatar} alt={match.name} />
+                <AvatarImage src={match.mutualPersonPhoto} alt={match.mutualPersonName} />
                 <AvatarFallback className="bg-gradient-accent text-accent-foreground text-lg font-semibold">
-                  {match.name.charAt(0)}
+                  {match.mutualPersonName.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               {!match.hasConversation && (
@@ -70,8 +71,11 @@ export const MatchCard = ({ match, onStartConversation }: MatchCardProps) => {
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-lg text-foreground group-hover:text-accent transition-colors">
-                {match.name}
+                {match.mutualPersonName}
               </h3>
+              <p className="text-sm text-muted-foreground">
+                Mutual connection with <span className="font-medium text-accent">{match.username}</span>
+              </p>
               <div className="flex items-center text-sm text-muted-foreground mt-1">
                 <MapPin className="h-3 w-3 mr-1" />
                 {match.location}

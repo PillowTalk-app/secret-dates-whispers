@@ -8,8 +8,9 @@ import { useToast } from "@/hooks/use-toast";
 
 interface Match {
   id: string;
-  name: string;
-  avatar: string;
+  username: string; // The other user's screen name
+  mutualPersonName: string; // Name of person they both dated
+  mutualPersonPhoto: string; // Photo of person they both dated
   sharedMemory: string;
   matchedOn: string;
   location: string;
@@ -18,12 +19,13 @@ interface Match {
   lastActivity?: string;
 }
 
-// Enhanced mock data for paid matches
+// Enhanced mock data showing mutual people they both dated
 const mockMatches: Match[] = [
   {
     id: "match-1",
-    name: "MysticWaves",
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face",
+    username: "MysticWaves",
+    mutualPersonName: "Alex Chen",
+    mutualPersonPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     sharedMemory: "You both posted about dating Alex from downtown - discovered similar experiences about communication patterns and how they handled conflict resolution",
     matchedOn: "2 days ago",
     location: "2 miles away",
@@ -32,8 +34,9 @@ const mockMatches: Match[] = [
   },
   {
     id: "match-2", 
-    name: "SunsetDreamer",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    username: "SunsetDreamer",
+    mutualPersonName: "Jordan Martinez",
+    mutualPersonPhoto: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face",
     sharedMemory: "Both shared experiences about dating someone from the gym - found common red flags including inconsistent texting and mixed signals about commitment",
     matchedOn: "1 week ago",
     location: "5 miles away", 
@@ -43,8 +46,9 @@ const mockMatches: Match[] = [
   },
   {
     id: "match-3",
-    name: "NightOwl23",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+    username: "NightOwl23",
+    mutualPersonName: "Taylor Kim",
+    mutualPersonPhoto: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=150&h=150&fit=crop&crop=face",
     sharedMemory: "Matched on experiences with someone from dating app - shared insights about messaging patterns and discovered similar experiences with love bombing behavior",
     matchedOn: "3 days ago", 
     location: "1 mile away",
