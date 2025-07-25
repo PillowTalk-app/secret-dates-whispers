@@ -405,7 +405,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                     placeholder="First name or nickname"
                     value={newPost.targetName}
                     onChange={(e) => setNewPost(prev => ({ ...prev, targetName: e.target.value }))}
-                    className="bg-teal-800/80 border-teal-600 text-white placeholder:text-teal-200"
+                    className="bg-teal-800/80 border-teal-600 text-white placeholder:text-white/70"
                   />
                 </div>
 
@@ -415,7 +415,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                     placeholder="Share your experience honestly and respectfully..."
                     value={newPost.content}
                     onChange={(e) => setNewPost(prev => ({ ...prev, content: e.target.value }))}
-                    className="bg-teal-800/80 border-teal-600 text-white placeholder:text-teal-200 min-h-[100px]"
+                    className="bg-teal-800/80 border-teal-600 text-white placeholder:text-white/70 min-h-[100px]"
                   />
                 </div>
 
