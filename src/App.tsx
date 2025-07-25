@@ -24,8 +24,8 @@ const queryClient = new QueryClient();
 
 // Mock user data - in a real app this would come from authentication
 const mockUserData = {
-  name: 'Jane Smith',
-  screenName: 'MidnightMuse',
+  name: 'Jane', // Only first name for privacy
+  screenName: 'MidnightMuse', // Screen name displayed to users
   gender: 'female' as const,
   phone: '+1 (555) 987-6543',
   email: 'jane@example.com'

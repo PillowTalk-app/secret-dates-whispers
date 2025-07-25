@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Bell, ArrowLeft, Plus, Bookmark, MessageCircle, Clock, Trash2, Edit3, Settings } from "lucide-react";
 
 interface UserProfileProps {
-  userData: { name: string; gender: 'male' | 'female'; phone: string; email: string };
+  userData: { name: string; screenName: string; gender: 'male' | 'female'; phone: string; email: string };
   onBack: () => void;
   onNavigateToSettings?: () => void;
 }
@@ -58,7 +58,7 @@ export const UserProfile = ({ userData, onBack, onNavigateToSettings }: UserProf
   const [myPosts, setMyPosts] = useState<Post[]>([
     {
       id: '1',
-      targetName: 'Jamie Chen',
+      targetName: 'Jamie', // Only first name
       targetPhone: '+1 (555) 234-5678',
       content: 'Had a wonderful 4-month relationship. Very respectful, great communication, and we parted on good terms. Would recommend for serious dating.',
       timestamp: '2 days ago',
@@ -71,14 +71,14 @@ export const UserProfile = ({ userData, onBack, onNavigateToSettings }: UserProf
   const [savedPosts, setSavedPosts] = useState<SavedPost[]>([
     {
       id: '2',
-      targetName: 'Alex Johnson',
+      targetName: 'Alex', // Only first name
       targetPhone: '+1 (555) 123-4567',
       content: 'Went on 3 dates with this person. They seemed genuine at first but turned out to be quite manipulative. Be careful if you match with them.',
       timestamp: '2 hours ago',
       responses: 5,
       category: 'dating',
       isActive: true,
-      originalAuthor: 'Anonymous User',
+      originalAuthor: 'SunsetDreamer', // Screen name, not real name
       savedAt: '1 day ago',
       hasNewResponses: true
     }
@@ -88,14 +88,14 @@ export const UserProfile = ({ userData, onBack, onNavigateToSettings }: UserProf
     {
       id: '1',
       postId: '2',
-      message: 'New response on saved post about Alex Johnson',
+      message: 'New response on saved post about Alex', // Only first name
       timestamp: '30 minutes ago',
       isRead: false
     },
     {
       id: '2',
       postId: '1',
-      message: 'Your post about Jamie Chen received a new response',
+      message: 'Your post about Jamie received a new response', // Only first name
       timestamp: '2 hours ago',
       isRead: false
     }
@@ -207,7 +207,7 @@ export const UserProfile = ({ userData, onBack, onNavigateToSettings }: UserProf
               {/* Profile Avatar */}
               <Avatar className="border-2 border-primary/30">
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                  {userData.name.charAt(0).toUpperCase()}
+                  {userData.screenName.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </div>
@@ -221,10 +221,10 @@ export const UserProfile = ({ userData, onBack, onNavigateToSettings }: UserProf
           <CardHeader className="text-center">
             <Avatar className="h-20 w-20 mx-auto border-4 border-primary/30 mb-3">
               <AvatarFallback className="bg-gradient-primary text-primary-foreground text-2xl">
-                {userData.name.charAt(0).toUpperCase()}
+                {userData.screenName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <CardTitle className="text-2xl">{userData.name}</CardTitle>
+            <CardTitle className="text-2xl">{userData.screenName}</CardTitle>
             <CardDescription className="flex items-center justify-center space-x-2">
               <Badge variant="secondary" className="bg-primary/20 text-primary">
                 Verified {userData.gender === 'male' ? 'Male' : 'Female'}
@@ -285,9 +285,9 @@ export const UserProfile = ({ userData, onBack, onNavigateToSettings }: UserProf
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium mb-2 block">Person's Name</label>
+                      <label className="text-sm font-medium mb-2 block">Person&apos;s First Name Only</label>
                       <Input
-                        placeholder="Full name"
+                        placeholder="First name only (e.g. Jamie, Alex, Sam)"
                         value={newPost.targetName}
                         onChange={(e) => setNewPost(prev => ({ ...prev, targetName: e.target.value }))}
                         className="bg-card/50 border-border/50"

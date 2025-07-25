@@ -54,7 +54,7 @@ export const Messages = ({ userData }: MessagesProps) => {
       id: '1',
       participantName: 'MysticWaves',
       participantGender: userData.gender === 'male' ? 'female' : 'male',
-      mutualPersonName: 'Alex Chen',
+      mutualPersonName: 'Alex', // Only first name for privacy
       mutualPersonPhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
       lastMessage: 'Thanks for sharing that post about Alex. Really helpful!',
       lastMessageTime: '2m ago',
@@ -66,7 +66,7 @@ export const Messages = ({ userData }: MessagesProps) => {
           senderId: '1',
           senderName: 'MysticWaves',
           senderGender: userData.gender === 'male' ? 'female' : 'male',
-          content: 'Hi! I saw your post about Alex Chen. Could you tell me more about your experience?',
+          content: 'Hi! I saw your post about Alex. Could you tell me more about your experience?',
           timestamp: '10:30 AM',
           isRead: true
         },
@@ -94,7 +94,7 @@ export const Messages = ({ userData }: MessagesProps) => {
       id: '2',
       participantName: 'SunsetDreamer',
       participantGender: userData.gender === 'male' ? 'female' : 'male',
-      mutualPersonName: 'Jordan Martinez',
+      mutualPersonName: 'Jordan', // Only first name for privacy
       mutualPersonPhoto: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face',
       lastMessage: 'Looking forward to connecting more!',
       lastMessageTime: '1h ago',
@@ -106,7 +106,7 @@ export const Messages = ({ userData }: MessagesProps) => {
           senderId: '2',
           senderName: 'SunsetDreamer',
           senderGender: userData.gender === 'male' ? 'female' : 'male',
-          content: 'Hey! Your review about Jordan Martinez was really detailed. Thanks for sharing.',
+          content: 'Hey! Your review about Jordan was really detailed. Thanks for sharing.',
           timestamp: '9:15 AM',
           isRead: true
         },

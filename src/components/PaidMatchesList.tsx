@@ -23,7 +23,7 @@ const mockMatches: Match[] = [
   {
     id: "match-1",
     username: "MysticWaves",
-    mutualPersonName: "Alex Chen",
+    mutualPersonName: "Alex", // Only first name for privacy
     mutualPersonPhoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     sharedMemory: "You both posted about dating Alex from downtown - discovered similar experiences about communication patterns and how they handled conflict resolution",
     matchedOn: "2 days ago",
@@ -33,7 +33,7 @@ const mockMatches: Match[] = [
   {
     id: "match-2", 
     username: "SunsetDreamer",
-    mutualPersonName: "Jordan Martinez",
+    mutualPersonName: "Jordan", // Only first name for privacy
     mutualPersonPhoto: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop&crop=face",
     sharedMemory: "Both shared experiences about dating someone from the gym - found common red flags including inconsistent texting and mixed signals about commitment",
     matchedOn: "1 week ago",
@@ -44,7 +44,7 @@ const mockMatches: Match[] = [
   {
     id: "match-3",
     username: "NightOwl23",
-    mutualPersonName: "Taylor Kim",
+    mutualPersonName: "Taylor", // Only first name for privacy
     mutualPersonPhoto: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=150&h=150&fit=crop&crop=face",
     sharedMemory: "Matched on experiences with someone from dating app - shared insights about messaging patterns and discovered similar experiences with love bombing behavior",
     matchedOn: "3 days ago",
