@@ -157,7 +157,7 @@ export const Messages = ({ userData }: MessagesProps) => {
                   placeholder="Search conversations..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-teal-800/80 border-teal-600 text-white placeholder:text-white"
+                  className="pl-10 bg-white border-white text-black placeholder:text-gray-500"
                 />
               </div>
             </CardHeader>
