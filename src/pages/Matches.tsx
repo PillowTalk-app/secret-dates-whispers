@@ -40,6 +40,13 @@ export const Matches = () => {
   };
 
   const handleUnlockClick = () => {
+    // Ensure we have user data, use mock data if not available
+    if (!userData) {
+      setUserData({
+        email: 'demo@example.com',
+        name: 'Demo User'
+      });
+    }
     setShowUnlockDialog(true);
   };
 
@@ -172,13 +179,16 @@ export const Matches = () => {
         </Tabs>
         )}
 
-        {userData && (
-          <UnlockMatchesDialog 
-            isOpen={showUnlockDialog}
-            onClose={() => setShowUnlockDialog(false)}
-            userData={userData}
-          />
-        )}
+        <UnlockMatchesDialog 
+          isOpen={showUnlockDialog}
+          onClose={() => setShowUnlockDialog(false)}
+          userData={userData || { email: 'demo@example.com', name: 'Demo User' }}
+          onPaymentSuccess={() => {
+            // Mock successful payment
+            console.log('Payment successful! User can now message matches.');
+            setShowUnlockDialog(false);
+          }}
+        />
 
         {/* How it Works */}
         <Card className="mt-8 bg-accent/5 border border-accent/20">
