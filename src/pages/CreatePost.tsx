@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Camera, X, MapPin, AlertCircle, ArrowLeft } from "lucide-react";
+import { Camera, X, MapPin, AlertCircle, ArrowLeft, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { validatePostContent, getContentGuidelines } from "@/utils/postContentValidation";
 
 interface UserData {
   name: string;
@@ -31,6 +32,8 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [showValidation, setShowValidation] = useState(false);
 
   const handleAddImage = () => {
     // Mock image upload - in real app would handle file upload
@@ -54,7 +57,18 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
   const handleSubmit = async () => {
     if (!postData.targetName || !postData.content) return;
     
+    // Validate content before submission
+    const validation = validatePostContent(postData.content, postData.targetName);
+    
+    if (!validation.isValid) {
+      setValidationErrors(validation.errors);
+      setShowValidation(true);
+      return;
+    }
+    
     setIsSubmitting(true);
+    setValidationErrors([]);
+    setShowValidation(false);
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -176,17 +190,33 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
             </p>
           </div>
 
-          {/* Community Guidelines */}
+          {/* Validation Errors */}
+          {showValidation && validationErrors.length > 0 && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+              <div className="flex items-start space-x-2">
+                <Shield className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                <div className="text-sm">
+                  <h4 className="font-medium text-destructive mb-2">Privacy Protection Required</h4>
+                  <ul className="text-destructive/80 space-y-1">
+                    {validationErrors.map((error, index) => (
+                      <li key={index}>• {error}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Privacy Guidelines */}
           <div className="bg-muted/30 rounded-lg p-4 border border-border/30">
             <div className="flex items-start space-x-2">
-              <AlertCircle className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+              <Shield className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
               <div className="text-sm">
-                <h4 className="font-medium text-foreground mb-1">Community Guidelines</h4>
+                <h4 className="font-medium text-foreground mb-1">Privacy & Safety Guidelines</h4>
                 <ul className="text-muted-foreground space-y-1">
-                  <li>• Be honest and respectful in your reviews</li>
-                  <li>• Focus on behaviors and experiences, not personal attacks</li>
-                  <li>• Protect privacy - avoid sharing personal information</li>
-                  <li>• Help others make informed decisions about their safety</li>
+                  {getContentGuidelines().map((guideline, index) => (
+                    <li key={index}>• {guideline}</li>
+                  ))}
                 </ul>
               </div>
             </div>
