@@ -8,7 +8,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Search, MessageCircle, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign } from "lucide-react";
+import { Search, MessageCircle, User, Send, Bookmark, Plus, Camera, X, MapPin, Zap, DollarSign, AlertCircle, Shield } from "lucide-react";
+import { validatePostContent, getContentGuidelines } from "@/utils/postContentValidation";
 import { CommentsDialog } from "@/components/CommentsDialog";
 import { MessagingRestrictions } from "@/components/MessagingRestrictions";
 import { DatingFootprintDisplay } from "@/components/DatingFootprintDisplay";
@@ -81,6 +82,8 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
     images: [] as string[],
     wantsBoost: false
   });
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   
   // Hooks
   const { isBoosted, getBoostEndTime, addBoostedPost } = useBoostedPosts();
@@ -257,6 +260,16 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
 
   const handleCreatePost = async () => {
     if (!newPost.targetName || !newPost.content || newPost.images.length === 0) return;
+
+    // Validate content before submission
+    const validation = validatePostContent(newPost.content, newPost.targetName);
+    
+    if (!validation.isValid) {
+      setValidationErrors(validation.errors);
+      return;
+    }
+
+    setValidationErrors([]);
 
     // If user wants boost, handle payment first
     if (newPost.wantsBoost) {
@@ -483,13 +496,66 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                   )}
                 </div>
 
+                {/* Validation Errors */}
+                {validationErrors.length > 0 && (
+                  <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
+                    <div className="flex items-start space-x-2">
+                      <Shield className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
+                      <div className="text-sm">
+                        <h4 className="font-medium text-destructive mb-1">Privacy Protection Required</h4>
+                        <ul className="text-destructive/80 space-y-1">
+                          {validationErrors.map((error, index) => (
+                            <li key={index}>• {error}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Terms of Service and Privacy Policy Disclaimer */}
+                <div className="bg-card/30 rounded-lg p-4 border border-border/50">
+                  <div className="flex items-start space-x-2">
+                    <AlertCircle className="h-4 w-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm">
+                      <h4 className="font-medium text-foreground mb-2">Terms of Service & Privacy Policy</h4>
+                      <div className="text-muted-foreground space-y-2">
+                        <p>By posting, you acknowledge and agree that:</p>
+                        <ul className="space-y-1 pl-4">
+                          {getContentGuidelines().map((guideline, index) => (
+                            <li key={index}>• {guideline}</li>
+                          ))}
+                          <li>• <strong>You are 100% responsible</strong> for all content you post</li>
+                          <li>• All content is <strong>subjective, opinion-based, and not verified</strong></li>
+                          <li>• There is <strong>no expectation of truth or accuracy</strong> for any posts</li>
+                          <li>• Content represents personal experiences and opinions only</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2 mt-4">
+                    <Checkbox 
+                      id="terms-agreement-dialog"
+                      checked={agreedToTerms}
+                      onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+                    />
+                    <label 
+                      htmlFor="terms-agreement-dialog" 
+                      className="text-sm text-foreground font-medium cursor-pointer"
+                    >
+                      I acknowledge and agree to the Terms of Service and understand that content is opinion-based
+                    </label>
+                  </div>
+                </div>
+
                 <div className="flex justify-end space-x-2 pt-4">
                   <Button variant="ghost" onClick={() => setIsCreateDialogOpen(false)}>
                     Cancel
                   </Button>
                   <Button 
                     onClick={handleCreatePost}
-                    disabled={!newPost.targetName || !newPost.content || newPost.images.length === 0}
+                    disabled={!newPost.targetName || !newPost.content || newPost.images.length === 0 || !agreedToTerms}
                     className={newPost.wantsBoost 
                       ? "bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black font-semibold" 
                       : "bg-accent hover:bg-accent/90"
