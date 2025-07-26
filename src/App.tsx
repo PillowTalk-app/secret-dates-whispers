@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { SecurityWrapper } from "@/components/SecurityWrapper";
+import { GeographicRestriction } from "@/components/GeographicRestriction";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { TopNavigation } from "@/components/TopNavigation";
 import Index from "./pages/Index";
@@ -76,32 +77,34 @@ const AppContent = () => {
     !['loading', 'verification', 'auth-choice', 'signin'].includes(appState);
 
   return (
-    <SecurityWrapper>
-      <div className="min-h-screen bg-background">
-        {showTopNavigation && (
-          <TopNavigation 
-            userData={userData} 
-            onProfile={() => {}} 
-          />
-        )}
-        <Routes>
-          <Route path="/" element={<Index onAuthComplete={() => setIsAuthenticated(true)} />} />
-          <Route path="/create" element={<CreatePost userData={userData} />} />
-          <Route path="/my-posts" element={<MyPosts userData={userData} />} />
-          <Route path="/messages" element={<Messages userData={userData} />} />
-          <Route path="/polls" element={<Polls userData={userData} />} />
-          <Route path="/safety" element={<Safety userData={userData} />} />
-          <Route path="/reports" element={<Reports userData={userData} />} />
-          <Route path="/profile" element={<UserProfile userData={userData} onBack={navigateToHome} onNavigateToSettings={() => navigate('/settings')} />} />
-          <Route path="/settings" element={<Settings userData={userData} />} />
-          <Route path="/matches" element={<Matches />} />
-          <Route path="/about" element={<About />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        {showNavigation && <BottomNavigation />}
-      </div>
-    </SecurityWrapper>
+    <GeographicRestriction>
+      <SecurityWrapper>
+        <div className="min-h-screen bg-background">
+          {showTopNavigation && (
+            <TopNavigation 
+              userData={userData} 
+              onProfile={() => {}} 
+            />
+          )}
+          <Routes>
+            <Route path="/" element={<Index onAuthComplete={() => setIsAuthenticated(true)} />} />
+            <Route path="/create" element={<CreatePost userData={userData} />} />
+            <Route path="/my-posts" element={<MyPosts userData={userData} />} />
+            <Route path="/messages" element={<Messages userData={userData} />} />
+            <Route path="/polls" element={<Polls userData={userData} />} />
+            <Route path="/safety" element={<Safety userData={userData} />} />
+            <Route path="/reports" element={<Reports userData={userData} />} />
+            <Route path="/profile" element={<UserProfile userData={userData} onBack={navigateToHome} onNavigateToSettings={() => navigate('/settings')} />} />
+            <Route path="/settings" element={<Settings userData={userData} />} />
+            <Route path="/matches" element={<Matches />} />
+            <Route path="/about" element={<About />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          {showNavigation && <BottomNavigation />}
+        </div>
+      </SecurityWrapper>
+    </GeographicRestriction>
   );
 };
 
