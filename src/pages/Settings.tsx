@@ -33,7 +33,7 @@ export const Settings = ({ userData }: SettingsProps) => {
   const [privacySettings, setPrivacySettings] = useState({
     showLocation: true,
     showLastSeen: true,
-    allowMessages: 'verified',
+    allowMessages: 'everyone',
     searchableByPhone: false,
     anonymousMode: false
   });
@@ -50,7 +50,6 @@ export const Settings = ({ userData }: SettingsProps) => {
     twoFactorEnabled: false,
     autoDeleteMessages: false,
     blockSuspiciousUsers: true,
-    requireVerification: true,
     locationRadius: [25] // miles
   });
 
@@ -166,7 +165,6 @@ export const Settings = ({ userData }: SettingsProps) => {
                   </SelectTrigger>
                   <SelectContent className="bg-card border-border/50">
                     <SelectItem value="everyone">Everyone</SelectItem>
-                    <SelectItem value="verified">Verified users only</SelectItem>
                     <SelectItem value="none">No one</SelectItem>
                   </SelectContent>
                 </Select>
@@ -233,16 +231,6 @@ export const Settings = ({ userData }: SettingsProps) => {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-sm font-medium text-foreground">Require verification for messages</Label>
-                  <p className="text-xs text-muted-foreground">Only verified users can message you</p>
-                </div>
-                <Switch
-                  checked={safetySettings.requireVerification}
-                  onCheckedChange={(checked) => setSafetySettings(prev => ({ ...prev, requireVerification: checked }))}
-                />
-              </div>
             </CardContent>
           </Card>
 

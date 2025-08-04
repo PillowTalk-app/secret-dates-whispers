@@ -20,6 +20,8 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
     phone: '',
     email: '',
     faceVerified: false,
+    idVerified: false,
+    faceIdMatched: false,
     isOver18: false
   });
   
@@ -50,11 +52,11 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
   }, [formData.screenName, formData.name]);
 
   const handleNext = () => {
-    if (step < 3) setStep(step + 1);
+    if (step < 4) setStep(step + 1);
   };
 
   const handleComplete = () => {
-    if (formData.name && formData.screenName && formData.gender && formData.phone && formData.email && formData.faceVerified) {
+    if (formData.name && formData.screenName && formData.gender && formData.phone && formData.email && formData.faceVerified && formData.idVerified && formData.faceIdMatched) {
       onComplete({
         name: formData.name,
         screenName: formData.screenName,
@@ -79,7 +81,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
             </div>
           </div>
           <CardTitle className="text-xl">Identity Verification</CardTitle>
-          <CardDescription>Step {step} of 3 - Secure & Discreet</CardDescription>
+          <CardDescription>Step {step} of 4 - Secure & Discreet</CardDescription>
           <div className="mt-3 p-3 bg-muted/30 rounded-md">
             <p className="text-xs text-muted-foreground text-center">
               Content is anonymous, subjective, and unverified.<br/>
@@ -347,6 +349,122 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
             </div>
           )}
 
+          {step === 4 && (
+            <div className="space-y-6">
+              <div className="text-center mb-6">
+                <Scan className="h-8 w-8 text-accent mx-auto mb-2" />
+                <h3 className="font-semibold text-lg">ID Verification & Face Match</h3>
+                <p className="text-sm text-muted-foreground">
+                  Scan your ID and verify it matches your face for complete security
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                {/* ID Scanning Section */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-sm">Step 1: Scan Your ID</h4>
+                  {!formData.idVerified ? (
+                    <div className="bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl p-6 border border-border/50">
+                      <div className="aspect-[3/2] bg-muted/50 rounded-lg border-2 border-dashed border-border/50 flex flex-col items-center justify-center mb-4">
+                        <Upload className="h-12 w-12 text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground text-center">
+                          Position your driver's license or government ID
+                        </p>
+                      </div>
+                      
+                      <div className="space-y-3 text-xs text-muted-foreground">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-accent rounded-full"></div>
+                          <span>Use good lighting and avoid glare</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-accent rounded-full"></div>
+                          <span>Ensure all text is clearly readable</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-accent rounded-full"></div>
+                          <span>Cover sensitive info if needed (SSN, etc.)</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+                      <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                      <p className="text-sm font-medium text-green-800">ID Verified Successfully</p>
+                      <p className="text-xs text-green-600 mt-1">Your identity document has been processed</p>
+                    </div>
+                  )}
+
+                  <Button
+                    variant={formData.idVerified ? "outline" : "luxury"}
+                    onClick={() => setFormData(prev => ({ ...prev, idVerified: true }))}
+                    className="w-full h-12"
+                    disabled={formData.idVerified}
+                  >
+                    {formData.idVerified ? '✓ ID Scanned' : 'Scan Government ID'}
+                  </Button>
+                </div>
+
+                {/* Face Matching Section */}
+                {formData.idVerified && (
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-sm">Step 2: Face Verification Match</h4>
+                    {!formData.faceIdMatched ? (
+                      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-200">
+                        <div className="aspect-square bg-white/80 rounded-lg border-2 border-dashed border-blue-300 flex flex-col items-center justify-center mb-4">
+                          <Camera className="h-12 w-12 text-blue-500 mb-2" />
+                          <p className="text-sm text-blue-700 text-center">
+                            Look at the camera to match your ID photo
+                          </p>
+                        </div>
+                        
+                        <div className="bg-blue-100 rounded-lg p-3 mb-4">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <Shield className="h-4 w-4 text-blue-600" />
+                            <span className="text-sm font-medium text-blue-800">Secure Matching Process</span>
+                          </div>
+                          <p className="text-xs text-blue-700">
+                            We'll compare your live photo with your ID to ensure they match. This prevents identity theft and keeps everyone safe.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <Shield className="h-8 w-8 text-green-600" />
+                        </div>
+                        <p className="text-sm font-medium text-green-800 mb-1">Identity Verified ✓</p>
+                        <p className="text-xs text-green-600">Face matches ID photo perfectly</p>
+                      </div>
+                    )}
+
+                    <Button
+                      variant={formData.faceIdMatched ? "outline" : "luxury"}
+                      onClick={() => setFormData(prev => ({ ...prev, faceIdMatched: true }))}
+                      className="w-full h-12"
+                      disabled={formData.faceIdMatched}
+                    >
+                      {formData.faceIdMatched ? '✓ Face Matched' : 'Verify Face Match'}
+                    </Button>
+                  </div>
+                )}
+
+                {/* Completion Status */}
+                {formData.idVerified && formData.faceIdMatched && (
+                  <div className="bg-accent/10 border border-accent/20 rounded-xl p-6 text-center">
+                    <div className="w-16 h-16 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <CheckCircle className="h-8 w-8 text-accent" />
+                    </div>
+                    <h4 className="font-medium text-accent mb-2">Complete Verification ✓</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Your identity has been fully verified. You're ready to use Pillow Talk safely.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-between pt-4">
             {step > 1 && (
               <Button variant="ghost" onClick={() => setStep(step - 1)}>
@@ -354,12 +472,13 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
               </Button>
             )}
             
-            {step < 3 ? (
+            {step < 4 ? (
               <Button
                 onClick={handleNext}
                 disabled={
                   (step === 1 && (!formData.name || !formData.gender || !formData.phone || !formData.isOver18)) ||
-                  (step === 2 && (!formData.email || !formData.screenName || screenNameValidation?.isValid === false))
+                  (step === 2 && (!formData.email || !formData.screenName || screenNameValidation?.isValid === false)) ||
+                  (step === 3 && !formData.faceVerified)
                 }
                 className="ml-auto"
               >
@@ -368,7 +487,7 @@ export const VerificationFlow = ({ onComplete }: VerificationFlowProps) => {
             ) : (
               <Button
                 onClick={handleComplete}
-                disabled={!formData.faceVerified}
+                disabled={!formData.idVerified || !formData.faceIdMatched}
                 className="ml-auto"
               >
                 Enter App
