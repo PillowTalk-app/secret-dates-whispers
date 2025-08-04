@@ -149,50 +149,6 @@ export const Settings = ({ userData }: SettingsProps) => {
         </TabsList>
 
         <TabsContent value="privacy" className="space-y-6">
-          <Card className="bg-gradient-card border-border/50">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Eye className="h-5 w-5 text-accent" />
-                <span>Profile Visibility</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label className="text-sm font-medium text-foreground">Show approximate location</Label>
-                    <p className="text-xs text-muted-foreground">Helps others find relevant experiences</p>
-                  </div>
-                  <Switch
-                    checked={privacySettings.showLocation}
-                    onCheckedChange={(checked) => setPrivacySettings(prev => ({ ...prev, showLocation: checked }))}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label className="text-sm font-medium text-foreground">Show last seen</Label>
-                    <p className="text-xs text-muted-foreground">When you were last active</p>
-                  </div>
-                  <Switch
-                    checked={privacySettings.showLastSeen}
-                    onCheckedChange={(checked) => setPrivacySettings(prev => ({ ...prev, showLastSeen: checked }))}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label className="text-sm font-medium text-foreground">Anonymous mode</Label>
-                    <p className="text-xs text-muted-foreground">Hide your screen name from posts</p>
-                  </div>
-                  <Switch
-                    checked={privacySettings.anonymousMode}
-                    onCheckedChange={(checked) => setPrivacySettings(prev => ({ ...prev, anonymousMode: checked }))}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           <Card className="bg-gradient-card border-border/50">
             <CardHeader>
