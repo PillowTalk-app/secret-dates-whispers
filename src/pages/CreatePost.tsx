@@ -125,13 +125,16 @@ export const CreatePost = ({ userData, onPostCreated }: CreatePostProps) => {
           {/* Basic Information */}
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block text-foreground">Person's Name</label>
+              <label className="text-sm font-medium mb-2 block text-foreground">Person's First Name Only</label>
               <Input
-                placeholder="First name or nickname"
+                placeholder="First name only (e.g. Jamie, Alex, Sam)"
                 value={postData.targetName}
                 onChange={(e) => setPostData(prev => ({ ...prev, targetName: e.target.value }))}
                 className="bg-card/50 border-border/50"
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                Only use first names to protect privacy - no last names allowed
+              </p>
             </div>
 
             <div>

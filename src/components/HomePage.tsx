@@ -104,7 +104,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorName: 'MysticWaves',
           authorGender: userData.gender === 'male' ? 'female' : 'male',
           authorImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=150&h=150&fit=crop&crop=face',
-          targetName: 'Alex Johnson',
+          targetName: 'Alex',
           targetImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
           targetPhone: '+1 (555) 123-4567',
           content: 'Went on 3 dates with this person. They seemed genuine at first but turned out to be quite manipulative. Be careful if you match with them.',
@@ -118,7 +118,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorName: 'SunsetDreamer',
           authorGender: userData.gender === 'male' ? 'female' : 'male',
           authorImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-          targetName: 'Sam Wilson',
+          targetName: 'Sam',
           targetImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
           content: "Amazing partner for 6 months. Very honest, caring, and respectful. Highly recommend if you're looking for something serious.",
           timestamp: '4 hours ago',
@@ -131,7 +131,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorName: 'NightOwl',
           authorGender: userData.gender === 'male' ? 'female' : 'male',
           authorImage: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-          targetName: 'Jordan Smith',
+          targetName: 'Jordan',
           targetImage: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face',
           targetPhone: '+1 (555) 987-6543',
           content: 'Had a casual encounter. They were respectful and communicated well about boundaries. Safe and consensual experience.',
@@ -146,7 +146,7 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
           authorName: 'CityExplorer',
           authorGender: userData.gender === 'male' ? 'female' : 'male',
           authorImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-          targetName: 'Riley Thompson',
+          targetName: 'Riley',
           targetImage: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=300&h=300&fit=crop&crop=face',
           content: 'Great first date at a local café. Very engaging conversation and respectful throughout.',
           timestamp: '6 hours ago',
@@ -419,13 +419,16 @@ export const HomePage = ({ userData, onMessage, onProfile }: HomePageProps) => {
                 </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Person's Name</label>
+                  <label className="text-sm font-medium mb-2 block">Person's First Name Only</label>
                   <Input
-                    placeholder="First name or nickname"
+                    placeholder="First name only (e.g. Jamie, Alex, Sam)"
                     value={newPost.targetName}
                     onChange={(e) => setNewPost(prev => ({ ...prev, targetName: e.target.value }))}
                     className="bg-teal-800/80 border-teal-600 text-white placeholder:text-white/70"
                   />
+                  <p className="text-xs text-white/70 mt-1">
+                    Only first names allowed - no last names for privacy protection
+                  </p>
                 </div>
 
                 <div>
